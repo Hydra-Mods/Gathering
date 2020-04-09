@@ -241,6 +241,7 @@ local Tracked = {
 	[13760] = true,   -- Raw Sunscale Salmon
 	[13889] = true,   -- Raw Whitescale Salmon
 	[6522] = true,    -- Deviate Fish
+	[20916] = true,   -- Mithril Headed Trout
 	
 	-- The Burning Crusade
 	[27422] = true,   -- Barbed Gill Trout
