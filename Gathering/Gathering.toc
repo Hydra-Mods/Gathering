@@ -1,0 +1,7 @@
+## Interface: 80300
+## Author: Hydra
+## Version: 1.02
+## Title: Gathering
+## Notes: Track gathered items.
+
+Gathering.lua
