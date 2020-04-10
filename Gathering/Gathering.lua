@@ -626,30 +626,8 @@ local OnMouseUp = function(self, button)
 	end
 end
 
-local Enable = function(self)
-	self:RegisterEvent("CHAT_MSG_LOOT")
-	self:SetScript("OnEvent", Update)
-	self:SetScript("OnEnter", OnEnter)
-	self:SetScript("OnLeave", OnLeave)
-	self:SetScript("OnMouseUp", OnMouseUp)
-	self:Update()
-end
-
-local Disable = function(self)
-	self.Text:SetText("")
-	self:SetScript("OnEvent", nil)
-	self:SetScript("OnEnter", nil)
-	self:SetScript("OnLeave", nil)
-	self:SetScript("OnMouseUp", nil)
-	self:UnregisterAllEvents()
-end
-
-Frame.Update = Update
-Frame.Enable = Enable
-Frame.Disable = Disable
-
-Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-Frame:SetScript("OnEvent", function(self, event)
-	self:Enable()
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end)
+Frame:RegisterEvent("CHAT_MSG_LOOT")
+Frame:SetScript("OnEvent", Update)
+Frame:SetScript("OnEnter", OnEnter)
+Frame:SetScript("OnLeave", OnLeave)
+Frame:SetScript("OnMouseUp", OnMouseUp)
