@@ -30,7 +30,7 @@ local TrackedItemTypes = {
 }
 
 -- DB of items to track
-local Tracked = {
+local TrackedItems = {
 	-- Eggs
 	[89155] = true,    -- Onyx Egg
 	[32506] = true,    -- Netherwing Egg
