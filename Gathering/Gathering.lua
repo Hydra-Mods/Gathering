@@ -29,30 +29,6 @@ local TrackedItemTypes = {
 	},
 }
 
--- DB of items to track
-local TrackedItems = {
-	-- Eggs
-	[89155] = true,    -- Onyx Egg
-	[32506] = true,    -- Netherwing Egg
-	
-	-- Tillers
-	[79265] = true,    -- Blue Feather
-	[79267] = true,    -- Lovely Apple
-	[79268] = true,    -- Marsh Lily
-	[79266] = true,    -- Jade Cat
-	[79264] = true,    -- Ruby Shard
-	[79269] = true,    -- Marsh Lily
-	
-	-- Rep
-	[94226] = true,    -- Stolen Klaxxi Insignia
-	[94223] = true,    -- Stolen Shado-Pan Insignia
-	[94225] = true,    -- Stolen Celestial Insignia
-	[94227] = true,    -- Stolen Golden Lotus Insignia
-	
-	-- Noblegarden
-	--[45072] = true, -- Brightly Colored Egg
-}
-
 -- Keep track of what we've gathered, how many nodes, and what quantity.
 local Gathered = {}
 local NumTypes = 0
@@ -251,7 +227,7 @@ local Update = function(self, event, msg)
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
 	
 	-- Check that we want to track the type of item
-	if not (TrackedItemTypes[ClassID] and TrackedItemTypes[ClassID][SubClassID]) or not TrackedItems[ID] then
+	if (TrackedItemTypes[ClassID] and not TrackedItemTypes[ClassID][SubClassID]) then
 		return
 	end
 	
