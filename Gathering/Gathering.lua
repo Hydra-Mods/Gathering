@@ -14,7 +14,7 @@ local MouseIsOver = false
 
 -- DB of items to track
 local Tracked = {
-	--[[ HERBS ]]--
+	-- Herbs
 	
 	-- Vanilla
 	[765] = true,     -- Silverleaf
@@ -94,6 +94,7 @@ local Tracked = {
 	
 	-- Warlords of Draenor
 	[109124] = true,   -- Frostweed
+	[109624] = true,   -- Broken Frostweed Stem
 	[109125] = true,   -- Fireweed
 	[109625] = true,   -- Broken Fireweed Stem
 	[109126] = true,   -- Gorgrond Flytrap
@@ -122,7 +123,7 @@ local Tracked = {
 	[152510] = true,   -- Anchor Weed
 	[152511] = true,   -- Sea Stalk
 	
-	--[[ ORE ]]--
+	-- Ore
 	
 	-- Vanilla
 	[2770] = true,    -- Copper Ore
@@ -153,6 +154,7 @@ local Tracked = {
 	[72092] = true,    -- Ghost Iron Ore
 	[97512] = true,    -- Ghost Iron Nugget
 	[72093] = true,    -- Kyparite
+	[97546] = true,    -- Kyparite Fragment
 	[72094] = true,    -- Black Trillium Ore
 	[72103] = true,    -- White Trillium Ore
 	
@@ -172,7 +174,7 @@ local Tracked = {
 	[152513] = true,   -- Platinum Ore
 	[152579] = true,   -- Storm Silver Ore
 	
-	--[[ SKINS ]]--
+	-- Skins
 	
 	-- Vanilla
 	[2934] = true,    -- Ruined Leather Scraps
@@ -218,7 +220,7 @@ local Tracked = {
 	[110609] = true,   -- Raw Beast Hide
 	[110610] = true,   -- Raw Beast Hide Scraps
 	
-	--[[ FISH ]]--
+	-- Fish
 	
 	-- Vanilla
 	[6291] = true,    -- Raw Brilliant Smallfish
@@ -306,7 +308,7 @@ local Tracked = {
 	-- Darkmoon Island
 	[124669] = true,   -- Darkmoon Daggermaw
 	
-	--[[ CLOTH ]]--
+	-- Cloth
 	
 	-- Vanilla
 	[2589] = true,     -- Linen Cloth
@@ -328,7 +330,7 @@ local Tracked = {
 	-- Mists of Pandaria
 	[72988] = true,    -- Windwool Cloth
 	
-	--[[ ARCHAEOLOGY ]]--
+	-- Archaeology
 	
 	-- Vanilla
 	[52843] = true,    -- Dwarf Rune Stone
@@ -351,7 +353,7 @@ local Tracked = {
 	[79868] = true,    -- Pandaren Pottery Shard
 	[95373] = true,    -- Mantid Amber Sliver
 	
-	-- [[ MISC. ]]
+	-- Misc.
 	
 	-- Eggs
 	[89155] = true,    -- Onyx Egg
@@ -374,8 +376,7 @@ local Tracked = {
 	-- Pets
 	[118675] = true,   -- Time-Locked Box (Bronze Whelpling)
 	
-	[141689] = true,   -- Jewel of Victory
-	
+	-- Darkmoon Island
 	[127141] = true, -- Bloated Thresher
 	[124670] = true, -- Sealed Darkmoon Crate
 	
