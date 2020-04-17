@@ -234,14 +234,18 @@ local Tracked = {
 	[6359] = true,    -- Firefin Snapper
 	[6362] = true,    -- Raw Rockscale Cod
 	[4603] = true,    -- Raw Spotted Yellowtail
+	[12238] = true,   -- Darkshore Grouper
 	[13422] = true,   -- Stonescale Eel
 	[13754] = true,   -- Raw Glossy Mightfish
+	[13755] = true,   -- Winter Squid
 	[13756] = true,   -- Raw Summer Bass
 	[13757] = true,   -- Lightning Eel
 	[13758] = true,   -- Raw Redgill
 	[13759] = true,   -- Raw Nightfin Snapper
 	[13760] = true,   -- Raw Sunscale Salmon
+	[13888] = true,   -- Darkclaw Lobster
 	[13889] = true,   -- Raw Whitescale Salmon
+	[13893] = true,   -- Large Raw Mightfish
 	[6522] = true,    -- Deviate Fish
 	[20916] = true,   -- Mithril Headed Trout
 	
@@ -279,6 +283,7 @@ local Tracked = {
 	[43652] = true,   -- Slippery Eel
 	
 	-- Cataclysm
+	[35285] = true,   -- Giant Sunfish
 	[53062] = true,   -- Sharptooth
 	[53063] = true,   -- Mountain Trout
 	[53064] = true,   -- Highland Guppy
