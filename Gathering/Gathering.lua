@@ -224,6 +224,7 @@ local Tracked = {
 	
 	-- Vanilla
 	[6291] = true,    -- Raw Brilliant Smallfish
+	[6299] = true,    -- Sickly Looking Fish
 	[6303] = true,    -- Raw Slitherskin Mackerel
 	[6289] = true,    -- Raw Longjaw Mud Snapper
 	[6317] = true,    -- Raw Loch Frenzy
@@ -247,18 +248,21 @@ local Tracked = {
 	[13889] = true,   -- Raw Whitescale Salmon
 	[13893] = true,   -- Large Raw Mightfish
 	[6522] = true,    -- Deviate Fish
-	[20916] = true,   -- Mithril Headed Trout
+	[8365] = true,    -- Raw Mithril Head Trout
 	
 	-- The Burning Crusade
 	[27422] = true,   -- Barbed Gill Trout
 	[27516] = true,   -- Enormous Barbed Gill Trout
 	[27435] = true,   -- Figluster's Mudfish
 	[27438] = true,   -- Golden Darter
+	[27439] = true,   -- Furious Crawdad
 	[27515] = true,   -- Huge Spotted Feltail
 	[27437] = true,   -- Icefin Bluefish
 	[21153] = true,   -- Raw Greater Sagefish
 	[27425] = true,   -- Spotted Feltail
 	[27429] = true,   -- Zangarian Sporefish
+	[33823] = true,   -- Bloodfin Catfish
+	[33824] = true,   -- Crescent-Tail Skullfish
 	
 	-- Wrath of the Lich King
 	[41808] = true,   -- Bonescale Snapper
@@ -281,6 +285,7 @@ local Tracked = {
 	[43572] = true,   -- Magic Eater
 	[43571] = true,   -- Sewer Carp
 	[43652] = true,   -- Slippery Eel
+	[45909] = true,   -- Giant Darkwater Clam
 	
 	-- Cataclysm
 	[35285] = true,   -- Giant Sunfish
