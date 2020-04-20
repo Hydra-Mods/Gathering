@@ -46,6 +46,7 @@ local Tracked = {
 	[13466] = true,   -- Plaguebloom
 	[13467] = true,   -- Icecap
 	[13468] = true,   -- Black Lotus
+	[19726] = true,   -- Bloodvine
 	
 	-- The Burning Crusade
 	[22785] = true,    -- Felweed
