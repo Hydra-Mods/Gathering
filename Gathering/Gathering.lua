@@ -341,6 +341,9 @@ local Tracked = {
 	-- Mists of Pandaria
 	[72988] = true,    -- Windwool Cloth
 	
+	-- Legion
+	[124437] = true,   -- Shal'dorei Silk
+	
 	-- Archaeology
 	
 	-- Vanilla
@@ -388,11 +391,13 @@ local Tracked = {
 	[118675] = true,   -- Time-Locked Box (Bronze Whelpling)
 	
 	-- Darkmoon Island
-	[127141] = true, -- Bloated Thresher
-	[124670] = true, -- Sealed Darkmoon Crate
+	[127141] = true,   -- Bloated Thresher
+	[124670] = true,   -- Sealed Darkmoon Crate
 	
 	-- Noblegarden
-	[45072] = true, -- Brightly Colored Egg
+	[45072] = true,    -- Brightly Colored Egg
+	
+	[174858] = true, -- Gersahl Greens
 }
 
 --[[local TrackedItemTypes = {
