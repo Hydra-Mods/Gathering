@@ -174,6 +174,7 @@ local Tracked = {
 	[152509] = true,   -- Siren's Pollen
 	[152510] = true,   -- Anchor Weed
 	[152511] = true,   -- Sea Stalk
+	[168487] = true,   -- Zin'anthid
 	
 	-- Ore
 	
@@ -225,6 +226,7 @@ local Tracked = {
 	[152512] = true,   -- Monelite Ore
 	[152513] = true,   -- Platinum Ore
 	[152579] = true,   -- Storm Silver Ore
+	[168185] = true,   -- Osmenite Ore
 	
 	-- Skins
 	
