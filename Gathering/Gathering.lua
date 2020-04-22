@@ -42,6 +42,7 @@ local Tracked = {
 	[8846] = true,    -- Gromsblood
 	[13463] = true,   -- Dreamfoil
 	[13464] = true,   -- Golden Sansam
+	[108340] = true,  -- Golden Sansam Leaf
 	[13465] = true,   -- Mountain Silversage
 	[13466] = true,   -- Plaguebloom
 	[13467] = true,   -- Icecap
@@ -387,9 +388,6 @@ local Tracked = {
 	[94225] = true,    -- Stolen Celestial Insignia
 	[94227] = true,    -- Stolen Golden Lotus Insignia
 	
-	-- Pets
-	[118675] = true,   -- Time-Locked Box (Bronze Whelpling)
-	
 	-- Darkmoon Island
 	[127141] = true,   -- Bloated Thresher
 	[124670] = true,   -- Sealed Darkmoon Crate
@@ -397,7 +395,7 @@ local Tracked = {
 	-- Noblegarden
 	[45072] = true,    -- Brightly Colored Egg
 	
-	[174858] = true, -- Gersahl Greens
+	[174858] = true,   -- Gersahl Greens
 }
 
 --[[local TrackedItemTypes = {
