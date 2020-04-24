@@ -317,6 +317,7 @@ local Tracked = {
 	[27429] = true,   -- Zangarian Sporefish
 	[33823] = true,   -- Bloodfin Catfish
 	[33824] = true,   -- Crescent-Tail Skullfish
+	[27388] = true,   -- Mr. Pinchy
 	
 	-- Wrath of the Lich King
 	[41808] = true,   -- Bonescale Snapper
@@ -340,6 +341,7 @@ local Tracked = {
 	[43571] = true,   -- Sewer Carp
 	[43652] = true,   -- Slippery Eel
 	[45909] = true,   -- Giant Darkwater Clam
+	[46109] = true,   -- Sea Turtle (Mount)
 	
 	-- Cataclysm
 	[35285] = true,   -- Giant Sunfish
@@ -368,6 +370,61 @@ local Tracked = {
 	[74866] = true,    -- Golden Carp
 	[83064] = true,    -- Spinefish
 	[88496] = true,    -- Sealed Crate
+	
+	-- Warlords of Draenor
+	[111664] = true,   -- Abyssal Gulper Eel
+	[111663] = true,   -- Blackwater Whiptail
+	[111667] = true,   -- Blind Lake Sturgeon
+	[111595] = true,   -- Crescent Saberfish
+	[111668] = true,   -- Fat Sleeper
+	[111669] = true,   -- Jawless Skulker
+	[111666] = true,   -- Fire Ammonite
+	[111665] = true,   -- Sea Scorpion
+	[118565] = true,   -- Savage Piranha
+	
+	-- Legion
+	[133607] = true,   -- Silver Mackerel
+	[124107] = true,   -- Cursed Queenfish
+	[124109] = true,   -- Highmountain Salmon
+	[124108] = true,   -- Mossgill Perch
+	[124110] = true,   -- Stormray
+	[124111] = true,   -- Runescale Koi
+	[124112] = true,   -- Black Barracuda
+	[133725] = true,   -- Leyshimmer Blenny
+	[133726] = true,   -- Nar'thalas Hermit
+	[133727] = true,   -- Ghostly Queenfish
+	[133733] = true,   -- Ancient Highmountain Salmon
+	[133732] = true,   -- Coldriver Carp
+	[133731] = true,   -- Mountain Puffer
+	[133736] = true,   -- Thundering Stormray
+	[133734] = true,   -- Oodelfjisk
+	[133735] = true,   -- Graybelly Lobster
+	[133730] = true,   -- Ancient Mossgill
+	[133728] = true,   -- Terrorfin
+	[133729] = true,   -- Thorned Flounder
+	[133739] = true,   -- Tainted Runescale Koi
+	[133738] = true,   -- Seerspine Puffer
+	[133737] = true,   -- Magic-Eater Frog
+	[133741] = true,   -- Seabottom Squid
+	[133740] = true,   -- Axefish
+	[133742] = true,   -- Ancient Black Barracuda
+	
+	-- Battle for Azeroth
+	[152545] = true,   -- Frenzied Fangtooth
+	[152546] = true,   -- Lane Snapper
+	[152548] = true,   -- Tiragarde Perch
+	[152543] = true,   -- Sand Shifter
+	[152544] = true,   -- Slimy Mackerel
+	[152549] = true,   -- Redtail Loach
+	[152547] = true,   -- Great Sea Catfish
+	[162515] = true,   -- Midnight Salmon
+	[167562] = true,   -- Ionized Minnow
+	[168646] = true,   -- Mauve Stinger
+	[168302] = true,   -- Viper Fish
+	[174327] = true,   -- Malformed Gnasher
+	[174328] = true,   -- Aberrant Voidfin
+	[174456] = true,   -- Gloop (Battle Pet)
+	[163131] = true,   -- Great Sea Ray (Mount)
 	
 	-- Darkmoon Island
 	[124669] = true,   -- Darkmoon Daggermaw
