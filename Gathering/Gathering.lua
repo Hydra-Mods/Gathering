@@ -16,7 +16,7 @@ local MouseIsOver = false
 local Tracked = {
 	-- Herbs
 	
-	-- Vanilla
+	-- Classic
 	[765] = true,     -- Silverleaf
 	[785] = true,     -- Mageroyal
 	[108318] = true,  -- Mageroyal Petal
@@ -178,7 +178,7 @@ local Tracked = {
 	
 	-- Ore
 	
-	-- Vanilla
+	-- Classic
 	[2770] = true,    -- Copper Ore
 	[2771] = true,    -- Tin Ore
 	[2775] = true,    -- Silver Ore
@@ -230,7 +230,7 @@ local Tracked = {
 	
 	-- Skins
 	
-	-- Vanilla
+	-- Classic
 	[2934] = true,    -- Ruined Leather Scraps
 	[2318] = true,    -- Light Leather
 	[783] = true,     -- Light Hide
@@ -274,9 +274,21 @@ local Tracked = {
 	[110609] = true,   -- Raw Beast Hide
 	[110610] = true,   -- Raw Beast Hide Scraps
 	
+	-- Legion
+	[168649] = true,   -- Dredged Leather
+	[168650] = true,   -- Cragscale
+	
+	-- Battle for Azeroth
+	[152541] = true,   -- Coarse Leather
+	[153050] = true,   -- Shimmerscale
+	[154164] = true,   -- Blood-Stained Bone
+	[154722] = true,   -- Tempest Hide
+	[153051] = true,   -- Mistscale
+	[154165] = true,   -- Calcified Bone
+	
 	-- Fish
 	
-	-- Vanilla
+	-- Classic
 	[6291] = true,    -- Raw Brilliant Smallfish
 	[6299] = true,    -- Sickly Looking Fish
 	[6303] = true,    -- Raw Slitherskin Mackerel
@@ -431,7 +443,7 @@ local Tracked = {
 	
 	-- Cloth
 	
-	-- Vanilla
+	-- Classic
 	[2589] = true,     -- Linen Cloth
 	[2592] = true,     -- Wool Cloth
 	[4306] = true,     -- Silk Cloth
@@ -454,9 +466,14 @@ local Tracked = {
 	-- Legion
 	[124437] = true,   -- Shal'dorei Silk
 	
+	-- Battle for Azeroth
+	[152576] = true,   -- Tidespray Linen
+	[152577] = true,   -- Deep Sea Satin
+	[167738] = true,   -- Gilded Seaweave
+	
 	-- Archaeology
 	
-	-- Vanilla
+	-- Classic
 	[52843] = true,    -- Dwarf Rune Stone
 	[63127] = true,    -- Highborne Scroll
 	[63128] = true,    -- Troll Tablet
@@ -476,6 +493,77 @@ local Tracked = {
 	[79869] = true,    -- Mogu Statue Piece
 	[79868] = true,    -- Pandaren Pottery Shard
 	[95373] = true,    -- Mantid Amber Sliver
+	
+	-- Enchanting
+	
+	-- Classic
+	[10938] = true,    -- Lesser Magic Essence
+	[10939] = true,    -- Greater Magic Essence
+	[10940] = true,    -- Strange Dust
+	[10998] = true,    -- Lesser Astral Essence
+	[11082] = true,    -- Greater Astral Essence
+	[11083] = true,    -- Soul Dust
+	[11134] = true,    -- Lesser Mystic Essence
+	[11135] = true,    -- Greater Mystic Essence
+	[11137] = true,    -- Vision Dust
+	[11174] = true,    -- Lesser Nether Essence
+	[11175] = true,    -- Greater Nether Essence
+	[11176] = true,    -- Dream Dust
+	[11177] = true,    -- Small Radiant Shard
+	[11178] = true,    -- Large Radiant Shard
+	[14343] = true,    -- Small Brilliant Shard
+	[14344] = true,    -- Large Brilliant Shard
+	[16202] = true,    -- Lesser Eternal Essence
+	[16203] = true,    -- Greater Eternal Essence
+	[16204] = true,    -- Illusion Dust
+	
+	-- The Burning Crusade
+	[22445] = true,    -- Arcane Dust
+	[22447] = true,    -- Lesser Planar Essence
+	[22446] = true,    -- Greater Planar Essence
+	[22448] = true,    -- Small Prismatic Shard
+	[22449] = true,    -- Large Prismatic Shard
+	[22450] = true,    -- Void Crystal
+	
+	-- Wrath of the Lich King
+	[34053] = true,    -- Small Dream Shard
+	[34052] = true,    -- Dream Shard
+	[34054] = true,    -- Infinite Dust
+	[34055] = true,    -- Greater Cosmic Essence
+	[34056] = true,    -- Lesser Cosmic Essence
+	[34057] = true,    -- Abyss Crystal
+	
+	-- Cataclysm
+	[52555] = true,    -- Hypnotic Dust
+	[52718] = true,    -- Lesser Celestial Essence
+	[52719] = true,    -- Greater Celestial Essence
+	[52720] = true,    -- Small Heavenly Shard
+	[52721] = true,    -- Heavenly Shard
+	[52722] = true,    -- Maelstrom Crystal
+	
+	-- Mists of Pandaria
+	[74249] = true,    -- Spirit Dust
+	[74250] = true,    -- Mysterious Essence
+	[80433] = true,    -- Blood Spirit
+	[94289] = true,    -- Haunting Spirit
+	[102218] = true,   -- Spirit of War
+	[105718] = true,   -- Sha Crystal Fragment
+	[74248] = true,    -- Sha Crystal
+	
+	-- Warlords of Draenor
+	[162948] = true,   -- Enchanted Dust
+	[169091] = true,   -- Luminous Shard
+	[169092] = true,   -- Temporal Crystal
+	
+	-- Legion
+	[124440] = true,   -- Arkhana
+	[124441] = true,   -- Leylight Shard
+	[124442] = true,   -- Chaos Crystal
+	
+	-- Battle for Azeroth
+	[152875] = true,   -- Gloom Dust
+	[152876] = true,   -- Umbra Shard
+	[152877] = true,   -- Veiled Crystal
 	
 	-- Misc.
 	
