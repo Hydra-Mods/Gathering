@@ -354,6 +354,8 @@ local Tracked = {
 	[43652] = true,   -- Slippery Eel
 	[45909] = true,   -- Giant Darkwater Clam
 	[46109] = true,   -- Sea Turtle (Mount)
+	[34484] = true,   -- Old Ironjaw
+	[34486] = true,   -- Old Crafty
 	
 	-- Cataclysm
 	[35285] = true,   -- Giant Sunfish
