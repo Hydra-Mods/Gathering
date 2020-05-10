@@ -496,6 +496,15 @@ local Tracked = {
 	[79868] = true,    -- Pandaren Pottery Shard
 	[95373] = true,    -- Mantid Amber Sliver
 	
+	-- Legion
+	[130903] = true,   -- Ancient Suramar Scroll
+	[130904] = true,   -- Highmountain Ritual-Stone
+	[130905] = true,   -- Mark of the Deceiver
+	
+	-- Battle for Azeroth
+	[154989] = true,   -- Zandalari Idol
+	[154990] = true,   -- Etched Drust Bone
+	
 	-- Enchanting
 	
 	-- Classic
