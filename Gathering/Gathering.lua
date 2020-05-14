@@ -445,7 +445,7 @@ local Tracked = {
 	-- Darkmoon Island
 	[124669] = true,   -- Darkmoon Daggermaw
 	
-	-- Meat
+	-- Cooking
 	
 	-- Classic 
 	[769] = true,      -- Chunk of Boar Meat
@@ -462,6 +462,75 @@ local Tracked = {
 	[12207] = true,    -- Giant Egg
 	[12184] = true,    -- Raptor Flesh
 	[20424] = true,    -- Sandworm Meat
+	
+	-- The Burning Crusade
+	[27674] = true,    -- Ravager Flesh
+	[27678] = true,    -- Clefthoof Meat
+	[27681] = true,    -- Warped Flesh
+	[31670] = true,    -- Raptor Ribs
+	[31671] = true,    -- Serpent Flesh
+	[27681] = true,    -- Warped Flesh
+	
+	-- Wrath of the Lich King
+	[35948] = true,    -- Savory Snowplum ?
+	[35949] = true,    -- Tundra Berries ?
+	[43012] = true,    -- Rhino Meat
+	[43013] = true,    -- Chilled Meat
+	
+	-- Cataclysm
+	[62779] = true,    -- Monstrous Claw
+	[62780] = true,    -- Snake Eye
+	[62781] = true,    -- Giant Turtle Tongue
+	[62782] = true,    -- Dragon Flank
+	[62783] = true,    -- Basilisk "Liver"
+	[62784] = true,    -- Crocolisk Tail
+	
+	-- Mists of Pandaria
+	[74834] = true,    -- Mushan Ribs
+	[74838] = true,    -- Raw Crab Meat
+	[75014] = true,    -- Raw Crocolisk Belly
+	[74833] = true,    -- Raw Tiger Steak
+	[74837] = true,    -- Raw Turtle Meat
+	[74839] = true,    -- Wildfowl Breast
+	[74840] = true,    -- Green Cabbage
+	[74847] = true,    -- Jade Squash
+	[74841] = true,    -- Juicycrunch Carrot
+	[74842] = true,    -- Mogu Pumpkin
+	[74849] = true,    -- Pink Turnip
+	[74844] = true,    -- Red Blossom Leek
+	[74843] = true,    -- Scallions
+	[74848] = true,    -- Striped Melon
+	[74850] = true,    -- White Turnip
+	[74846] = true,    -- Witchberries
+	[102541] = true,   -- Aged Balsamic Vinegar
+	
+	-- Warlords of Draenor
+	[109131] = true,   -- Raw Clefthoof Meat
+	[109132] = true,   -- Raw Talbuk Meat
+	[109133] = true,   -- Rylak Egg
+	[109134] = true,   -- Raw Elekk Meat
+	[109135] = true,   -- Raw Riverbeast Meat
+	[109136] = true,   -- Raw Boar Meat
+	
+	-- Legion
+	[124121] = true,   -- Wildfowl Egg
+	[124120] = true,   -- Leyblood
+	[124119] = true,   -- Big Gamy Ribs
+	[124118] = true,   -- Fatty Bearsteak
+	[124117] = true,   -- Lean Shank
+	
+	-- Battle for Azeroth
+	[160399] = true,   -- Wild Flour
+	[160398] = true,   -- Choral Honey
+	[160712] = true,   -- Powdered Sugar
+	[160400] = true,   -- Foosaka
+	[160710] = true,   -- Wild Berries
+	[160709] = true,   -- Fresh Potato
+	[174353] = true,   -- Questionable Meat
+	[174328] = true,   -- Aberrant Voidfin
+	[174327] = true,   -- Malformed Gnasher
+	[168303] = true,   -- Rubbery Flank
+	[168645] = true,   -- Moist Fillet
 	
 	-- Cloth
 	

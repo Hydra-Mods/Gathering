@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Author: Hydra
-## Version: 1.13
+## Version: 1.14
 ## Title: Gathering
 ## Notes: Track gathered items.
 
