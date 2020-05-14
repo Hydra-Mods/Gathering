@@ -693,6 +693,13 @@ local Tracked = {
 	[45072] = true,    -- Brightly Colored Egg
 	
 	[174858] = true,   -- Gersahl Greens
+	
+	-- Primals
+	[21884] = true,   -- Primal Fire
+	[22457] = true,   -- Primal Mana
+	[21885] = true,   -- Primal Water
+	[22451] = true,   -- Primal Air
+	[22452] = true,   -- Primal Earth
 }
 
 --[[local TrackedItemTypes = {
