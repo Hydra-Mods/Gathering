@@ -457,6 +457,7 @@ local Tracked = {
 	[3712] = true,     -- Turtle Meat
 	[3731] = true,     -- Lion Meat
 	[5503] = true,     -- Clam Meat
+	[12037] = true,    -- Mystery Meat <3
 	[12205] = true,    -- White Spider Meat
 	[12207] = true,    -- Giant Egg
 	[12184] = true,    -- Raptor Flesh
