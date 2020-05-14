@@ -247,6 +247,7 @@ local Tracked = {
 	[23793] = true,    -- Heavy Knothide Leather
 	[25700] = true,    -- Fel Scales
 	[29539] = true,    -- Cobra Scales
+	[25707] = true,    -- Fel Hide
 	[25708] = true,    -- Thick Clefthoof Leather
 	
 	-- Wrath of the Lich King
@@ -275,6 +276,7 @@ local Tracked = {
 	[110610] = true,   -- Raw Beast Hide Scraps
 	
 	-- Legion
+	[124116] = true,   -- Felhide
 	[168649] = true,   -- Dredged Leather
 	[168650] = true,   -- Cragscale
 	
