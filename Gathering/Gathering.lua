@@ -445,6 +445,23 @@ local Tracked = {
 	-- Darkmoon Island
 	[124669] = true,   -- Darkmoon Daggermaw
 	
+	-- Meat
+	
+	-- Classic 
+	[769] = true,      -- Chunk of Boar Meat
+	[1015] = true,     -- Lean Wolf Flank
+	[2674] = true,     -- Crawler Meat
+	[2675] = true,     -- Crawler Claw
+	[3173] = true,     -- Bear Meat
+	[3685] = true,     -- Raptor Egg
+	[3712] = true,     -- Turtle Meat
+	[3731] = true,     -- Lion Meat
+	[5503] = true,     -- Clam Meat
+	[12205] = true,    -- White Spider Meat
+	[12207] = true,    -- Giant Egg
+	[12184] = true,    -- Raptor Flesh
+	[20424] = true,    -- Sandworm Meat
+	
 	-- Cloth
 	
 	-- Classic
