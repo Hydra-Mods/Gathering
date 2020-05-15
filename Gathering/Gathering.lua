@@ -531,6 +531,8 @@ local Tracked = {
 	[174327] = true,   -- Malformed Gnasher
 	[168303] = true,   -- Rubbery Flank
 	[168645] = true,   -- Moist Fillet
+	[152631] = true,   -- Briny Flesh
+	[154898] = true,   -- Meaty Haunch
 	
 	-- Cloth
 	
