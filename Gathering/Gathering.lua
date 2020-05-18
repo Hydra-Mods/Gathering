@@ -710,6 +710,15 @@ local Tracked = {
 	[21885] = true,   -- Primal Water
 	[22451] = true,   -- Primal Air
 	[22452] = true,   -- Primal Earth
+	
+	-- Crystallized
+	[37700] = true,   -- Crystallized Air
+	[37701] = true,   -- Crystallized Earth
+	[37702] = true,   -- Crystallized Fire
+	[37703] = true,   -- Crystallized Shadow
+	[37704] = true,   -- Crystallized Life
+	[37705] = true,   -- Crystallized Water
+	
 }
 
 --[[local TrackedItemTypes = {
