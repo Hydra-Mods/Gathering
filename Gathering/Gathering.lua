@@ -553,6 +553,9 @@ local Tracked = {
 	-- Cataclysm
 	[53010] = true,    -- Embersilk Cloth
 	
+	-- Warlords of Draenor
+	[111557] = true,   -- Sumptuous Fur
+	
 	-- Mists of Pandaria
 	[72988] = true,    -- Windwool Cloth
 	
