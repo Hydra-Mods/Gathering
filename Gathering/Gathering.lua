@@ -719,6 +719,12 @@ local Tracked = {
 	[37704] = true,   -- Crystallized Life
 	[37705] = true,   -- Crystallized Water
 	
+	-- Volatiles
+	[52325] = true,   -- Volatile Fire
+	[52326] = true,   -- Volatile Water
+	[52327] = true,   -- Volatile Earth
+	[52328] = true,   -- Volatile Air
+	[52329] = true,   -- Volatile Life
 }
 
 --[[local TrackedItemTypes = {
