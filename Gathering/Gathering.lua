@@ -70,7 +70,6 @@ local Tracked = {
 	[108340] = true,  -- Golden Sansam Leaf
 	[13465] = true,   -- Mountain Silversage
 	[108341] = true,  -- Mountain Silversage Stalk
-	[13466] = true,   -- Plaguebloom
 	[13467] = true,   -- Icecap
 	[108343] = true,  -- Icecap Cap
 	[13468] = true,   -- Black Lotus
