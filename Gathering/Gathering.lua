@@ -590,6 +590,11 @@ local Tracked = {
 	[79868] = true,    -- Pandaren Pottery Shard
 	[95373] = true,    -- Mantid Amber Sliver
 	
+	-- Warlords of Draenor
+	[108439] = true,   -- Draenor Clan Orator Cane
+	[109584] = true,   -- Ogre Missive
+	[109585] = true,   -- Arakkoa Cipher
+	
 	-- Legion
 	[130903] = true,   -- Ancient Suramar Scroll
 	[130904] = true,   -- Highmountain Ritual-Stone
