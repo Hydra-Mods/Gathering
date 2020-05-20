@@ -765,13 +765,14 @@ local SetFont = function(self)
 end
 
 -- Main frame
-local Frame = CreateFrame("Frame", nil, UIParent)
+local Frame = CreateFrame("Frame", "Gathering Header", UIParent)
 Frame:SetSize(140, 28)
 Frame:SetPoint("TOP", UIParent, "TOP", 0, -100)
 Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
 Frame:SetBackdropColor(0, 0, 0, 1)
 Frame:EnableMouse(true)
 Frame:SetMovable(true)
+Frame:SetUserPlaced(true)
 Frame:SetClampedToScreen(true)
 Frame:RegisterForDrag("LeftButton")
 Frame:SetScript("OnDragStart", Frame.StartMoving)
@@ -783,7 +784,7 @@ Frame.Text:SetJustifyH("CENTER")
 Frame.Text:SetFont(TooltipFont, 14)
 Frame.Text:SetText("Gathering")
 
-local Timer = CreateFrame("Frame", "GatheringTimer")
+local Timer = CreateFrame("Frame")
 
 local SecondsPerItem = {}
 local Seconds = 0
