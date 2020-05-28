@@ -674,10 +674,16 @@ local Tracked = {
 	[152876] = true,   -- Umbra Shard
 	[152877] = true,   -- Veiled Crystal
 	
-
-        -- Alchemy
-        [152638] = true, -- Flask of currents
-
+	-- Alchemy
+	[152638] = true,   -- Flask of the Currents
+	[168651] = true,   -- Greater Flask of the Currents
+	[152641] = true,   -- Flask of the Undertow
+	[168654] = true,   -- Greater Flask of the Undertow
+	[152639] = true,   -- Flask of Endless Fathoms
+	[168652] = true,   -- Greater Flask of Endless Fathoms
+	[152640] = true,   -- Flask of the Vast Horizon
+	[168653] = true,   -- Greater Flask of the Vast Horizon
+	
 	-- Misc.
 	
 	-- Eggs
