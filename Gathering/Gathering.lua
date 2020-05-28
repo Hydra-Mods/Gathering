@@ -674,6 +674,10 @@ local Tracked = {
 	[152876] = true,   -- Umbra Shard
 	[152877] = true,   -- Veiled Crystal
 	
+
+        -- Alchemy
+        [152638] = true, -- Flask of currents
+
 	-- Misc.
 	
 	-- Eggs
