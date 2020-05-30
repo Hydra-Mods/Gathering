@@ -683,6 +683,17 @@ local Tracked = {
 	[168652] = true,   -- Greater Flask of Endless Fathoms
 	[152640] = true,   -- Flask of the Vast Horizon
 	[168653] = true,   -- Greater Flask of the Vast Horizon
+	[168656] = true,   -- Greater Mystical Cauldron
+	[169451] = true,   -- Abyssal Healing Potion
+	[169299] = true,   -- Potion of Unbridled Fury
+	[169300] = true,   -- Potion of Wild Mending
+	[168529] = true,   -- Potion of Empowered Proximity
+	[168506] = true,   -- Potion of Focused Resolve
+	[168489] = true,   -- Superior Battle Potion of Agility
+	[168498] = true,   -- Superior Battle Potion of Intellect
+	[168500] = true,   -- Superior Battle Potion of Strength
+	[168499] = true,   -- Superior Battle Potion of Stamina
+	[168501] = true,   -- Superior Steelskin Potion
 	
 	-- Misc.
 	
@@ -743,7 +754,7 @@ local Tracked = {
 		[7] = true, -- Metal & Stone
 		[8] = true, -- Cooking
 		[9] = true, -- Herb
-		--[12] = true, -- Enchanting
+		[12] = true, -- Enchanting
 	},
 	
 	[15] = { -- LE_ITEM_CLASS_MISCELLANEOUS
