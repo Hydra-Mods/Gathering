@@ -7,13 +7,252 @@ local match = string.match
 local strsplit = strsplit
 local GetItemInfo = GetItemInfo
 local RarityColor = ITEM_QUALITY_COLORS
-local TotalGathered = 0
 local LootMessage = (LOOT_ITEM_SELF:gsub("%%.*", ""))
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
-local MouseIsOver = false
+local Font = "Interface\\Addons\\Gathering\\PTSans.ttf"
 
--- DB of items to track
-local Tracked = {
+-- Header
+local Gathering = CreateFrame("Frame", "Gathering Header", UIParent)
+Gathering:SetSize(140, 28)
+Gathering:SetPoint("TOP", UIParent, 0, -100)
+Gathering:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
+Gathering:SetBackdropColor(0, 0, 0, 1)
+Gathering:EnableMouse(true)
+Gathering:SetMovable(true)
+Gathering:SetUserPlaced(true)
+Gathering:SetClampedToScreen(true)
+Gathering:RegisterForDrag("LeftButton")
+Gathering:SetScript("OnDragStart", Gathering.StartMoving)
+Gathering:SetScript("OnDragStop", Gathering.StopMovingOrSizing)
+
+-- Tett
+Gathering.Text = Gathering:CreateFontString(nil, "OVERLAY")
+Gathering.Text:SetPoint("CENTER", Gathering, 0, 0)
+Gathering.Text:SetJustifyH("CENTER")
+Gathering.Text:SetFont(Font, 14)
+Gathering.Text:SetText("Gathering")
+
+-- Tooltip
+Gathering.Tooltip = CreateFrame("GameTooltip", "GatheringTooltip", UIParent, "GameTooltipTemplate")
+
+-- Data
+Gathering.Gathered = {}
+Gathering.TotalGathered = 0
+Gathering.NumTypes = 0
+Gathering.Elapsed = 0
+Gathering.Seconds = 0
+Gathering.SecondsPerItem = {}
+
+-- Tools
+function Gathering:UpdateFont()
+	for i = 1, self.Tooltip:GetNumRegions() do
+		local Region = select(i, self.Tooltip:GetRegions())
+		
+		if (Region:GetObjectType() == "FontString" and not Region.Handled) then
+			Region:SetFont(Font, 12)
+			Region:SetShadowColor(0, 0, 0)
+			Region:SetShadowOffset(1.25, -1.25)
+			Region.Handled = true
+		end
+	end
+end
+
+function Gathering:OnUpdate(ela)
+	self.Elapsed = self.Elapsed + ela
+	
+	if (self.Elapsed >= 1) then
+		self.Seconds = self.Seconds + 1
+		
+		for key in pairs(self.SecondsPerItem) do
+			self.SecondsPerItem[key] = self.SecondsPerItem[key] + 1
+		end
+		
+		self.Text:SetText(date("!%X", self.Seconds))
+		
+		if self.MouseIsOver then
+			self:OnLeave()
+			self:OnEnter()
+		end
+		
+		self.Elapsed = 0
+	end
+end
+
+function Gathering:StartTimer()
+	if (not strfind(self.Text:GetText(), "%d")) then
+		self.Text:SetText("0:00:00")
+	end
+	
+	self:SetScript("OnUpdate", self.OnUpdate)
+	self.Text:SetTextColor(0.1, 0.9, 0.1)
+end
+
+function Gathering:PauseTimer()
+	self:SetScript("OnUpdate", nil)
+	self.Text:SetTextColor(0.9, 0.9, 0.1)
+end
+
+function Gathering:ToggleTimer()
+	if (not self:GetScript("OnUpdate")) then
+		self:StartTimer()
+	else
+		self:PauseTimer()
+	end
+end
+
+function Gathering:Reset()
+	self:SetScript("OnUpdate", nil)
+	
+	wipe(self.Gathered)
+	
+	self.NumTypes = 0
+	self.TotalGathered = 0
+	self.Seconds = 0
+	self.Elapsed = 0
+	
+	for key in pairs(self.SecondsPerItem) do
+		self.SecondsPerItem[key] = 0
+	end
+	
+	self.Text:SetTextColor(1, 1, 1)
+	self.Text:SetText(date("!%X", self.Seconds))
+end
+
+function Gathering:OnEvent(event, msg)
+	if (not msg) then
+		return
+	end
+	
+	if (InboxFrame:IsVisible() or (GuildBankFrame and GuildBankFrame:IsVisible())) then -- Ignore useless info
+		return
+	end
+	
+	local PreMessage, _, ItemString, Name, Quantity = match(msg, LootMatch)
+	local LinkType, ID = strsplit(":", ItemString)
+	
+	if (PreMessage ~= LootMessage) then
+		return
+	end
+	
+	ID = tonumber(ID)
+	Quantity = tonumber(Quantity) or 1
+	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
+	
+	-- Check that we want to track the type of item
+	--if (TrackedItemTypes[ClassID] and not TrackedItemTypes[ClassID][SubClassID]) then
+	if (not self.Tracked[ID]) then
+		return
+	end
+	
+	if (not self.Gathered[SubType]) then
+		self.Gathered[SubType] = {}
+		self.NumTypes = self.NumTypes + 1
+	end
+	
+	if (not self.Gathered[SubType][Name]) then
+		self.Gathered[SubType][Name] = 0
+	end
+	
+	if (not self.SecondsPerItem[Name]) then
+		self.SecondsPerItem[Name] = 0
+	end
+	
+	self.Gathered[SubType][Name] = self.Gathered[SubType][Name] + Quantity
+	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
+	
+	if (not self:GetScript("OnUpdate")) then
+		self:StartTimer()
+	end
+	
+	if self.MouseIsOver then
+		self:OnLeave()
+		self:OnEnter()
+	end
+end
+
+function Gathering:OnEnter()
+	if (self.TotalGathered == 0) then
+		return
+	end
+	
+	self.MouseIsOver = true
+	
+	local Count = 0
+	
+	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
+	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+	self.Tooltip:ClearLines()
+	
+	self.Tooltip:AddLine("Gathering")
+	self.Tooltip:AddLine(" ")
+	
+	for SubType, Info in pairs(self.Gathered) do
+		self.Tooltip:AddLine(SubType, 1, 1, 0)
+		Count = Count + 1
+		
+		for Name, Value in pairs(Info) do
+			local Rarity = select(3, GetItemInfo(Name))
+			local Hex = "|cffFFFFFF"
+			
+			if Rarity then
+				Hex = RarityColor[Rarity].hex
+			end
+			
+			if self.SecondsPerItem[Name] then
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, format("%.0f", (((Value / self.SecondsPerItem[Name]) * 60) * 60))), 1, 1, 1, 1, 1, 1)
+			else
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), Value, 1, 1, 1, 1, 1, 1)
+			end
+		end
+		
+		if (Count ~= self.NumTypes) then
+			self.Tooltip:AddLine(" ")
+		end
+	end
+	
+	self.Tooltip:AddLine(" ")
+	self.Tooltip:AddDoubleLine("Total Gathered:", format("%s", self.TotalGathered))
+	self.Tooltip:AddDoubleLine("Total Average Per Hour:", format("%.0f", (((self.TotalGathered / self.Seconds) * 60) * 60)))
+	self.Tooltip:AddLine(" ")
+	self.Tooltip:AddLine("Left click: Toggle timer")
+	self.Tooltip:AddLine("Right click: Reset data")
+	
+	self:UpdateFont()
+	
+	self.Tooltip:Show()
+end
+
+function Gathering:OnLeave()
+	if self.Tooltip.Override then
+		return
+	end
+	
+	self.MouseIsOver = false
+	
+	self.Tooltip:Hide()
+end
+
+function Gathering:OnMouseUp(button)
+	if (button == "LeftButton") then
+		self:ToggleTimer()
+	elseif (button == "RightButton") then
+		self:Reset()
+	elseif (button == "MiddleButton") then
+		if (self.Tooltip.Override == true) then
+			self.Tooltip.Override = false
+		else
+			self.Tooltip.Override = true
+		end
+	end
+end
+
+Gathering:RegisterEvent("CHAT_MSG_LOOT")
+Gathering:SetScript("OnEvent", Gathering.OnEvent)
+Gathering:SetScript("OnEnter", Gathering.OnEnter)
+Gathering:SetScript("OnLeave", Gathering.OnLeave)
+Gathering:SetScript("OnMouseUp", Gathering.OnMouseUp)
+
+Gathering.Tracked = {
 	-- Herbs
 	
 	-- Classic
@@ -763,255 +1002,3 @@ local Tracked = {
 		[5] = true, -- Mount
 	},
 }]]
-
--- Keep track of what we've gathered, how many nodes, and what quantity.
-local Gathered = {}
-local NumTypes = 0
-
--- Tooltip
-local Tooltip = CreateFrame("GameTooltip", "GatheringTooltip", UIParent, "GameTooltipTemplate")
-local TooltipFont = "Interface\\Addons\\Gathering\\PTSans.ttf"
-
-local SetFont = function(self)
-	for i = 1, self:GetNumRegions() do
-		local Region = select(i, self:GetRegions())
-		
-		if (Region:GetObjectType() == "FontString" and not Region.Handled) then
-			Region:SetFont(TooltipFont, 12)
-			Region:SetShadowColor(0, 0, 0)
-			Region:SetShadowOffset(1.25, -1.25)
-			Region.Handled = true
-		end
-	end
-end
-
--- Main frame
-local Frame = CreateFrame("Frame", "Gathering Header", UIParent)
-Frame:SetSize(140, 28)
-Frame:SetPoint("TOP", UIParent, "TOP", 0, -100)
-Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
-Frame:SetBackdropColor(0, 0, 0, 1)
-Frame:EnableMouse(true)
-Frame:SetMovable(true)
-Frame:SetUserPlaced(true)
-Frame:SetClampedToScreen(true)
-Frame:RegisterForDrag("LeftButton")
-Frame:SetScript("OnDragStart", Frame.StartMoving)
-Frame:SetScript("OnDragStop", Frame.StopMovingOrSizing)
-
-Frame.Text = Frame:CreateFontString(nil, "OVERLAY")
-Frame.Text:SetPoint("CENTER", Frame, "CENTER", 0, 0)
-Frame.Text:SetJustifyH("CENTER")
-Frame.Text:SetFont(TooltipFont, 14)
-Frame.Text:SetText("Gathering")
-
-local Timer = CreateFrame("Frame")
-
-local SecondsPerItem = {}
-local Seconds = 0
-local Elapsed = 0
-
-local ClearStats = function()
-	wipe(Gathered)
-	NumTypes = 0
-	TotalGathered = 0
-	
-	for key in pairs(SecondsPerItem) do
-		SecondsPerItem[key] = 0
-	end
-end
-
-local OnEnter = function(self)
-	if (TotalGathered == 0) then
-		return
-	end
-	
-	MouseIsOver = true
-	
-	local Count = 0
-	
-	Tooltip:SetOwner(self, "ANCHOR_NONE")
-	Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
-	Tooltip:ClearLines()
-	
-	Tooltip:AddLine("Gathering")
-	Tooltip:AddLine(" ")
-	
-	for SubType, Info in pairs(Gathered) do
-		Tooltip:AddLine(SubType, 1, 1, 0)
-		Count = Count + 1
-		
-		for Name, Value in pairs(Info) do
-			local Rarity = select(3, GetItemInfo(Name))
-			local Hex = "|cffFFFFFF"
-			
-			if Rarity then
-				Hex = RarityColor[Rarity].hex
-			end
-			
-			if SecondsPerItem[Name] then
-				local PerHour = (((Value / SecondsPerItem[Name]) * 60) * 60)
-				
-				Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, format("%.0f", PerHour)), 1, 1, 1, 1, 1, 1)
-			else
-				Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), Value, 1, 1, 1, 1, 1, 1)
-			end
-		end
-		
-		if (Count ~= NumTypes) then
-			Tooltip:AddLine(" ")
-		end
-	end
-	
-	local PerHour = (((TotalGathered / Seconds) * 60) * 60)
-	
-	Tooltip:AddLine(" ")
-	Tooltip:AddDoubleLine("Total Gathered:", format("%s", TotalGathered))
-	Tooltip:AddDoubleLine("Total Average Per Hour:", format("%.0f", PerHour))
-	Tooltip:AddLine(" ")
-	Tooltip:AddLine("Left click: Toggle timer")
-	Tooltip:AddLine("Right click: Reset data")
-	
-	SetFont(Tooltip)
-	
-	Tooltip:Show()
-end
-
-local OnLeave = function()
-	if Tooltip.Forced then
-		return
-	end
-	
-	MouseIsOver = false
-	
-	Tooltip:Hide()
-end
-
-local TimerUpdate = function(self, ela)
-	Elapsed = Elapsed + ela
-	
-	if (Elapsed >= 1) then
-		Seconds = Seconds + 1
-		
-		for key in pairs(SecondsPerItem) do
-			SecondsPerItem[key] = SecondsPerItem[key] + 1
-		end
-		
-		Frame.Text:SetText(date("!%X", Seconds))
-		
-		-- TT update
-		if MouseIsOver then
-			OnLeave()
-			OnEnter(Frame)
-		end
-		
-		Elapsed = 0
-	end
-end
-
-local Start = function()
-	if (not strfind(Frame.Text:GetText(), "%d:%d%d:%d%d")) then
-		Frame.Text:SetText("0:00:00")
-	end
-	
-	Timer:SetScript("OnUpdate", TimerUpdate)
-	Frame.Text:SetTextColor(0, 1, 0)
-end
-
-local Stop = function()
-	Timer:SetScript("OnUpdate", nil)
-	Frame.Text:SetTextColor(1, 0, 0)
-end
-
-local Toggle = function()
-	if (not Timer:GetScript("OnUpdate")) then
-		Start()
-	else
-		Stop()
-	end
-end
-
-local Reset = function()
-	Timer:SetScript("OnUpdate", nil)
-
-	ClearStats()
-	
-	Seconds = 0
-	Elapsed = 0
-	
-	Frame.Text:SetTextColor(1, 1, 1)
-	Frame.Text:SetText(date("!%X", Seconds))
-end
-
-local Update = function(self, event, msg)
-	if (not msg) then
-		return
-	end
-	
-	if (InboxFrame:IsVisible() or (GuildBankFrame and GuildBankFrame:IsVisible())) then -- Ignore useless info
-		return
-	end
-	
-	local PreMessage, _, ItemString, Name, Quantity = match(msg, LootMatch)
-	local LinkType, ID = strsplit(":", ItemString)
-	
-	if (PreMessage ~= LootMessage) then
-		return
-	end
-	
-	ID = tonumber(ID)
-	Quantity = tonumber(Quantity) or 1
-	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
-	
-	-- Check that we want to track the type of item
-	--if (TrackedItemTypes[ClassID] and not TrackedItemTypes[ClassID][SubClassID]) then
-	if (not Tracked[ID]) then
-		return
-	end
-	
-	if (not Gathered[SubType]) then
-		Gathered[SubType] = {}
-		NumTypes = NumTypes + 1
-	end
-	
-	if (not Gathered[SubType][Name]) then
-		Gathered[SubType][Name] = 0
-	end
-	
-	if (not SecondsPerItem[Name]) then
-		SecondsPerItem[Name] = 0
-	end
-	
-	Gathered[SubType][Name] = Gathered[SubType][Name] + Quantity
-	TotalGathered = TotalGathered + Quantity -- For Gathered/Hour stat
-	
-	if (not Timer:GetScript("OnUpdate")) then
-		Start()
-	end
-	
-	-- TT update
-	if MouseIsOver then
-		OnLeave()
-		OnEnter(self)
-	end
-end
-
-local OnMouseUp = function(self, button)
-	if (button == "LeftButton") then
-		Toggle()
-	elseif (button == "RightButton") then
-		Reset()
-	elseif (button == "MiddleButton") then
-		if (Tooltip.Forced == true) then
-			Tooltip.Forced = false
-		else
-			Tooltip.Forced = true
-		end
-	end
-end
-
-Frame:RegisterEvent("CHAT_MSG_LOOT")
-Frame:SetScript("OnEvent", Update)
-Frame:SetScript("OnEnter", OnEnter)
-Frame:SetScript("OnLeave", OnLeave)
-Frame:SetScript("OnMouseUp", OnMouseUp)
