@@ -1,6 +1,7 @@
 local date = date
 local pairs = pairs
 local select = select
+local max = math.max
 local floor = floor
 local format = format
 local tonumber = tonumber
@@ -37,7 +38,7 @@ Gathering.Text:SetFont(Font, 14)
 Gathering.Text:SetText("Gathering")
 
 -- Tooltip
-Gathering.Tooltip = CreateFrame("GameTooltip", "GatheringTooltip", UIParent, "GameTooltipTemplate")
+Gathering.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
 
 -- Data
 Gathering.Gathered = {}
@@ -183,14 +184,29 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 		GatheringMarketPrices = {}
 	end
 	
-	local Name, Texture, Count, Quality, Usable, Level, LevelType, MinBid, MinIncrement, Buyout, Bid, Highbidder, BidderName, Owner, OwnerName, Status, ID, HasAllInfo
+	local Name, Count, Buyout, ID, HasAllInfo, PerUnit, _
 	
 	for i = 0, (GetNumReplicateItems() - 1) do
-		Name, Texture, Count, Quality, Usable, Level, LevelType, MinBid, MinIncrement, Buyout, Bid, Highbidder, BidderName, Owner, OwnerName, Status, ID, HasAllInfo = GetReplicateItemInfo(i)
+		Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
 		
-		if (ID and self.Tracked[ID]) then
+		if (HasAllInfo and self.Tracked[ID]) then
 			self.MarketPrices[Name] = Buyout / Count
-			GatheringMarketPrices[Name] = Buyout / Count
+			GatheringMarketPrices[Name] = self.MarketPrices[Name]
+		elseif (ID and self.Tracked[ID]) then
+			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
+				Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
+				PerUnit = Buyout / Count
+				
+				if self.MarketPrices[Name] then
+					if (self.MarketPrices[Name] > PerUnit) then -- Collect lowest prices
+						self.MarketPrices[Name] = PerUnit
+						GatheringMarketPrices[Name] = self.MarketPrices[Name]
+					end
+				else
+					self.MarketPrices[Name] = PerUnit
+					GatheringMarketPrices[Name] = self.MarketPrices[Name]
+				end
+			end)
 		end
 	end
 	
@@ -211,6 +227,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 end
 
 function Gathering:AUCTION_HOUSE_SHOW()
+	if self:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
+		return
+	end
+	
 	self:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 	
 	ReplicateItems()
@@ -221,8 +241,6 @@ function Gathering:OnEvent(event, ...)
 		self[event](self, ...)
 	end
 end
-
-local max = math.max
 
 function Gathering:OnEnter()
 	if (self.TotalGathered == 0) then
