@@ -116,6 +116,10 @@ function Gathering:Reset()
 	
 	self.Text:SetTextColor(1, 1, 1)
 	self.Text:SetText(date("!%X", self.Seconds))
+	
+	if self.MouseIsOver then
+		self:OnLeave()
+	end
 end
 
 function Gathering:OnEvent(event, msg)
