@@ -1,11 +1,15 @@
-local format = format
 local date = date
 local pairs = pairs
 local select = select
+local floor = floor
+local format = format
 local tonumber = tonumber
 local match = string.match
-local strsplit = strsplit
 local GetItemInfo = GetItemInfo
+local BreakUpLargeNumbers = BreakUpLargeNumbers
+local ReplicateItems = C_AuctionHouse.ReplicateItems
+local GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
+local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 local RarityColor = ITEM_QUALITY_COLORS
 local LootMessage = (LOOT_ITEM_SELF:gsub("%%.*", ""))
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
@@ -43,7 +47,6 @@ Gathering.Elapsed = 0
 Gathering.Seconds = 0
 Gathering.SecondsPerItem = {}
 
--- Tools
 function Gathering:UpdateFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
@@ -55,6 +58,10 @@ function Gathering:UpdateFont()
 			Region.Handled = true
 		end
 	end
+end
+
+function Gathering:CopperToGold(copper)
+	return format("%s|cfff4d03fg|r", BreakUpLargeNumbers(floor((copper / 100) / 100 + 0.5)))
 end
 
 function Gathering:OnUpdate(ela)
@@ -104,15 +111,12 @@ function Gathering:Reset()
 	self:SetScript("OnUpdate", nil)
 	
 	wipe(self.Gathered)
+	wipe(self.SecondsPerItem)
 	
 	self.NumTypes = 0
 	self.TotalGathered = 0
 	self.Seconds = 0
 	self.Elapsed = 0
-	
-	for key in pairs(self.SecondsPerItem) do
-		self.SecondsPerItem[key] = 0
-	end
 	
 	self.Text:SetTextColor(1, 1, 1)
 	self.Text:SetText(date("!%X", self.Seconds))
@@ -122,7 +126,7 @@ function Gathering:Reset()
 	end
 end
 
-function Gathering:OnEvent(event, msg)
+function Gathering:CHAT_MSG_LOOT(msg)
 	if (not msg) then
 		return
 	end
@@ -132,7 +136,7 @@ function Gathering:OnEvent(event, msg)
 	end
 	
 	local PreMessage, _, ItemString, Name, Quantity = match(msg, LootMatch)
-	local LinkType, ID = strsplit(":", ItemString)
+	local LinkType, ID = match(ItemString, "^(%a+):(%d+)")
 	
 	if (PreMessage ~= LootMessage) then
 		return
@@ -174,6 +178,52 @@ function Gathering:OnEvent(event, msg)
 	end
 end
 
+function Gathering:REPLICATE_ITEM_LIST_UPDATE()
+	if (not GatheringMarketPrices) then
+		GatheringMarketPrices = {}
+	end
+	
+	local Name, Texture, Count, Quality, Usable, Level, LevelType, MinBid, MinIncrement, Buyout, Bid, Highbidder, BidderName, Owner, OwnerName, Status, ID, HasAllInfo
+	
+	for i = 0, (GetNumReplicateItems() - 1) do
+		Name, Texture, Count, Quality, Usable, Level, LevelType, MinBid, MinIncrement, Buyout, Bid, Highbidder, BidderName, Owner, OwnerName, Status, ID, HasAllInfo = GetReplicateItemInfo(i)
+		
+		if (ID and self.Tracked[ID]) then
+			self.MarketPrices[Name] = Buyout / Count
+			GatheringMarketPrices[Name] = Buyout / Count
+		end
+	end
+	
+	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+end
+
+function Gathering:MODIFIER_STATE_CHANGED()
+	if self.MouseIsOver then
+		self.Tooltip:ClearLines()
+		self:OnEnter()
+	end
+end
+
+function Gathering:PLAYER_ENTERING_WORLD()
+	self.MarketPrices = GatheringMarketPrices or {}
+	
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function Gathering:AUCTION_HOUSE_SHOW()
+	self:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+	
+	ReplicateItems()
+end
+
+function Gathering:OnEvent(event, ...)
+	if self[event] then
+		self[event](self, ...)
+	end
+end
+
+local max = math.max
+
 function Gathering:OnEnter()
 	if (self.TotalGathered == 0) then
 		return
@@ -182,6 +232,7 @@ function Gathering:OnEnter()
 	self.MouseIsOver = true
 	
 	local Count = 0
+	local MarketTotal = 0
 	
 	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
 	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
@@ -202,10 +253,14 @@ function Gathering:OnEnter()
 				Hex = RarityColor[Rarity].hex
 			end
 			
-			if self.SecondsPerItem[Name] then
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, format("%.0f", (((Value / self.SecondsPerItem[Name]) * 60) * 60))), 1, 1, 1, 1, 1, 1)
+			if self.MarketPrices[Name] then
+				MarketTotal = MarketTotal + (self.MarketPrices[Name] * Value)
+			end
+			
+			if (IsShiftKeyDown() and self.MarketPrices[Name]) then
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, self:CopperToGold((self.MarketPrices[Name] * Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60)), 1, 1, 1, 1, 1, 1)
 			else
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), Value, 1, 1, 1, 1, 1, 1)
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, floor((Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60)), 1, 1, 1, 1, 1, 1)
 			end
 		end
 		
@@ -215,13 +270,25 @@ function Gathering:OnEnter()
 	end
 	
 	self.Tooltip:AddLine(" ")
-	self.Tooltip:AddDoubleLine("Total Gathered:", format("%s", self.TotalGathered))
-	self.Tooltip:AddDoubleLine("Total Average Per Hour:", format("%.0f", (((self.TotalGathered / self.Seconds) * 60) * 60)))
+	self.Tooltip:AddDoubleLine("Total Gathered:", self.TotalGathered, nil, nil, nil, 1, 1, 1)
+	
+	if IsShiftKeyDown() then
+		self.Tooltip:AddDoubleLine("Total Average Per Hour:", self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
+	else
+		self.Tooltip:AddDoubleLine("Total Average Per Hour:", BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
+	end
+	
+	if (MarketTotal > 0) then
+		self.Tooltip:AddDoubleLine("Total Value:", self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
+	end
+	
 	self.Tooltip:AddLine(" ")
 	self.Tooltip:AddLine("Left click: Toggle timer")
 	self.Tooltip:AddLine("Right click: Reset data")
 	
 	self:UpdateFont()
+	
+	self:RegisterEvent("MODIFIER_STATE_CHANGED")
 	
 	self.Tooltip:Show()
 end
@@ -232,6 +299,8 @@ function Gathering:OnLeave()
 	end
 	
 	self.MouseIsOver = false
+	
+	self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 	
 	self.Tooltip:Hide()
 end
@@ -251,6 +320,8 @@ function Gathering:OnMouseUp(button)
 end
 
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
+Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
+Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
