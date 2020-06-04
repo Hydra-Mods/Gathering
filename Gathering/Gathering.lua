@@ -139,7 +139,7 @@ function Gathering:OnEvent(event, msg)
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
 	
 	-- Check that we want to track the type of item
-	--if (TrackedItemTypes[ClassID] and not TrackedItemTypes[ClassID][SubClassID]) then
+	--if (self.TrackedItemTypes[ClassID] and not self.TrackedItemTypes[ClassID][SubClassID]) then
 	if (not self.Tracked[ID]) then
 		return
 	end
@@ -986,7 +986,7 @@ Gathering.Tracked = {
 	[52329] = true,   -- Volatile Life
 }
 
---[[local TrackedItemTypes = {
+--[[Gathering.TrackedItemTypes = {
 	[7] = { -- LE_ITEM_CLASS_TRADEGOODS
 		[5] = true, -- Cloth
 		[6] = true, -- Leather
