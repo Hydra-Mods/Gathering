@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Author: Hydra
-## Version: 1.18
+## Version: 1.19
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringMarketPrices
