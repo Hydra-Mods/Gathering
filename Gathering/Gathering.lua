@@ -252,7 +252,7 @@ function Gathering:OnScanButtonOnMouseUp()
 	
 	ReplicateItems()
 	
-	print("Gathering is scanning market prices. This will take ~10 seconds.")
+	print("Gathering is scanning market prices. This should take less than 10 seconds.")
 	
 	GatheringLastScan = GetTime()
 end
