@@ -263,7 +263,7 @@ function Gathering:AUCTION_HOUSE_SHOW()
 		self.ScanButton:SetSize(140, 24)
 		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
 		self.ScanButton:SetText("Gathering Scan")
-		self.ScanButton:SetScript("OnMouseUp", self.OnScanButtonOnMouseUp)
+		self.ScanButton:SetScript("OnClick", self.OnScanButtonOnMouseUp)
 	end
 end
 
