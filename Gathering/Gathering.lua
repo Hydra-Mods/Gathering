@@ -211,6 +211,8 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 	end
 	
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+	
+	print("Gathering updated market prices.")
 end
 
 function Gathering:MODIFIER_STATE_CHANGED()
@@ -226,14 +228,43 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function Gathering:AUCTION_HOUSE_SHOW()
-	if self:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
+function Gathering:FormatTime(seconds)
+	if (seconds > 59) then
+		return format("%dm", ceil(seconds / 60))
+	else
+		return format("%0.1fs", seconds)
+	end
+end
+
+function Gathering:OnScanButtonOnMouseUp()
+	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
+	
+	if (1200 > TimeDiff) then -- 20 minute throttle
+		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(1200 - TimeDiff)))
 		return
 	end
 	
-	self:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
+		return
+	end
+	
+	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 	
 	ReplicateItems()
+	
+	print("Gathering is scanning market prices. This will take ~10 seconds.")
+	
+	GatheringLastScan = GetTime()
+end
+
+function Gathering:AUCTION_HOUSE_SHOW()
+	if (not self.ScanButton) then
+		self.ScanButton = CreateFrame("Button", "Gathering Scan Button", AuctionHouseFrame.MoneyFrameBorder, "UIPanelButtonTemplate")
+		self.ScanButton:SetSize(140, 24)
+		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
+		self.ScanButton:SetText("Gathering Scan")
+		self.ScanButton:SetScript("OnMouseUp", self.OnScanButtonOnMouseUp)
+	end
 end
 
 function Gathering:OnEvent(event, ...)
