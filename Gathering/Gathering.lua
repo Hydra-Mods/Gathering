@@ -245,7 +245,11 @@ function Gathering:OnScanButtonOnMouseUp()
 	end
 	
 	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
-		return
+		if (TimeDiff > 1200) then
+			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+		else
+			return
+		end
 	end
 	
 	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
