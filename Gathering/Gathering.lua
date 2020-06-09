@@ -30,7 +30,7 @@ Gathering:RegisterForDrag("LeftButton")
 Gathering:SetScript("OnDragStart", Gathering.StartMoving)
 Gathering:SetScript("OnDragStop", Gathering.StopMovingOrSizing)
 
--- Tett
+-- Text
 Gathering.Text = Gathering:CreateFontString(nil, "OVERLAY")
 Gathering.Text:SetPoint("CENTER", Gathering, 0, 0)
 Gathering.Text:SetJustifyH("CENTER")
@@ -212,7 +212,7 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 	
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 	
-	print("Gathering updated market prices.")
+	print("|cff00CC6AGathering|r updated market prices.")
 end
 
 function Gathering:MODIFIER_STATE_CHANGED()
@@ -256,7 +256,7 @@ function Gathering:OnScanButtonOnMouseUp()
 	
 	ReplicateItems()
 	
-	print("Gathering is scanning market prices. This should take less than 10 seconds.")
+	print("|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds.")
 	
 	GatheringLastScan = GetTime()
 end
