@@ -239,13 +239,13 @@ end
 function Gathering:ScanButtonOnClick()
 	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
 	
-	if (TimeDiff > 0) and (1200 > TimeDiff) then -- 20 minute throttle
-		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(1200 - TimeDiff)))
+	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
+		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(900 - TimeDiff)))
 		return
 	end
 	
 	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
-		if (TimeDiff > 1200) then
+		if (TimeDiff > 900) then
 			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 		else
 			return
