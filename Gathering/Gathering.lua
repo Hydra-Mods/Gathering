@@ -236,10 +236,10 @@ function Gathering:FormatTime(seconds)
 	end
 end
 
-function Gathering:OnScanButtonOnMouseUp()
+function Gathering:ScanButtonOnClick()
 	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
 	
-	if (1200 > TimeDiff) then -- 20 minute throttle
+	if (TimeDiff > 0) and (1200 > TimeDiff) then -- 20 minute throttle
 		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(1200 - TimeDiff)))
 		return
 	end
@@ -267,7 +267,7 @@ function Gathering:AUCTION_HOUSE_SHOW()
 		self.ScanButton:SetSize(140, 24)
 		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
 		self.ScanButton:SetText("Gathering Scan")
-		self.ScanButton:SetScript("OnClick", self.OnScanButtonOnMouseUp)
+		self.ScanButton:SetScript("OnClick", self.ScanButtonOnClick)
 	end
 end
 
