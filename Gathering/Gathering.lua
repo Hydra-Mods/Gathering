@@ -899,6 +899,7 @@ Gathering.Tracked = {
 	[168645] = true,   -- Moist Fillet
 	[152631] = true,   -- Briny Flesh
 	[154898] = true,   -- Meaty Haunch
+	[154899] = true,   -- Thick Paleo Steak
 	
 	-- Cloth
 	
