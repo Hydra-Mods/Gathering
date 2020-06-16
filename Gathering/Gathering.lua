@@ -14,7 +14,16 @@ local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 local RarityColor = ITEM_QUALITY_COLORS
 local LootMessage = (LOOT_ITEM_SELF:gsub("%%.*", ""))
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
+local BlankTexture = "Interface\\AddOns\\Gathering\\vUIBlank.tga"
+local BarTexture = "Interface\\AddOns\\Gathering\\vUI4.tga"
 local Font = "Interface\\Addons\\Gathering\\PTSans.ttf"
+
+local Outline = {
+	bgFile = BlankTexture,
+	edgeFile = BlankTexture,
+	edgeSize = 1,
+	insets = {top = 0, left = 0, bottom = 0, right = 0},
+}
 
 -- Header
 local Gathering = CreateFrame("Frame", "Gathering Header", UIParent)
@@ -47,6 +56,20 @@ Gathering.NumTypes = 0
 Gathering.Elapsed = 0
 Gathering.Seconds = 0
 Gathering.SecondsPerItem = {}
+
+Gathering.DefaultSettings = {
+	["track-ore"] = true,
+	["track-herbs"] = true,
+	["track-leather"] = true,
+	["track-fish"] = true,
+	["track-meat"] = true,
+	["track-cloth"] = true,
+	["track-enchanting"] = true,
+	["track-alchemy"] = true,
+	["track-primals"] = true,
+	["track-misc"] = true,
+	["track-custom"] = true,
+}
 
 function Gathering:UpdateFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
@@ -125,6 +148,251 @@ function Gathering:Reset()
 	if self.MouseIsOver then
 		self:OnLeave()
 	end
+end
+
+function Gathering:FormatTime(seconds)
+	if (seconds > 59) then
+		return format("%dm", ceil(seconds / 60))
+	else
+		return format("%0.1fs", seconds)
+	end
+end
+
+function Gathering:CreateHeader(text) -- GENERAL
+	-- Main header
+	local Header = CreateFrame("Frame", nil, self.GUI.ButtonParent)
+	Header:SetSize(188, 20)
+	
+	Header.BG = Header:CreateTexture(nil, "BORDER")
+	Header.BG:SetTexture(BlankTexture)
+	Header.BG:SetVertexColor(0, 0, 0)
+	Header.BG:SetPoint("TOPLEFT", Header, 0, 0)
+	Header.BG:SetPoint("BOTTOMRIGHT", Header, 0, 0)
+	
+	Header.Tex = Header:CreateTexture(nil, "OVERLAY")
+	Header.Tex:SetTexture(BarTexture)
+	Header.Tex:SetPoint("TOPLEFT", Header, 1, -1)
+	Header.Tex:SetPoint("BOTTOMRIGHT", Header, -1, 1)
+	Header.Tex:SetVertexColor(0.25, 0.25, 0.25)
+	
+	Header.Text = Header:CreateFontString(nil, "OVERLAY")
+	Header.Text:SetFont(Font, 12)
+	Header.Text:SetPoint("LEFT", Header, 3, 0)
+	Header.Text:SetJustifyH("LEFT")
+	Header.Text:SetShadowColor(0, 0, 0)
+	Header.Text:SetShadowOffset(1, -1)
+	Header.Text:SetText(text)
+	
+	tinsert(self.GUI.Window.Widgets, Header)
+end
+
+function Gathering:UpdateSettingValue(key, value)
+	if (value == self.DefaultSettings[key]) then
+		GatheringSettings[key] = nil
+	else
+		GatheringSettings[key] = value
+	end
+	
+	self.Settings[key] = value
+end
+
+function Gathering:CheckBoxOnMouseUp()
+	if (Gathering.Settings[self.Setting] == true) then
+		self.Tex:SetVertexColor(0.8, 0, 0)
+		Gathering:UpdateSettingValue(self.Setting, false)
+	else
+		self.Tex:SetVertexColor(0, 0.8, 0)
+		Gathering:UpdateSettingValue(self.Setting, true)
+	end
+end
+
+function Gathering:CreateCheckbox(key, text, func)
+	local Checkbox = CreateFrame("Frame", nil, self.GUI.ButtonParent)
+	Checkbox:SetSize(20, 20)
+	Checkbox.Setting = key
+	Checkbox:SetScript("OnMouseUp", self.CheckBoxOnMouseUp)
+	
+	Checkbox.BG = Checkbox:CreateTexture(nil, "BORDER")
+	Checkbox.BG:SetTexture(BlankTexture)
+	Checkbox.BG:SetVertexColor(0, 0, 0)
+	Checkbox.BG:SetPoint("TOPLEFT", Checkbox, 0, 0)
+	Checkbox.BG:SetPoint("BOTTOMRIGHT", Checkbox, 0, 0)
+	
+	Checkbox.Tex = Checkbox:CreateTexture(nil, "OVERLAY")
+	Checkbox.Tex:SetTexture(BarTexture)
+	Checkbox.Tex:SetPoint("TOPLEFT", Checkbox, 1, -1)
+	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
+	
+	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
+	Checkbox.Text:SetFont(Font, 12)
+	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 3, 0)
+	Checkbox.Text:SetJustifyH("LEFT")
+	Checkbox.Text:SetShadowColor(0, 0, 0)
+	Checkbox.Text:SetShadowOffset(1, -1)
+	Checkbox.Text:SetText(text)
+	
+	if self.Settings[key] then
+		Checkbox.Tex:SetVertexColor(0, 0.8, 0)
+	else
+		Checkbox.Tex:SetVertexColor(0.8, 0, 0)
+	end
+	
+	tinsert(self.GUI.Window.Widgets, Checkbox)
+end
+
+function Gathering:PositionControls()
+	for i = 1, #self.GUI.Window.Widgets do
+		if (i == 1) then
+			self.GUI.Window.Widgets[i]:SetPoint("TOPLEFT", self.GUI.ButtonParent, 2, -2)
+		else
+			self.GUI.Window.Widgets[i]:SetPoint("TOPLEFT", self.GUI.Window.Widgets[i-1], "BOTTOMLEFT", 0, -2)
+		end
+	end
+end
+
+function Gathering:CreateGUI()
+	-- Window
+	self.GUI = CreateFrame("Frame", "Gathering Settings", UIParent)
+	self.GUI:SetSize(210, 18)
+	self.GUI:SetPoint("CENTER", UIParent, 0, 160)
+	self.GUI:SetMovable(true)
+	self.GUI:EnableMouse(true)
+	self.GUI:SetUserPlaced(true)
+	self.GUI:RegisterForDrag("LeftButton")
+	self.GUI:SetScript("OnDragStart", self.GUI.StartMoving)
+	self.GUI:SetScript("OnDragStop", self.GUI.StopMovingOrSizing)
+	
+	self.GUI.BG = self.GUI:CreateTexture(nil, "BORDER")
+	self.GUI.BG:SetPoint("TOPLEFT", self.GUI, -1, 1)
+	self.GUI.BG:SetPoint("BOTTOMRIGHT", self.GUI, 1, -1)
+	self.GUI.BG:SetTexture(BlankTexture)
+	self.GUI.BG:SetVertexColor(0, 0, 0)
+	
+	self.GUI.Texture = self.GUI:CreateTexture(nil, "OVERLAY")
+	self.GUI.Texture:SetPoint("TOPLEFT", self.GUI, 0, 0)
+	self.GUI.Texture:SetPoint("BOTTOMRIGHT", self.GUI, 0, 0)
+	self.GUI.Texture:SetTexture(BarTexture)
+	self.GUI.Texture:SetVertexColor(0.25, 0.25, 0.25)
+	
+	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
+	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
+	self.GUI.Text:SetFont(Font, 12)
+	self.GUI.Text:SetJustifyH("LEFT")
+	self.GUI.Text:SetShadowColor(0, 0, 0)
+	self.GUI.Text:SetShadowOffset(1, -1)
+	self.GUI.Text:SetText("|cff00CC6AGathering|r " .. GetAddOnMetadata("Gathering", "Version"))
+	
+	self.GUI.CloseButton = CreateFrame("Frame", nil, self.GUI)
+	self.GUI.CloseButton:SetPoint("TOPRIGHT", self.GUI, 0, 0)
+	self.GUI.CloseButton:SetSize(18, 18)
+	self.GUI.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
+	self.GUI.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
+	self.GUI.CloseButton:SetScript("OnMouseUp", function() self.GUI:Hide() end)
+	
+	self.GUI.CloseButton.Texture = self.GUI.CloseButton:CreateTexture(nil, "OVERLAY")
+	self.GUI.CloseButton.Texture:SetPoint("CENTER", self.GUI.CloseButton, 0, -0.5)
+	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\vUIClose.tga")
+	
+	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
+	self.GUI.Window:SetSize(210, 240)
+	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
+	
+	self.GUI.Window.Widgets = {}
+	
+	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
+	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
+	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -1)
+	self.GUI.Backdrop:SetTexture(BlankTexture)
+	self.GUI.Backdrop:SetVertexColor(0, 0, 0)
+	
+	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
+	self.GUI.Inside:SetAllPoints()
+	self.GUI.Inside:SetTexture(BlankTexture)
+	self.GUI.Inside:SetVertexColor(0.3, 0.3, 0.3)
+	
+	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
+	self.GUI.ButtonParent:SetAllPoints()
+	self.GUI.ButtonParent:SetFrameLevel(self.GUI.Window:GetFrameLevel() + 4)
+	self.GUI.ButtonParent:SetFrameStrata("HIGH")
+	self.GUI.ButtonParent:EnableMouse(true)
+	
+	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window)
+	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
+	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
+	self.GUI.OuterBackdrop:SetBackdrop(Outline)
+	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
+	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
+	
+	self.Settings = {}
+	
+	for Key, Value in pairs(self.DefaultSettings) do -- Add default values
+		self.Settings[Key] = Value
+	end
+	
+	if (not GatheringSettings) then
+		GatheringSettings = {}
+	else
+		for Key, Value in pairs(GatheringSettings) do -- Add stored values
+			self.Settings[Key] = Value
+		end
+	end
+	
+	-- Layout
+	self:CreateHeader(GENERAL)
+	
+	--[[Gathering.Settings = {
+	["track-ore"] = true,
+	["track-herbs"] = true,
+	["track-leather"] = true,
+	["track-fish"] = true,
+	["track-meat"] = true,
+	["track-cloth"] = true,
+	["track-enchanting"] = true,
+	["track-alchemy"] = true,
+	["track-primals"] = true,
+	["track-misc"] = true,
+	["track-custom"] = true,
+}]]
+
+	self:CreateCheckbox("track-ore", "Track Ore", print)
+	self:CreateCheckbox("track-herbs", "Track Herbs", print)
+	self:CreateCheckbox("track-leather", "Track Leather", print)
+	self:CreateCheckbox("track-fish", "Track Fish", print)
+	self:CreateCheckbox("track-meat", "Track Meat", print)
+	self:CreateCheckbox("track-cloth", "Track Cloth", print)
+	self:CreateCheckbox("track-enchanting", "Track Enchanting", print)
+	self:CreateCheckbox("track-alchemy", "Track Alchemy", print)
+	self:CreateCheckbox("track-primals", "Track Primals", print)
+	self:CreateCheckbox("track-misc", "Track Misc", print)
+	self:CreateCheckbox("track-custom", "Track Custom", print)
+	
+	self:PositionControls()
+end
+
+function Gathering:ScanButtonOnClick()
+	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
+	
+	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
+		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(900 - TimeDiff)))
+		return
+	end
+	
+	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
+		if (TimeDiff > 900) then
+			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+		else
+			return
+		end
+	end
+	
+	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
+	
+	ReplicateItems()
+	
+	print("|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds.")
+	
+	GatheringLastScan = GetTime()
 end
 
 function Gathering:CHAT_MSG_LOOT(msg)
@@ -226,39 +494,6 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	self.MarketPrices = GatheringMarketPrices or {}
 	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end
-
-function Gathering:FormatTime(seconds)
-	if (seconds > 59) then
-		return format("%dm", ceil(seconds / 60))
-	else
-		return format("%0.1fs", seconds)
-	end
-end
-
-function Gathering:ScanButtonOnClick()
-	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
-	
-	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
-		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(900 - TimeDiff)))
-		return
-	end
-	
-	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
-		if (TimeDiff > 900) then
-			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-		else
-			return
-		end
-	end
-	
-	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-	
-	ReplicateItems()
-	
-	print("|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds.")
-	
-	GatheringLastScan = GetTime()
 end
 
 function Gathering:AUCTION_HOUSE_SHOW()
@@ -379,6 +614,22 @@ Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
 Gathering:SetScript("OnMouseUp", Gathering.OnMouseUp)
+
+SLASH_GATHERING1 = "/gather"
+SLASH_GATHERING2 = "/gathering"
+SlashCmdList["GATHERING"] = function(cmd)
+	if (not Gathering.GUI) then
+		Gathering:CreateGUI()
+		
+		return
+	end
+	
+	if Gathering.GUI:IsShown() then
+		Gathering.GUI:Hide()
+	else
+		Gathering.GUI:Show()
+	end
+end
 
 Gathering.Tracked = {
 	-- Herbs
