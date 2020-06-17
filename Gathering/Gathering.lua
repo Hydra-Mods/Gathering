@@ -59,6 +59,7 @@ Gathering.Seconds = 0
 Gathering.SecondsPerItem = {}
 
 Gathering.DefaultSettings = {
+	-- Tracking
 	["track-ore"] = true,
 	["track-herbs"] = true,
 	["track-leather"] = true,
@@ -73,6 +74,9 @@ Gathering.DefaultSettings = {
 	["track-consumables"] = false,
 	["track-reagents"] = false,
 	["track-other"] = false,
+	
+	-- Functionality
+	--["ignore-mail"] = true,
 }
 
 Gathering.TrackedItemTypes = {
