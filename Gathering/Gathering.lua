@@ -75,82 +75,12 @@ Gathering.DefaultSettings = {
 }
 
 Gathering.TrackedItemTypes = {
-	[LE_ITEM_CLASS_CONSUMABLE] = {
-		[1] = true, -- Potion
-		[2] = true, -- Elixir
-		[3] = true, -- Flask
-	},
-	
-	[LE_ITEM_CLASS_WEAPON] = {
-		[LE_ITEM_WEAPON_AXE1H] = true,
-		[LE_ITEM_WEAPON_AXE2H] = true,
-		[LE_ITEM_WEAPON_BOWS] = true,
-		[LE_ITEM_WEAPON_GUNS] = true,
-		[LE_ITEM_WEAPON_MACE1H] = true,
-		[LE_ITEM_WEAPON_MACE2H] = true,
-		[LE_ITEM_WEAPON_POLEARM] = true,
-		[LE_ITEM_WEAPON_SWORD1H] = true,
-		[LE_ITEM_WEAPON_SWORD2H] = true,
-		[LE_ITEM_WEAPON_WARGLAIVE] = true,
-		[LE_ITEM_WEAPON_STAFF] = true,
-		[LE_ITEM_WEAPON_BEARCLAW] = true, -- Legion+
-		[LE_ITEM_WEAPON_CATCLAW] = true, -- Legion+
-		[LE_ITEM_WEAPON_UNARMED] = true,
-		[LE_ITEM_WEAPON_GENERIC] = true,
-		[LE_ITEM_WEAPON_DAGGER] = true,
-		--[LE_ITEM_WEAPON_THROWN] = true, -- Classic
-		[LE_ITEM_WEAPON_CROSSBOW] = true,
-		[LE_ITEM_WEAPON_WAND] = true,
-		[LE_ITEM_WEAPON_FISHINGPOLE] = true,
-	},
-	
-	[LE_ITEM_CLASS_ARMOR] = {
-		[LE_ITEM_ARMOR_GENERIC] = true,
-		[LE_ITEM_ARMOR_CLOTH] = true,
-		[LE_ITEM_ARMOR_LEATHER] = true,
-		[LE_ITEM_ARMOR_MAIL] = true,
-		[LE_ITEM_ARMOR_PLATE] = true,
-		[LE_ITEM_ARMOR_COSMETIC] = true,
-		[LE_ITEM_ARMOR_SHIELD] = true,
-		--[[[LE_ITEM_ARMOR_LIBRAM] = true, -- Classic
-		[LE_ITEM_ARMOR_IDOL] = true, -- Classic
-		[LE_ITEM_ARMOR_TOTEM] = true, -- Classic
-		[LE_ITEM_ARMOR_SIGIL] = true, -- Classic]]
-		[LE_ITEM_ARMOR_RELIC] = true,
-	},
-	
-	[LE_ITEM_CLASS_TRADEGOODS] = {
-		[4] = true, -- Jewelcrafting
-		[5] = true, -- Cloth
-		[6] = true, -- Leather
-		[7] = true, -- Metal & Stone
-		[8] = true, -- Cooking
-		[9] = true, -- Herb
-		[10] = true, -- Elemental -- Requires testing. Is this primals?
-		[12] = true, -- Enchanting
-	},
-	
-	[LE_ITEM_CLASS_MISCELLANEOUS] = {
-		--[LE_ITEM_MISCELLANEOUS_JUNK] = true, -- ?
-		--[LE_ITEM_MISCELLANEOUS_REAGENT] = true, -- ?
-		--[LE_ITEM_MISCELLANEOUS_OTHER] = true, -- ?
-		--[LE_ITEM_MISCELLANEOUS_HOLIDAY] = true,
-		[LE_ITEM_MISCELLANEOUS_COMPANION_PET] = true, -- Companion Pets
-		[LE_ITEM_MISCELLANEOUS_MOUNT] = true, -- Mount
-	},
-	
-	[LE_ITEM_CLASS_BATTLEPET] = {
-		[0] = true, -- Humanoid
-		[1] = true, -- Dragonkin
-		[2] = true, -- Flying
-		[3] = true, -- Undead
-		[4] = true, -- Critter
-		[5] = true, -- Magic
-		[6] = true, -- Elemental
-		[7] = true, -- Beast
-		[8] = true, -- Aquatic
-		[9] = true, -- Mechanical
-	},
+	[LE_ITEM_CLASS_CONSUMABLE] = {},
+	[LE_ITEM_CLASS_WEAPON] = {},
+	[LE_ITEM_CLASS_ARMOR] = {},
+	[LE_ITEM_CLASS_TRADEGOODS] = {},
+	[LE_ITEM_CLASS_MISCELLANEOUS] = {},
+	[LE_ITEM_CLASS_BATTLEPET] = {},
 }
 
 function Gathering:UpdateWeaponTracking(value)
@@ -472,6 +402,21 @@ function Gathering:InitiateSettings()
 			self.Settings[Key] = Value
 		end
 	end
+	
+	self:UpdateWeaponTracking(self.Settings["track-weapons"])
+	self:UpdateArmorTracking(self.Settings["track-armor"])
+	self:UpdateClothTracking(self.Settings["track-cloth"])
+	self:UpdateLeatherTracking(self.Settings["track-leather"])
+	self:UpdateOreTracking(self.Settings["track-ore"])
+	self:UpdateCookingTracking(self.Settings["track-cooking"])
+	self:UpdateHerbTracking(self.Settings["track-herbs"])
+	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
+	self:UpdatePetTracking(self.Settings["track-pets"])
+	--self:UpdateHolidayTracking(self.Settings["track-weapons"])
+	self:UpdateMountTracking(self.Settings["track-mounts"])
+	self:UpdateConsumableTracking(self.Settings["track-consumables"])
+	--self:UpdateReagentTracking(self.Settings["track-reagents"])
+	--self:UpdateOtherTracking(self.Settings["track-other"])
 end
 
 function Gathering:CreateGUI()
@@ -654,7 +599,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
-	
+	print(Name, ClassID, SubClassID)
 	-- Check that we want to track the type of item
 	if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
 		return
