@@ -70,12 +70,20 @@ Gathering.DefaultSettings = {
 }
 
 Gathering.TrackedItemTypes = {
+	[0] = { -- LE_ITEM_CLASS_CONSUMABLE
+		[1] = true, -- Potion
+		[2] = true, -- Elixir
+		[3] = true, -- Flask
+	}
+
 	[7] = { -- LE_ITEM_CLASS_TRADEGOODS
+		[4] = true, -- Jewelcrafting
 		[5] = true, -- Cloth
 		[6] = true, -- Leather
 		[7] = true, -- Metal & Stone
 		[8] = true, -- Cooking
 		[9] = true, -- Herb
+		[10] = true, -- Elemental -- Requires testing. Is this primals?
 		[12] = true, -- Enchanting
 	},
 	
@@ -84,6 +92,19 @@ Gathering.TrackedItemTypes = {
 		--[3] = true, -- Holiday
 		[5] = true, -- Mount
 	},
+	
+	[17] = { -- LE_ITEM_CLASS_BATTLEPET
+		[0] = true, -- Humanoid
+		[1] = true, -- Dragonkin
+		[2] = true, -- Flying
+		[3] = true, -- Undead
+		[4] = true, -- Critter
+		[5] = true, -- Magic
+		[6] = true, -- Elemental
+		[7] = true, -- Beast
+		[8] = true, -- Aquatic
+		[9] = true, -- Mechanical
+	}
 }
 
 function Gathering:UpdateClothTracking(value)
