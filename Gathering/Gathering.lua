@@ -65,6 +65,7 @@ Gathering.DefaultSettings = {
 	["track-cooking"] = true,
 	["track-cloth"] = true,
 	["track-enchanting"] = true,
+	["track-jewelcrafting"] = true,
 	["track-weapons"] = false,
 	["track-armor"] = false,
 	["track-pets"] = false,
@@ -118,6 +119,10 @@ function Gathering:UpdateArmorTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_TOTEM] = value -- Classic
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SIGIL] = value -- Classic]]
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_RELIC] = value
+end
+
+function Gathering:UpdateJewelcraftingTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][4] = value
 end
 
 function Gathering:UpdateClothTracking(value)
@@ -405,6 +410,7 @@ function Gathering:InitiateSettings()
 	
 	self:UpdateWeaponTracking(self.Settings["track-weapons"])
 	self:UpdateArmorTracking(self.Settings["track-armor"])
+	self:UpdateJewelcraftingTracking(self.Settings["track-jewelcrafting"])
 	self:UpdateClothTracking(self.Settings["track-cloth"])
 	self:UpdateLeatherTracking(self.Settings["track-leather"])
 	self:UpdateOreTracking(self.Settings["track-ore"])
@@ -507,13 +513,14 @@ function Gathering:CreateGUI()
 	self:CreateCheckbox("track-cooking", "Cooking", self.UpdateCookingTracking)
 	self:CreateCheckbox("track-cloth", "Cloth", self.UpdateClothTracking)
 	self:CreateCheckbox("track-enchanting", "Enchanting", self.UpdateEnchantingTracking)
+	self:CreateCheckbox("track-jewelcrafting", "Jewelcrafting", self.UpdateJewelcraftingTracking)
 	self:CreateCheckbox("track-weapons", "Weapons", self.UpdateWeaponTracking)
 	self:CreateCheckbox("track-armor", "Armor", self.UpdateArmorTracking)
 	self:CreateCheckbox("track-pets", "Pets", self.UpdatePetTracking)
 	self:CreateCheckbox("track-mounts", "Mounts", self.UpdateMountTracking)
 	self:CreateCheckbox("track-consumables", "Consumables", self.UpdateConsumableTracking)
 	self:CreateCheckbox("track-reagents", "Reagents", self.UpdateReagentTracking)
-	self:CreateCheckbox("track-other", "Other", self.UpdateOtherTracking)
+	--self:CreateCheckbox("track-other", "Other", self.UpdateOtherTracking)
 	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
@@ -599,7 +606,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
-	
+	print(Name, ClassID, SubClassID)
 	-- Check that we want to track the type of item
 	if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
 		return
