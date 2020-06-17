@@ -14,6 +14,7 @@ local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 local RarityColor = ITEM_QUALITY_COLORS
 local LootMessage = (LOOT_ITEM_SELF:gsub("%%.*", ""))
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
+local MaxWidgets = 11
 local BlankTexture = "Interface\\AddOns\\Gathering\\vUIBlank.tga"
 local BarTexture = "Interface\\AddOns\\Gathering\\vUI4.tga"
 local Font = "Interface\\Addons\\Gathering\\PTSans.ttf"
@@ -64,12 +65,13 @@ Gathering.DefaultSettings = {
 	["track-cooking"] = true,
 	["track-cloth"] = true,
 	["track-enchanting"] = true,
-	["track-weapons"] = true,
-	["track-armor"] = true,
-	["track-pets"] = true,
-	["track-mounts"] = true,
-	["track-consumables"] = true,
-	--["track-custom"] = true,
+	["track-weapons"] = false,
+	["track-armor"] = false,
+	["track-pets"] = false,
+	["track-mounts"] = false,
+	["track-consumables"] = false,
+	["track-reagents"] = false,
+	["track-other"] = false,
 }
 
 Gathering.TrackedItemTypes = {
@@ -96,7 +98,7 @@ Gathering.TrackedItemTypes = {
 		[LE_ITEM_WEAPON_UNARMED] = true,
 		[LE_ITEM_WEAPON_GENERIC] = true,
 		[LE_ITEM_WEAPON_DAGGER] = true,
-		[LE_ITEM_WEAPON_THROWN] = true, -- Classic
+		--[LE_ITEM_WEAPON_THROWN] = true, -- Classic
 		[LE_ITEM_WEAPON_CROSSBOW] = true,
 		[LE_ITEM_WEAPON_WAND] = true,
 		[LE_ITEM_WEAPON_FISHINGPOLE] = true,
@@ -110,10 +112,10 @@ Gathering.TrackedItemTypes = {
 		[LE_ITEM_ARMOR_PLATE] = true,
 		[LE_ITEM_ARMOR_COSMETIC] = true,
 		[LE_ITEM_ARMOR_SHIELD] = true,
-		[LE_ITEM_ARMOR_LIBRAM] = true, -- Classic
+		--[[[LE_ITEM_ARMOR_LIBRAM] = true, -- Classic
 		[LE_ITEM_ARMOR_IDOL] = true, -- Classic
 		[LE_ITEM_ARMOR_TOTEM] = true, -- Classic
-		[LE_ITEM_ARMOR_SIGIL] = true, -- Classic
+		[LE_ITEM_ARMOR_SIGIL] = true, -- Classic]]
 		[LE_ITEM_ARMOR_RELIC] = true,
 	},
 	
@@ -230,6 +232,14 @@ function Gathering:UpdateConsumableTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][3] = value
 end
 
+function Gathering:UpdateReagentTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_REAGENT] = value
+end
+
+function Gathering:UpdateOtherTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_OTHER] = value
+end
+
 function Gathering:UpdateFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
@@ -342,7 +352,7 @@ function Gathering:CreateHeader(text) -- GENERAL
 	Header.Text:SetShadowOffset(1, -1)
 	Header.Text:SetText(text)
 	
-	tinsert(self.GUI.Widgets, Header)
+	tinsert(self.GUI.Window.Widgets, Header)
 end
 
 function Gathering:UpdateSettingValue(key, value)
@@ -399,18 +409,16 @@ function Gathering:CreateCheckbox(key, text, func)
 		Checkbox.Tex:SetVertexColor(0.8, 0, 0)
 	end
 	
-	tinsert(self.GUI.Widgets, Checkbox)
+	tinsert(self.GUI.Window.Widgets, Checkbox)
 end
-
-local MAX_SHOWN = 11
 
 local Scroll = function(self)
 	local First = false
 	
 	for i = 1, #self.Widgets do
-		if (i >= self.Offset) and (i <= self.Offset + MAX_SHOWN - 1) then
+		if (i >= self.Offset) and (i <= self.Offset + MaxWidgets - 1) then
 			if (not First) then
-				self.Widgets[i]:SetPoint("TOPLEFT", self.ButtonParent, 2, -2)
+				self.Widgets[i]:SetPoint("TOPLEFT", Gathering.GUI.ButtonParent, 2, -2)
 				First = true
 			else
 				self.Widgets[i]:SetPoint("TOPLEFT", self.Widgets[i-1], "BOTTOMLEFT", 0, -2)
@@ -433,7 +441,7 @@ local WindowOnMouseWheel = function(self, delta)
 	else -- down
 		self.Offset = self.Offset + 1
 		
-		if (self.Offset > (#self.Widgets - (MAX_SHOWN - 1))) then
+		if (self.Offset > (#self.Widgets - (MaxWidgets - 1))) then
 			self.Offset = self.Offset - 1
 		end
 	end
@@ -448,16 +456,6 @@ local ScrollBarOnValueChanged = function(self, value)
 	self.Parent.Offset = Value
 	
 	Scroll(self.Parent)
-end
-
-function Gathering:PositionControls()
-	for i = 1, #self.GUI.Widgets do
-		if (i == 1) then
-			self.GUI.Widgets[i]:SetPoint("TOPLEFT", self.GUI.ButtonParent, 2, -2)
-		else
-			self.GUI.Widgets[i]:SetPoint("TOPLEFT", self.GUI.Widgets[i-1], "BOTTOMLEFT", 0, -2)
-		end
-	end
 end
 
 function Gathering:InitiateSettings()
@@ -522,11 +520,11 @@ function Gathering:CreateGUI()
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.Window:SetSize(210, 244)
 	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
-	self.GUI.Offset = 1
-	self.GUI.Widgets = {}
+	self.GUI.Window.Offset = 1
+	self.GUI.Window.Widgets = {}
 	
-	self.GUI:EnableMouseWheel(true)
-	self.GUI:SetScript("OnMouseWheel", WindowOnMouseWheel)
+	self.GUI.Window:EnableMouseWheel(true)
+	self.GUI.Window:SetScript("OnMouseWheel", WindowOnMouseWheel)
 	
 	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
@@ -569,48 +567,47 @@ function Gathering:CreateGUI()
 	self:CreateCheckbox("track-pets", "Pets", self.UpdatePetTracking)
 	self:CreateCheckbox("track-mounts", "Mounts", self.UpdateMountTracking)
 	self:CreateCheckbox("track-consumables", "Consumables", self.UpdateConsumableTracking)
-	
-	self:PositionControls()
+	self:CreateCheckbox("track-reagents", "Reagents", self.UpdateReagentTracking)
+	self:CreateCheckbox("track-other", "Other", self.UpdateOtherTracking)
 	
 	-- Scroll bar
-	self.GUI.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
-	self.GUI.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
-	self.GUI.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 2)
-	self.GUI.ScrollBar:SetWidth(14)
-	self.GUI.ScrollBar:SetThumbTexture(BlankTexture)
-	self.GUI.ScrollBar:SetOrientation("VERTICAL")
-	self.GUI.ScrollBar:SetValueStep(1)
-	self.GUI.ScrollBar:SetBackdrop(Outline)
-	self.GUI.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
-	self.GUI.ScrollBar:SetBackdropBorderColor(0, 0, 0)
-	self.GUI.ScrollBar:SetMinMaxValues(1, (#self.GUI.Widgets - (MAX_SHOWN - 1)))
-	self.GUI.ScrollBar:SetValue(1)
-	self.GUI.ScrollBar:EnableMouse(true)
-	--self.GUI.ScrollBar:SetScript("OnMouseWheel", DropdownScrollBarOnMouseWheel)
-	self.GUI.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
-	self.GUI.ScrollBar.Parent = self.GUI
+	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
+	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
+	self.GUI.Window.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 2)
+	self.GUI.Window.ScrollBar:SetWidth(14)
+	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
+	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
+	self.GUI.Window.ScrollBar:SetValueStep(1)
+	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
+	self.GUI.Window.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
+	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
+	self.GUI.Window.ScrollBar:SetValue(1)
+	self.GUI.Window.ScrollBar:EnableMouse(true)
+	self.GUI.Window.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
+	self.GUI.Window.ScrollBar.Parent = self.GUI.Window
 	
-	self.GUI.ScrollBar:SetFrameStrata("HIGH")
-	self.GUI.ScrollBar:SetFrameLevel(22)
+	self.GUI.Window.ScrollBar:SetFrameStrata("HIGH")
+	self.GUI.Window.ScrollBar:SetFrameLevel(22)
 	
-	local Thumb = self.GUI.ScrollBar:GetThumbTexture() 
+	local Thumb = self.GUI.Window.ScrollBar:GetThumbTexture() 
 	Thumb:SetSize(14, 20)
 	Thumb:SetTexture(BarTexture)
 	Thumb:SetVertexColor(0, 0, 0)
 	
-	self.GUI.ScrollBar.NewTexture = self.GUI.ScrollBar:CreateTexture(nil, "BORDER")
-	self.GUI.ScrollBar.NewTexture:SetPoint("TOPLEFT", Thumb, 0, 0)
-	self.GUI.ScrollBar.NewTexture:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
-	self.GUI.ScrollBar.NewTexture:SetTexture(BlankTexture)
-	self.GUI.ScrollBar.NewTexture:SetVertexColor(0, 0, 0)
+	self.GUI.Window.ScrollBar.NewTexture = self.GUI.Window.ScrollBar:CreateTexture(nil, "BORDER")
+	self.GUI.Window.ScrollBar.NewTexture:SetPoint("TOPLEFT", Thumb, 0, 0)
+	self.GUI.Window.ScrollBar.NewTexture:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
+	self.GUI.Window.ScrollBar.NewTexture:SetTexture(BlankTexture)
+	self.GUI.Window.ScrollBar.NewTexture:SetVertexColor(0, 0, 0)
 	
-	self.GUI.ScrollBar.NewTexture2 = self.GUI.ScrollBar:CreateTexture(nil, "OVERLAY")
-	self.GUI.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.ScrollBar.NewTexture, 1, -1)
-	self.GUI.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.ScrollBar.NewTexture, -1, 1)
-	self.GUI.ScrollBar.NewTexture2:SetTexture(BarTexture)
-	self.GUI.ScrollBar.NewTexture2:SetVertexColor(0.2, 0.2, 0.2)
+	self.GUI.Window.ScrollBar.NewTexture2 = self.GUI.Window.ScrollBar:CreateTexture(nil, "OVERLAY")
+	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.Window.ScrollBar.NewTexture, 1, -1)
+	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.Window.ScrollBar.NewTexture, -1, 1)
+	self.GUI.Window.ScrollBar.NewTexture2:SetTexture(BarTexture)
+	self.GUI.Window.ScrollBar.NewTexture2:SetVertexColor(0.2, 0.2, 0.2)
 	
-	Scroll(self.GUI)
+	Scroll(self.GUI.Window)
 end
 
 function Gathering:ScanButtonOnClick()
