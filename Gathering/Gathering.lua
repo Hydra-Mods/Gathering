@@ -63,21 +63,61 @@ Gathering.DefaultSettings = {
 	["track-leather"] = true,
 	["track-cooking"] = true,
 	["track-cloth"] = true,
+	["track-enchanting"] = true,
+	["track-weapons"] = true,
+	["track-armor"] = true,
 	["track-pets"] = true,
 	["track-mounts"] = true,
-	["track-enchanting"] = true,
-	["track-alchemy"] = true,
+	["track-consumables"] = true,
 	--["track-custom"] = true,
 }
 
 Gathering.TrackedItemTypes = {
-	[0] = { -- LE_ITEM_CLASS_CONSUMABLE
+	[LE_ITEM_CLASS_CONSUMABLE] = {
 		[1] = true, -- Potion
 		[2] = true, -- Elixir
 		[3] = true, -- Flask
 	},
 	
-	[7] = { -- LE_ITEM_CLASS_TRADEGOODS
+	[LE_ITEM_CLASS_WEAPON] = {
+		[LE_ITEM_WEAPON_AXE1H] = true,
+		[LE_ITEM_WEAPON_AXE2H] = true,
+		[LE_ITEM_WEAPON_BOWS] = true,
+		[LE_ITEM_WEAPON_GUNS] = true,
+		[LE_ITEM_WEAPON_MACE1H] = true,
+		[LE_ITEM_WEAPON_MACE2H] = true,
+		[LE_ITEM_WEAPON_POLEARM] = true,
+		[LE_ITEM_WEAPON_SWORD1H] = true,
+		[LE_ITEM_WEAPON_SWORD2H] = true,
+		[LE_ITEM_WEAPON_WARGLAIVE] = true,
+		[LE_ITEM_WEAPON_STAFF] = true,
+		[LE_ITEM_WEAPON_BEARCLAW] = true, -- Legion+
+		[LE_ITEM_WEAPON_CATCLAW] = true, -- Legion+
+		[LE_ITEM_WEAPON_UNARMED] = true,
+		[LE_ITEM_WEAPON_GENERIC] = true,
+		[LE_ITEM_WEAPON_DAGGER] = true,
+		[LE_ITEM_WEAPON_THROWN] = true, -- Classic
+		[LE_ITEM_WEAPON_CROSSBOW] = true,
+		[LE_ITEM_WEAPON_WAND] = true,
+		[LE_ITEM_WEAPON_FISHINGPOLE] = true,
+	},
+	
+	[LE_ITEM_CLASS_ARMOR] = {
+		[LE_ITEM_ARMOR_GENERIC] = true,
+		[LE_ITEM_ARMOR_CLOTH] = true,
+		[LE_ITEM_ARMOR_LEATHER] = true,
+		[LE_ITEM_ARMOR_MAIL] = true,
+		[LE_ITEM_ARMOR_PLATE] = true,
+		[LE_ITEM_ARMOR_COSMETIC] = true,
+		[LE_ITEM_ARMOR_SHIELD] = true,
+		[LE_ITEM_ARMOR_LIBRAM] = true, -- Classic
+		[LE_ITEM_ARMOR_IDOL] = true, -- Classic
+		[LE_ITEM_ARMOR_TOTEM] = true, -- Classic
+		[LE_ITEM_ARMOR_SIGIL] = true, -- Classic
+		[LE_ITEM_ARMOR_RELIC] = true,
+	},
+	
+	[LE_ITEM_CLASS_TRADEGOODS] = {
 		[4] = true, -- Jewelcrafting
 		[5] = true, -- Cloth
 		[6] = true, -- Leather
@@ -88,13 +128,16 @@ Gathering.TrackedItemTypes = {
 		[12] = true, -- Enchanting
 	},
 	
-	[15] = { -- LE_ITEM_CLASS_MISCELLANEOUS
-		[2] = true, -- Companion Pets
-		--[3] = true, -- Holiday
-		[5] = true, -- Mount
+	[LE_ITEM_CLASS_MISCELLANEOUS] = {
+		--[LE_ITEM_MISCELLANEOUS_JUNK] = true, -- ?
+		--[LE_ITEM_MISCELLANEOUS_REAGENT] = true, -- ?
+		--[LE_ITEM_MISCELLANEOUS_OTHER] = true, -- ?
+		--[LE_ITEM_MISCELLANEOUS_HOLIDAY] = true,
+		[LE_ITEM_MISCELLANEOUS_COMPANION_PET] = true, -- Companion Pets
+		[LE_ITEM_MISCELLANEOUS_MOUNT] = true, -- Mount
 	},
 	
-	[17] = { -- LE_ITEM_CLASS_BATTLEPET
+	[LE_ITEM_CLASS_BATTLEPET] = {
 		[0] = true, -- Humanoid
 		[1] = true, -- Dragonkin
 		[2] = true, -- Flying
@@ -108,40 +151,83 @@ Gathering.TrackedItemTypes = {
 	},
 }
 
+function Gathering:UpdateWeaponTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE1H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE2H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BOWS] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GUNS] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE1H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE2H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_POLEARM] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD1H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD2H] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WARGLAIVE] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_STAFF] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BEARCLAW] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CATCLAW] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_UNARMED] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GENERIC] = value
+	--Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_THROWN] = value -- Classic
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CROSSBOW] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WAND] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_FISHINGPOLE] = value
+end
+
+function Gathering:UpdateArmorTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_GENERIC] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_CLOTH] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LEATHER] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_MAIL] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_PLATE] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_COSMETIC] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SHIELD] = value
+	--[[Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LIBRAM] = value -- Classic
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_IDOL] = value -- Classic
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_TOTEM] = value -- Classic
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SIGIL] = value -- Classic]]
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_RELIC] = value
+end
+
 function Gathering:UpdateClothTracking(value)
-	Gathering.TrackedItemTypes[7][5] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][5] = value
 end
 
 function Gathering:UpdateLeatherTracking(value)
-	Gathering.TrackedItemTypes[7][6] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][6] = value
 end
 
 function Gathering:UpdateOreTracking(value)
-	Gathering.TrackedItemTypes[7][7] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][7] = value
 end
 
 function Gathering:UpdateCookingTracking(value)
-	Gathering.TrackedItemTypes[7][8] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][8] = value
 end
 
 function Gathering:UpdateHerbTracking(value)
-	Gathering.TrackedItemTypes[7][9] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][9] = value
 end
 
 function Gathering:UpdateEnchantingTracking(value)
-	Gathering.TrackedItemTypes[7][9] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][12] = value
 end
 
 function Gathering:UpdatePetTracking(value)
-	Gathering.TrackedItemTypes[15][2] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_COMPANION_PET] = value
 end
 
 function Gathering:UpdateHolidayTracking(value)
-	Gathering.TrackedItemTypes[15][3] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_HOLIDAY] = value
 end
 
 function Gathering:UpdateMountTracking(value)
-	Gathering.TrackedItemTypes[15][5] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_MOUNT] = value
+end
+
+function Gathering:UpdateConsumableTracking(value)
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][1] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][2] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][3] = value
 end
 
 function Gathering:UpdateFont()
@@ -234,7 +320,7 @@ end
 function Gathering:CreateHeader(text) -- GENERAL
 	-- Main header
 	local Header = CreateFrame("Frame", nil, self.GUI.ButtonParent)
-	Header:SetSize(188, 20)
+	Header:SetSize(190, 20)
 	
 	Header.BG = Header:CreateTexture(nil, "BORDER")
 	Header.BG:SetTexture(BlankTexture)
@@ -256,7 +342,7 @@ function Gathering:CreateHeader(text) -- GENERAL
 	Header.Text:SetShadowOffset(1, -1)
 	Header.Text:SetText(text)
 	
-	tinsert(self.GUI.Window.Widgets, Header)
+	tinsert(self.GUI.Widgets, Header)
 end
 
 function Gathering:UpdateSettingValue(key, value)
@@ -313,15 +399,63 @@ function Gathering:CreateCheckbox(key, text, func)
 		Checkbox.Tex:SetVertexColor(0.8, 0, 0)
 	end
 	
-	tinsert(self.GUI.Window.Widgets, Checkbox)
+	tinsert(self.GUI.Widgets, Checkbox)
+end
+
+local MAX_SHOWN = 11
+
+local Scroll = function(self)
+	local First = false
+	
+	for i = 1, #self.Widgets do
+		if (i >= self.Offset) and (i <= self.Offset + MAX_SHOWN - 1) then
+			if (not First) then
+				self.Widgets[i]:SetPoint("TOPLEFT", self.ButtonParent, 2, -2)
+				First = true
+			else
+				self.Widgets[i]:SetPoint("TOPLEFT", self.Widgets[i-1], "BOTTOMLEFT", 0, -2)
+			end
+			
+			self.Widgets[i]:Show()
+		else
+			self.Widgets[i]:Hide()
+		end
+	end
+end
+
+local WindowOnMouseWheel = function(self, delta)
+	if (delta == 1) then -- up
+		self.Offset = self.Offset - 1
+		
+		if (self.Offset <= 1) then
+			self.Offset = 1
+		end
+	else -- down
+		self.Offset = self.Offset + 1
+		
+		if (self.Offset > (#self.Widgets - (MAX_SHOWN - 1))) then
+			self.Offset = self.Offset - 1
+		end
+	end
+	
+	Scroll(self)
+	self.ScrollBar:SetValue(self.Offset)
+end
+
+local ScrollBarOnValueChanged = function(self, value)
+	local Value = floor(value + 0.5)
+	
+	self.Parent.Offset = Value
+	
+	Scroll(self.Parent)
 end
 
 function Gathering:PositionControls()
-	for i = 1, #self.GUI.Window.Widgets do
+	for i = 1, #self.GUI.Widgets do
 		if (i == 1) then
-			self.GUI.Window.Widgets[i]:SetPoint("TOPLEFT", self.GUI.ButtonParent, 2, -2)
+			self.GUI.Widgets[i]:SetPoint("TOPLEFT", self.GUI.ButtonParent, 2, -2)
 		else
-			self.GUI.Window.Widgets[i]:SetPoint("TOPLEFT", self.GUI.Window.Widgets[i-1], "BOTTOMLEFT", 0, -2)
+			self.GUI.Widgets[i]:SetPoint("TOPLEFT", self.GUI.Widgets[i-1], "BOTTOMLEFT", 0, -2)
 		end
 	end
 end
@@ -386,10 +520,13 @@ function Gathering:CreateGUI()
 	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\vUIClose.tga")
 	
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
-	self.GUI.Window:SetSize(210, 240)
+	self.GUI.Window:SetSize(210, 244)
 	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
+	self.GUI.Offset = 1
+	self.GUI.Widgets = {}
 	
-	self.GUI.Window.Widgets = {}
+	self.GUI:EnableMouseWheel(true)
+	self.GUI:SetScript("OnMouseWheel", WindowOnMouseWheel)
 	
 	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
@@ -415,7 +552,7 @@ function Gathering:CreateGUI()
 	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
-
+	
 	self:InitiateSettings()
 	
 	-- Layout
@@ -427,10 +564,53 @@ function Gathering:CreateGUI()
 	self:CreateCheckbox("track-cooking", "Cooking", self.UpdateCookingTracking)
 	self:CreateCheckbox("track-cloth", "Cloth", self.UpdateClothTracking)
 	self:CreateCheckbox("track-enchanting", "Enchanting", self.UpdateEnchantingTracking)
+	self:CreateCheckbox("track-weapons", "Weapons", self.UpdateWeaponTracking)
+	self:CreateCheckbox("track-armor", "Armor", self.UpdateArmorTracking)
 	self:CreateCheckbox("track-pets", "Pets", self.UpdatePetTracking)
 	self:CreateCheckbox("track-mounts", "Mounts", self.UpdateMountTracking)
+	self:CreateCheckbox("track-consumables", "Consumables", self.UpdateConsumableTracking)
 	
 	self:PositionControls()
+	
+	-- Scroll bar
+	self.GUI.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
+	self.GUI.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
+	self.GUI.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 2)
+	self.GUI.ScrollBar:SetWidth(14)
+	self.GUI.ScrollBar:SetThumbTexture(BlankTexture)
+	self.GUI.ScrollBar:SetOrientation("VERTICAL")
+	self.GUI.ScrollBar:SetValueStep(1)
+	self.GUI.ScrollBar:SetBackdrop(Outline)
+	self.GUI.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.ScrollBar:SetBackdropBorderColor(0, 0, 0)
+	self.GUI.ScrollBar:SetMinMaxValues(1, (#self.GUI.Widgets - (MAX_SHOWN - 1)))
+	self.GUI.ScrollBar:SetValue(1)
+	self.GUI.ScrollBar:EnableMouse(true)
+	--self.GUI.ScrollBar:SetScript("OnMouseWheel", DropdownScrollBarOnMouseWheel)
+	self.GUI.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
+	self.GUI.ScrollBar.Parent = self.GUI
+	
+	self.GUI.ScrollBar:SetFrameStrata("HIGH")
+	self.GUI.ScrollBar:SetFrameLevel(22)
+	
+	local Thumb = self.GUI.ScrollBar:GetThumbTexture() 
+	Thumb:SetSize(14, 20)
+	Thumb:SetTexture(BarTexture)
+	Thumb:SetVertexColor(0, 0, 0)
+	
+	self.GUI.ScrollBar.NewTexture = self.GUI.ScrollBar:CreateTexture(nil, "BORDER")
+	self.GUI.ScrollBar.NewTexture:SetPoint("TOPLEFT", Thumb, 0, 0)
+	self.GUI.ScrollBar.NewTexture:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
+	self.GUI.ScrollBar.NewTexture:SetTexture(BlankTexture)
+	self.GUI.ScrollBar.NewTexture:SetVertexColor(0, 0, 0)
+	
+	self.GUI.ScrollBar.NewTexture2 = self.GUI.ScrollBar:CreateTexture(nil, "OVERLAY")
+	self.GUI.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.ScrollBar.NewTexture, 1, -1)
+	self.GUI.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.ScrollBar.NewTexture, -1, 1)
+	self.GUI.ScrollBar.NewTexture2:SetTexture(BarTexture)
+	self.GUI.ScrollBar.NewTexture2:SetVertexColor(0.2, 0.2, 0.2)
+	
+	Scroll(self.GUI)
 end
 
 function Gathering:ScanButtonOnClick()
