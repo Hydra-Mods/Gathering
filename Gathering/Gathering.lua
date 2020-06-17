@@ -599,7 +599,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
-	print(Name, ClassID, SubClassID)
+	
 	-- Check that we want to track the type of item
 	if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
 		return
