@@ -66,6 +66,7 @@ Gathering.DefaultSettings = {
 	["track-pets"] = true,
 	["track-mounts"] = true,
 	["track-enchanting"] = true,
+	["track-alchemy"] = true,
 	--["track-custom"] = true,
 }
 
@@ -74,8 +75,8 @@ Gathering.TrackedItemTypes = {
 		[1] = true, -- Potion
 		[2] = true, -- Elixir
 		[3] = true, -- Flask
-	}
-
+	},
+	
 	[7] = { -- LE_ITEM_CLASS_TRADEGOODS
 		[4] = true, -- Jewelcrafting
 		[5] = true, -- Cloth
@@ -104,7 +105,7 @@ Gathering.TrackedItemTypes = {
 		[7] = true, -- Beast
 		[8] = true, -- Aquatic
 		[9] = true, -- Mechanical
-	}
+	},
 }
 
 function Gathering:UpdateClothTracking(value)
