@@ -415,8 +415,8 @@ function Gathering:InitiateSettings()
 	--self:UpdateHolidayTracking(self.Settings["track-weapons"])
 	self:UpdateMountTracking(self.Settings["track-mounts"])
 	self:UpdateConsumableTracking(self.Settings["track-consumables"])
-	--self:UpdateReagentTracking(self.Settings["track-reagents"])
-	--self:UpdateOtherTracking(self.Settings["track-other"])
+	self:UpdateReagentTracking(self.Settings["track-reagents"])
+	self:UpdateOtherTracking(self.Settings["track-other"])
 end
 
 function Gathering:CreateGUI()
