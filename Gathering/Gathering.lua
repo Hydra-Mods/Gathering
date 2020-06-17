@@ -696,10 +696,10 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 	for i = 0, (GetNumReplicateItems() - 1) do
 		Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
 		
-		if (HasAllInfo and self.Tracked[ID]) then
+		if HasAllInfo then
 			self.MarketPrices[Name] = Buyout / Count
 			GatheringMarketPrices[Name] = self.MarketPrices[Name]
-		elseif (ID and self.Tracked[ID]) then
+		elseif ID then
 			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
 				Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
 				PerUnit = Buyout / Count
