@@ -687,6 +687,7 @@ end
 
 function Gathering:PLAYER_ENTERING_WORLD()
 	self.MarketPrices = GatheringMarketPrices or {}
+	self.Ignored = GatheringIgnore or {}
 	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end

@@ -3,6 +3,6 @@
 ## Version: 1.20
 ## Title: Gathering
 ## Notes: Track gathered items.
-## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings
+## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore
 
 Gathering.lua
