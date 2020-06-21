@@ -26,26 +26,256 @@ end
 
 local L = setmetatable({}, {__index = Index})
 
-if (Locale == "deDE") then
+if (Locale == "deDE") then -- German
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-elseif (Locale == "esES") then
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
 	
-elseif (Locale == "esMX") then
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "esES") then -- Spanish (Spain)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-elseif (Locale == "frFR") then
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
 	
-elseif (Locale == "itIT") then
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "esMX") then -- Spanish (Mexico)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-elseif (Locale == "koKR") then
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
 	
-elseif (Locale == "ptBR") then
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "frFR") then -- French
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-elseif (Locale == "ruRU") then
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
 	
-elseif (Locale == "zhCN") then
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "itIT") then -- Italian
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-elseif (Locale == "zhTW") then
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
 	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "koKR") then -- Korean
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "ptBR") then -- Portuguese (Brazil)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "ruRU") then -- Russian
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "zhCN") then -- Chinese (Simplified)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
+elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
+	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
+	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cooking"] = "Cooking"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Weapons"] = "Weapons"
+	L["Armor"] = "Armor"
+	L["Pets"] = "Pets"
+	L["Mounts"] = "Mounts"
+	L["Consumables"] = "Consumables"
+	L["Reagents"] = "Reagents"
 end
 
 local Outline = {
@@ -540,20 +770,20 @@ function Gathering:CreateGUI()
 	-- Layout
 	self:CreateHeader(TRACKING) -- GENERAL
 	
-	self:CreateCheckbox("track-ore", "Ore", self.UpdateOreTracking)
-	self:CreateCheckbox("track-herbs", "Herbs", self.UpdateHerbTracking)
-	self:CreateCheckbox("track-leather", "Leather", self.UpdateLeatherTracking)
-	self:CreateCheckbox("track-cooking", "Cooking", self.UpdateCookingTracking)
-	self:CreateCheckbox("track-cloth", "Cloth", self.UpdateClothTracking)
-	self:CreateCheckbox("track-enchanting", "Enchanting", self.UpdateEnchantingTracking)
-	self:CreateCheckbox("track-jewelcrafting", "Jewelcrafting", self.UpdateJewelcraftingTracking)
-	self:CreateCheckbox("track-weapons", "Weapons", self.UpdateWeaponTracking)
-	self:CreateCheckbox("track-armor", "Armor", self.UpdateArmorTracking)
-	self:CreateCheckbox("track-pets", "Pets", self.UpdatePetTracking)
-	self:CreateCheckbox("track-mounts", "Mounts", self.UpdateMountTracking)
-	self:CreateCheckbox("track-consumables", "Consumables", self.UpdateConsumableTracking)
-	self:CreateCheckbox("track-reagents", "Reagents", self.UpdateReagentTracking)
-	--self:CreateCheckbox("track-other", "Other", self.UpdateOtherTracking)
+	self:CreateCheckbox("track-ore", L["Ore"], self.UpdateOreTracking)
+	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
+	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
+	self:CreateCheckbox("track-cooking", L["Cooking"], self.UpdateCookingTracking)
+	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
+	self:CreateCheckbox("track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
+	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
+	self:CreateCheckbox("track-weapons", L["Weapons"], self.UpdateWeaponTracking)
+	self:CreateCheckbox("track-armor", L["Armor"], self.UpdateArmorTracking)
+	self:CreateCheckbox("track-pets", L["Pets"], self.UpdatePetTracking)
+	self:CreateCheckbox("track-mounts", L["Mounts"], self.UpdateMountTracking)
+	self:CreateCheckbox("track-consumables", L["Consumables"], self.UpdateConsumableTracking)
+	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
+	--self:CreateCheckbox("track-other", L["Other"], self.UpdateOtherTracking)
 	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
@@ -599,7 +829,7 @@ function Gathering:ScanButtonOnClick()
 	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
 	
 	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
-		print(format("You must wait %s until you can scan again.", Gathering:FormatTime(900 - TimeDiff)))
+		print(format(L["You must wait %s until you can scan again."], Gathering:FormatTime(900 - TimeDiff)))
 		return
 	end
 	
@@ -615,7 +845,7 @@ function Gathering:ScanButtonOnClick()
 	
 	ReplicateItems()
 	
-	print("|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds.")
+	print(L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."])
 	
 	GatheringLastScan = GetTime()
 end
@@ -704,7 +934,7 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 	
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 	
-	print("|cff00CC6AGathering|r updated market prices.")
+	print(L["|cff00CC6AGathering|r updated market prices."])
 end
 
 function Gathering:MODIFIER_STATE_CHANGED()
@@ -751,7 +981,7 @@ function Gathering:OnEnter()
 	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
 	self.Tooltip:ClearLines()
 	
-	self.Tooltip:AddLine("Gathering")
+	self.Tooltip:AddLine(L["Gathering"])
 	self.Tooltip:AddLine(" ")
 	
 	for SubType, Info in pairs(self.Gathered) do
@@ -771,9 +1001,9 @@ function Gathering:OnEnter()
 			end
 			
 			if (IsShiftKeyDown() and self.MarketPrices[Name]) then
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, self:CopperToGold((self.MarketPrices[Name] * Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60)), 1, 1, 1, 1, 1, 1)
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((self.MarketPrices[Name] * Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			else
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/Hr)", Value, floor((Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60)), 1, 1, 1, 1, 1, 1)
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			end
 		end
 		
@@ -783,21 +1013,21 @@ function Gathering:OnEnter()
 	end
 	
 	self.Tooltip:AddLine(" ")
-	self.Tooltip:AddDoubleLine("Total Gathered:", self.TotalGathered, nil, nil, nil, 1, 1, 1)
+	self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
 	
 	if IsShiftKeyDown() then
-		self.Tooltip:AddDoubleLine("Total Average Per Hour:", self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
+		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
 	else
-		self.Tooltip:AddDoubleLine("Total Average Per Hour:", BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
+		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
 	end
 	
 	if (MarketTotal > 0) then
-		self.Tooltip:AddDoubleLine("Total Value:", self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
+		self.Tooltip:AddDoubleLine(L["Total Value:"], self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
 	end
 	
 	self.Tooltip:AddLine(" ")
-	self.Tooltip:AddLine("Left click: Toggle timer")
-	self.Tooltip:AddLine("Right click: Reset data")
+	self.Tooltip:AddLine(L["Left click: Toggle timer"])
+	self.Tooltip:AddLine(L["Right click: Reset data"])
 	
 	self:UpdateFont()
 	
