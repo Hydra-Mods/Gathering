@@ -11,6 +11,7 @@ local BreakUpLargeNumbers = BreakUpLargeNumbers
 local ReplicateItems = C_AuctionHouse.ReplicateItems
 local GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
 local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
+local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local LootMessage = LOOT_ITEM_SELF:gsub("%%.*", "")
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
 local MaxWidgets = 11
@@ -611,7 +612,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID))
 	
 	-- Check that we want to track the type of item
-	if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
+	if (not self.Ignored[ID] or (not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
 		return
 	end
 	
@@ -733,7 +734,7 @@ function Gathering:OnEnter()
 			local Hex = "|cffFFFFFF"
 			
 			if Rarity then
-				Hex = RarityColor[Rarity].hex
+				Hex = ITEM_QUALITY_COLORS[Rarity].hex
 			end
 			
 			if self.MarketPrices[Name] then
