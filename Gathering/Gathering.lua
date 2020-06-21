@@ -51,6 +51,7 @@ if (Locale == "deDE") then -- German
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -76,6 +77,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -101,6 +103,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -126,6 +129,7 @@ elseif (Locale == "frFR") then -- French
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -151,6 +155,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -176,6 +181,9 @@ elseif (Locale == "koKR") then -- Korean
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	
+	Font = "Fonts\\2002.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -201,6 +209,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -226,6 +235,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -251,6 +261,9 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	
+	Font = "Fonts\\ARHei.ttf"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -276,6 +289,9 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Mounts"] = "Mounts"
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	
+	Font = "Fonts\\bLEI00D.ttf"
 end
 
 local Outline = {
@@ -794,7 +810,7 @@ function Gathering:CreateGUI()
 	
 	self:CreateHeader(MISCELLANEOUS)
 	
-	self:CreateCheckbox("ignore-bop", L["Ignore BoP"])
+	self:CreateCheckbox("ignore-bop", L[L["Ignore Bind on Pickup"]])
 	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
@@ -879,7 +895,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
-	local Type, SubType, _, _, _, SellPrice, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
+	local Type, SubType, _, _, _, _, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
 	
 	-- Check that we want to track the type of item
 	if (self.Ignored[ID] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
