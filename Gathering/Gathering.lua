@@ -335,7 +335,7 @@ Gathering.DefaultSettings = {
 	["track-other"] = false,
 	
 	-- Functionality
-	--["ignore-mail"] = true,
+	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 }
 
 Gathering.TrackedItemTypes = {
@@ -567,20 +567,29 @@ function Gathering:CheckBoxOnMouseUp()
 	if (Gathering.Settings[self.Setting] == true) then
 		self.Tex:SetVertexColor(0.8, 0, 0)
 		Gathering:UpdateSettingValue(self.Setting, false)
-		self:Hook(false)
+		
+		if self.Hook then
+			self:Hook(false)
+		end
 	else
 		self.Tex:SetVertexColor(0, 0.8, 0)
 		Gathering:UpdateSettingValue(self.Setting, true)
-		self:Hook(true)
+		
+		if self.Hook then
+			self:Hook(true)
+		end
 	end
 end
 
 function Gathering:CreateCheckbox(key, text, func)
 	local Checkbox = CreateFrame("Frame", nil, self.GUI.ButtonParent)
 	Checkbox:SetSize(20, 20)
-	Checkbox.Setting = key
-	Checkbox.Hook = func
 	Checkbox:SetScript("OnMouseUp", self.CheckBoxOnMouseUp)
+	Checkbox.Setting = key
+	
+	if func then
+		Checkbox.Hook = func
+	end
 	
 	Checkbox.BG = Checkbox:CreateTexture(nil, "BORDER")
 	Checkbox.BG:SetTexture(BlankTexture)
@@ -783,6 +792,10 @@ function Gathering:CreateGUI()
 	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
 	--self:CreateCheckbox("track-other", L["Other"], self.UpdateOtherTracking)
 	
+	self:CreateHeader(MISCELLANEOUS)
+	
+	self:CreateCheckbox("ignore-bop", L["Ignore BoP"])
+	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
 	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
@@ -866,11 +879,14 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
-	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID)) -- /run select(6, GetItemInfo(152875))
+	local Type, SubType, _, _, _, SellPrice, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
 	
 	-- Check that we want to track the type of item
 	if (self.Ignored[ID] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
-	--if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
+		return
+	end
+	
+	if (BindType and (BindType ~= 2) and (BindType ~= 3) and self.Settings["ignore-bop"]) then
 		return
 	end
 	
