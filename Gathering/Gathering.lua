@@ -869,8 +869,8 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	local Type, SubType, _, _, _, _, ClassID, SubClassID = select(6, GetItemInfo(ID)) -- /run select(6, GetItemInfo(152875))
 	
 	-- Check that we want to track the type of item
-	--if (not self.Ignored[ID] or (not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
-	if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
+	if (self.Ignored[ID] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
+	--if ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID])) then
 		return
 	end
 	
