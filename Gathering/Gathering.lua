@@ -14,10 +14,39 @@ local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local LootMessage = LOOT_ITEM_SELF:gsub("%%.*", "")
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
+local Locale = GetLocale()
 local MaxWidgets = 11
 local BlankTexture = "Interface\\AddOns\\Gathering\\vUIBlank.tga"
 local BarTexture = "Interface\\AddOns\\Gathering\\vUI4.tga"
 local Font = "Interface\\Addons\\Gathering\\PTSans.ttf"
+
+local Index = function(self, key)
+	return key
+end
+
+local L = setmetatable({}, {__index = Index})
+
+if (Locale == "deDE") then
+	
+elseif (Locale == "esES") then
+	
+elseif (Locale == "esMX") then
+	
+elseif (Locale == "frFR") then
+	
+elseif (Locale == "itIT") then
+	
+elseif (Locale == "koKR") then
+	
+elseif (Locale == "ptBR") then
+	
+elseif (Locale == "ruRU") then
+	
+elseif (Locale == "zhCN") then
+	
+elseif (Locale == "zhTW") then
+	
+end
 
 local Outline = {
 	bgFile = BlankTexture,
