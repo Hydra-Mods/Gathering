@@ -183,7 +183,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	
-	Font = "Fonts\\2002.ttf"
+	Font = "Fonts\\2002b.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -902,7 +902,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 		return
 	end
 	
-	if (BindType and (BindType ~= 2) and (BindType ~= 3) and self.Settings["ignore-bop"]) then
+	if (BindType and ((BindType ~= 0) and self.Settings["ignore-bop"])) then
 		return
 	end
 	
