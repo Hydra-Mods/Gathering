@@ -1044,7 +1044,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	
 	local Type, SubType, _, _, _, _, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
 	
-	if (self.Ignored[ID] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
+	if (self.Ignored[ID] or self.Ignored[Name] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
 		return
 	end
 	
