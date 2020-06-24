@@ -449,6 +449,42 @@ function Gathering:UpdateOtherTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_OTHER] = value
 end
 
+function Gathering:AddIgnoredItem(text)
+	if (text == "") then
+		return
+	end
+	
+	local ID = tonumber(text)
+	
+	if (not GatheringIgnore) then
+		GatheringIgnore = {}
+	end
+	
+	if ID then
+		GatheringIgnore[ID] = true
+		
+		print(format(ERR_IGNORE_ADDED_S, GetItemInfo(ID)))
+	else
+		GatheringIgnore[text] = true
+		
+		print(format(ERR_IGNORE_ADDED_S, text))
+	end
+end
+
+function Gathering:RemoveIgnoredItem(text)
+	if ((not GatheringIgnore) or (text == "")) then
+		return
+	end
+	
+	local ID = tonumber(text)
+	
+	if ID then
+		GatheringIgnore[ID] = nil
+	else
+		GatheringIgnore[text] = nil
+	end
+end
+
 function Gathering:UpdateFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
@@ -630,6 +666,113 @@ function Gathering:CreateCheckbox(key, text, func)
 	tinsert(self.GUI.Window.Widgets, Checkbox)
 end
 
+local InputWindowOnMouseDown = function(self)
+	self:HighlightText()
+	self:SetAutoFocus(true)
+end
+
+function Gathering:EditBoxOnEnterPressed()
+	local Text = self:GetText()
+	
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	
+	if self.Hook then
+		self:Hook(Text)
+	end
+	
+	self:SetText(L["Ignore items"])
+end
+
+function Gathering:EditBoxOnMouseDown()
+	local Type, ID, Link = GetCursorInfo()
+	
+	self:SetAutoFocus(true)
+	
+	if (Type and Type == "item") then
+		self:SetText(ID)
+		self.Icon:SetTexture(C_Item.GetItemIconByID(ID))
+	else
+		self:SetText("")
+	end
+	
+	ClearCursor()
+end
+
+function Gathering:OnEditFocusLost()
+	self:SetText("")
+	self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
+	ClearCursor()
+end
+
+function Gathering:OnEditChar(text)
+	local ID = tonumber(self:GetText())
+	
+	if (not ID) then
+		self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
+		
+		return
+	end
+	
+	local IconID = C_Item.GetItemIconByID(ID)
+	
+	if (IconID and IconID ~= 134400) then
+		self.Icon:SetTexture(IconID)
+	else
+		self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
+	end
+end
+
+function Gathering:CreateEditBox(text, func)
+	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
+	EditBox:SetSize(168, 20)
+	EditBox:SetFont(Font, 12)
+	EditBox:SetShadowColor(0, 0, 0)
+	EditBox:SetShadowOffset(1, -1)
+	EditBox:SetJustifyH("LEFT")
+	EditBox:SetAutoFocus(false)
+	EditBox:EnableKeyboard(true)
+	EditBox:EnableMouse(true)
+	EditBox:SetMaxLetters(255)
+	EditBox:SetTextInsets(5, 0, 0, 0)
+	EditBox:SetText(text)
+	EditBox:SetScript("OnEnterPressed", self.EditBoxOnEnterPressed)
+	EditBox:SetScript("OnEscapePressed", self.EditBoxOnEnterPressed)
+	EditBox:SetScript("OnMouseDown", self.EditBoxOnMouseDown)
+	EditBox:SetScript("OnEditFocusLost", self.OnEditFocusLost)
+	EditBox:SetScript("OnChar", self.OnEditChar)
+	
+	if func then
+		EditBox.Hook = func
+	end
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0, 0, 0)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
+	
+	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
+	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
+	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
+	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	
+	EditBox.Icon = EditBox:CreateTexture(nil, "ARTWORK")
+	EditBox.Icon:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
+	EditBox.Icon:SetSize(18, 18)
+	EditBox.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
+	EditBox.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0, 0, 0)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox.Icon, -1, 1)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox.Icon, 1, -1)
+	
+	tinsert(self.GUI.Window.Widgets, EditBox)
+end
+
 local Scroll = function(self)
 	local First = false
 	
@@ -805,7 +948,15 @@ function Gathering:CreateGUI()
 	
 	self:CreateHeader(MISCELLANEOUS)
 	
-	self:CreateCheckbox("ignore-bop", L[L["Ignore Bind on Pickup"]])
+	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
+	
+	self:CreateHeader(IGNORE)
+	
+	self:CreateEditBox(L["Ignore items"], self.AddIgnoredItem)
+	
+	self:CreateHeader(UNIGNORE_QUEST)
+	
+	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
 	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
