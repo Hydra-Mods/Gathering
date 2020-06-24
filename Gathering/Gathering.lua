@@ -379,7 +379,6 @@ function Gathering:UpdateWeaponTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CATCLAW] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_UNARMED] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GENERIC] = value
-	--Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_THROWN] = value -- Classic
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CROSSBOW] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WAND] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_FISHINGPOLE] = value
@@ -393,10 +392,6 @@ function Gathering:UpdateArmorTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_PLATE] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_COSMETIC] = value
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SHIELD] = value
-	--[[Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LIBRAM] = value -- Classic
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_IDOL] = value -- Classic
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_TOTEM] = value -- Classic
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SIGIL] = value -- Classic]]
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_RELIC] = value
 end
 
@@ -705,8 +700,8 @@ function Gathering:InitiateSettings()
 	self:UpdateCookingTracking(self.Settings["track-cooking"])
 	self:UpdateHerbTracking(self.Settings["track-herbs"])
 	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
-	self:UpdatePetTracking(self.Settings["track-pets"])
-	--self:UpdateHolidayTracking(self.Settings["track-weapons"])
+	--self:UpdatePetTracking(self.Settings["track-pets"])
+	--self:UpdateHolidayTracking(self.Settings["track-holiday"])
 	self:UpdateMountTracking(self.Settings["track-mounts"])
 	self:UpdateConsumableTracking(self.Settings["track-consumables"])
 	self:UpdateReagentTracking(self.Settings["track-reagents"])
@@ -889,15 +884,15 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	local PreMessage, _, ItemString, Name, Quantity = match(msg, LootMatch)
 	local LinkType, ID = match(ItemString, "^(%a+):(%d+)")
 	
-	if (PreMessage ~= LootMessage) then
-		return
-	end
+	--if (PreMessage ~= LootMessage) then
+	--	return
+	--end
 	
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
+	
 	local Type, SubType, _, _, _, _, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
 	
-	-- Check that we want to track the type of item
 	if (self.Ignored[ID] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
 		return
 	end
@@ -911,15 +906,15 @@ function Gathering:CHAT_MSG_LOOT(msg)
 		self.NumTypes = self.NumTypes + 1
 	end
 	
-	if (not self.Gathered[SubType][Name]) then
-		self.Gathered[SubType][Name] = 0
+	if (not self.Gathered[SubType][ID]) then
+		self.Gathered[SubType][ID] = 0
 	end
 	
-	if (not self.SecondsPerItem[Name]) then
-		self.SecondsPerItem[Name] = 0
+	if (not self.SecondsPerItem[ID]) then
+		self.SecondsPerItem[ID] = 0
 	end
 	
-	self.Gathered[SubType][Name] = self.Gathered[SubType][Name] + Quantity
+	self.Gathered[SubType][ID] = self.Gathered[SubType][ID] + Quantity
 	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 	
 	if (not self:GetScript("OnUpdate")) then
@@ -937,27 +932,27 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 		GatheringMarketPrices = {}
 	end
 	
-	local Name, Count, Buyout, ID, HasAllInfo, PerUnit, _
+	local Count, Buyout, ID, HasAllInfo, PerUnit, _
 	
 	for i = 0, (GetNumReplicateItems() - 1) do
-		Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
+		_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
 		
 		if HasAllInfo then
-			self.MarketPrices[Name] = Buyout / Count
-			GatheringMarketPrices[Name] = self.MarketPrices[Name]
+			self.MarketPrices[ID] = Buyout / Count
+			GatheringMarketPrices[ID] = self.MarketPrices[ID]
 		elseif ID then
 			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
-				Name, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
+				_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
 				PerUnit = Buyout / Count
 				
-				if self.MarketPrices[Name] then
-					if (self.MarketPrices[Name] > PerUnit) then -- Collect lowest prices
-						self.MarketPrices[Name] = PerUnit
-						GatheringMarketPrices[Name] = self.MarketPrices[Name]
+				if self.MarketPrices[ID] then
+					if (self.MarketPrices[ID] > PerUnit) then -- Collect lowest prices
+						self.MarketPrices[ID] = PerUnit
+						GatheringMarketPrices[ID] = self.MarketPrices[ID]
 					end
 				else
-					self.MarketPrices[Name] = PerUnit
-					GatheringMarketPrices[Name] = self.MarketPrices[Name]
+					self.MarketPrices[ID] = PerUnit
+					GatheringMarketPrices[ID] = self.MarketPrices[ID]
 				end
 			end)
 		end
@@ -1021,22 +1016,22 @@ function Gathering:OnEnter()
 		self.Tooltip:AddLine(SubType, 1, 1, 0)
 		Count = Count + 1
 		
-		for Name, Value in pairs(Info) do
-			local Rarity = select(3, GetItemInfo(Name))
+		for ID, Value in pairs(Info) do
+			local Name, _ , Rarity = GetItemInfo(ID)
 			local Hex = "|cffFFFFFF"
 			
 			if Rarity then
 				Hex = ITEM_QUALITY_COLORS[Rarity].hex
 			end
 			
-			if self.MarketPrices[Name] then
-				MarketTotal = MarketTotal + (self.MarketPrices[Name] * Value)
+			if self.MarketPrices[ID] then
+				MarketTotal = MarketTotal + (self.MarketPrices[ID] * Value)
 			end
 			
-			if (IsShiftKeyDown() and self.MarketPrices[Name]) then
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((self.MarketPrices[Name] * Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+			if (IsShiftKeyDown() and self.MarketPrices[ID]) then
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((self.MarketPrices[ID] * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			else
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[Name], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			end
 		end
 		
