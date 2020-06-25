@@ -352,6 +352,7 @@ Gathering.DefaultSettings = {
 	
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
+	["hide-idle"] = false, -- Hide the tracker frame while not running
 }
 
 Gathering.TrackedItemTypes = {
@@ -485,6 +486,14 @@ function Gathering:RemoveIgnoredItem(text)
 	end
 end
 
+function Gathering:ToggleTimerPanel(value)
+	if value then
+		Gathering:Hide()
+	else
+		Gathering:Show()
+	end
+end
+
 function Gathering:UpdateFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
@@ -524,6 +533,10 @@ function Gathering:OnUpdate(ela)
 end
 
 function Gathering:StartTimer()
+	if (self.Settings["hide-idle"] and not self:IsVisible()) then
+		self:Show()
+	end
+	
 	if (not strfind(self.Text:GetText(), "%d")) then
 		self.Text:SetText("0:00:00")
 	end
@@ -561,6 +574,10 @@ function Gathering:Reset()
 	
 	if self.MouseIsOver then
 		self:OnLeave()
+	end
+	
+	if self.Settings["hide-idle"] then
+		self:Hide()
 	end
 end
 
@@ -949,6 +966,7 @@ function Gathering:CreateGUI()
 	self:CreateHeader(MISCELLANEOUS)
 	
 	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
+	self:CreateCheckbox("hide-idle", L["Hide frame while idle"], self.ToggleTimerPanel)
 	
 	self:CreateHeader(IGNORE)
 	
@@ -1126,6 +1144,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	self.Ignored = GatheringIgnore or {}
 	
 	self:InitiateSettings()
+	
+	if self.Settings["hide-idle"] then
+		self:Hide()
+	end
 	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
