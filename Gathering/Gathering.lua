@@ -52,6 +52,7 @@ if (Locale == "deDE") then -- German
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -78,6 +79,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -104,6 +106,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -130,6 +133,7 @@ elseif (Locale == "frFR") then -- French
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -156,6 +160,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -182,6 +187,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 	
 	Font = "Fonts\\2002b.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
@@ -210,6 +216,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -236,6 +243,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -262,6 +270,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 	
 	Font = "Fonts\\ARHei.ttf"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
@@ -290,6 +299,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["%s is now being unignored."] = "%s is now being unignored."
 	
 	Font = "Fonts\\bLEI00D.ttf"
 end
@@ -481,13 +491,17 @@ function Gathering:RemoveIgnoredItem(text)
 	
 	if ID then
 		GatheringIgnore[ID] = nil
+		
+		print(format(L["%s is now being unignored."], GetItemInfo(ID)))
 	else
 		GatheringIgnore[text] = nil
+		
+		print(format(L["%s is now being unignored."], text))
 	end
 end
 
 function Gathering:ToggleTimerPanel(value)
-	if value then
+	if (value and (not Gathering:GetScript("OnUpdate"))) then
 		Gathering:Hide()
 	else
 		Gathering:Show()
@@ -966,7 +980,7 @@ function Gathering:CreateGUI()
 	self:CreateHeader(MISCELLANEOUS)
 	
 	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
-	self:CreateCheckbox("hide-idle", L["Hide frame while idle"], self.ToggleTimerPanel)
+	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
 	
 	self:CreateHeader(IGNORE)
 	
