@@ -454,6 +454,7 @@ end
 
 function Gathering:UpdateReagentTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_REAGENT] = value
+	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][10] = value
 end
 
 function Gathering:UpdateOtherTracking(value)
@@ -1159,6 +1160,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	
 	self:InitiateSettings()
 	
+	if IsAddOnLoaded("TradeSkillMaster") then
+		self.HasTSM = true
+	end
+	
 	if self.Settings["hide-idle"] then
 		self:Hide()
 	end
@@ -1167,7 +1172,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 end
 
 function Gathering:AUCTION_HOUSE_SHOW()
-	if (not self.ScanButton) then
+	if (not self.ScanButton and AuctionHouseFrame and not self.HasTSM) then
 		self.ScanButton = CreateFrame("Button", "Gathering Scan Button", AuctionHouseFrame.MoneyFrameBorder, "UIPanelButtonTemplate")
 		self.ScanButton:SetSize(140, 24)
 		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
@@ -1179,6 +1184,14 @@ end
 function Gathering:OnEvent(event, ...)
 	if self[event] then
 		self[event](self, ...)
+	end
+end
+
+function Gathering:GetPrice(id, link)
+	if self.HasTSM then
+		return TSM_API.GetCustomPriceValue("dbMarket", TSM_API.ToItemString(link))
+	else
+		return self.MarketPrices[id]
 	end
 end
 
@@ -1204,19 +1217,21 @@ function Gathering:OnEnter()
 		Count = Count + 1
 		
 		for ID, Value in pairs(Info) do
-			local Name, _ , Rarity = GetItemInfo(ID)
+			local Name, Link, Rarity = GetItemInfo(ID)
 			local Hex = "|cffFFFFFF"
 			
 			if Rarity then
 				Hex = ITEM_QUALITY_COLORS[Rarity].hex
 			end
 			
-			if self.MarketPrices[ID] then
-				MarketTotal = MarketTotal + (self.MarketPrices[ID] * Value)
+			local Price = self:GetPrice(ID, Link)
+			
+			if Price then
+				MarketTotal = MarketTotal + (Price * Value)
 			end
 			
-			if (IsShiftKeyDown() and self.MarketPrices[ID]) then
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((self.MarketPrices[ID] * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+			if (IsShiftKeyDown() and Price) then
+				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((Price * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			else
 				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 			end
