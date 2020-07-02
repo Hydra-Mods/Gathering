@@ -53,8 +53,8 @@ if (Locale == "deDE") then -- German
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -82,8 +82,8 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -111,8 +111,8 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -140,8 +140,8 @@ elseif (Locale == "frFR") then -- French
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -169,8 +169,8 @@ elseif (Locale == "itIT") then -- Italian
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -198,8 +198,8 @@ elseif (Locale == "koKR") then -- Korean
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 	
 	Font = "Fonts\\2002b.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
@@ -229,8 +229,8 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -258,8 +258,8 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -287,8 +287,8 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 	
 	Font = "Fonts\\ARHei.ttf"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
@@ -318,8 +318,8 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
-	
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 	
 	Font = "Fonts\\bLEI00D.ttf"
 end
@@ -1214,7 +1214,7 @@ function Gathering:OnTooltipSetItem()
 		if (Price and Price > 0) then
 			self:AddLine(" ")
 			self:AddLine("|cff00CC6AGathering|r")
-			self:AddLine(format("Price per unit: %s", Gathering:CopperToGold(Price)), 1, 1, 1)
+			self:AddLine(format(L["Price per unit: %s"], Gathering:CopperToGold(Price)), 1, 1, 1)
 		end
 	end
 end
