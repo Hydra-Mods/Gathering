@@ -543,14 +543,10 @@ function Gathering:UpdateFont()
 	end
 end
 
---[[function Gathering:CopperToGold(copper)
-	return format("%s|cfff4d03fg|r", BreakUpLargeNumbers(floor((copper / 100) / 100 + 0.5)))
-end]]
-
 function Gathering:CopperToGold(copper)
-	local Gold = floor(copper / (COPPER_PER_SILVER * SILVER_PER_GOLD))
-	local Silver = floor((copper - (Gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER)
-	local Copper = mod(copper, COPPER_PER_SILVER)
+	local Gold = floor(copper / (100 * 100))
+	local Silver = floor((copper - (Gold * 100 * 100)) / 100)
+	local Copper = floor(copper % 100)
 	local Separator = ""
 	local String = ""
 	
@@ -741,11 +737,6 @@ function Gathering:CreateCheckbox(key, text, func)
 	end
 	
 	tinsert(self.GUI.Window.Widgets, Checkbox)
-end
-
-local InputWindowOnMouseDown = function(self)
-	self:HighlightText()
-	self:SetAutoFocus(true)
 end
 
 function Gathering:EditBoxOnEnterPressed()
