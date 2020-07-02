@@ -1172,7 +1172,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 end
 
 function Gathering:AUCTION_HOUSE_SHOW()
-	if (not self.ScanButton and AuctionHouseFrame and not self.HasTSM) then
+	if (not self.ScanButton and AuctionHouseFrame) then
 		self.ScanButton = CreateFrame("Button", "Gathering Scan Button", AuctionHouseFrame.MoneyFrameBorder, "UIPanelButtonTemplate")
 		self.ScanButton:SetSize(140, 24)
 		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
