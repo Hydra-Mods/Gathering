@@ -53,6 +53,8 @@ if (Locale == "deDE") then -- German
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -80,6 +82,8 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -107,6 +111,8 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -134,6 +140,8 @@ elseif (Locale == "frFR") then -- French
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -161,6 +169,8 @@ elseif (Locale == "itIT") then -- Italian
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -188,6 +198,8 @@ elseif (Locale == "koKR") then -- Korean
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 	
 	Font = "Fonts\\2002b.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
@@ -217,6 +229,8 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -244,6 +258,8 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -271,6 +287,8 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 	
 	Font = "Fonts\\ARHei.ttf"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
@@ -300,6 +318,8 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["%s is now being unignored."] = "%s is now being unignored."
+	
+	L["Show tooltip data"] = "Show tooltip data"
 	
 	Font = "Fonts\\bLEI00D.ttf"
 end
@@ -363,6 +383,7 @@ Gathering.DefaultSettings = {
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	["hide-idle"] = false, -- Hide the tracker frame while not running
+	["show-tooltip"] = false, -- Show tooltip data about item prices
 }
 
 Gathering.TrackedItemTypes = {
@@ -522,8 +543,32 @@ function Gathering:UpdateFont()
 	end
 end
 
-function Gathering:CopperToGold(copper)
+--[[function Gathering:CopperToGold(copper)
 	return format("%s|cfff4d03fg|r", BreakUpLargeNumbers(floor((copper / 100) / 100 + 0.5)))
+end]]
+
+function Gathering:CopperToGold(copper)
+	local Gold = floor(copper / (COPPER_PER_SILVER * SILVER_PER_GOLD))
+	local Silver = floor((copper - (Gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER)
+	local Copper = mod(copper, COPPER_PER_SILVER)
+	local Separator = ""
+	local String = ""
+	
+	if (Gold > 0) then
+		String = Gold .. "|cffffe02eg|r"
+		Separator = " "
+	end
+	
+	if (Silver > 0) then
+		String = String .. Separator .. Silver .. "|cffd6d6d6s|r"
+		Separator = " "
+	end
+	
+	if (Copper > 0 or String == "") then
+		String = String .. Separator .. Copper .. "|cfffc8d2bc|r"
+	end
+	
+	return String
 end
 
 function Gathering:OnUpdate(ela)
@@ -982,6 +1027,7 @@ function Gathering:CreateGUI()
 	
 	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
 	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
+	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
 	
 	self:CreateHeader(IGNORE)
 	
@@ -1154,6 +1200,25 @@ function Gathering:MODIFIER_STATE_CHANGED()
 	end
 end
 
+function Gathering:OnTooltipSetItem()
+	if (not Gathering.Settings["show-tooltip"]) then
+		return
+	end
+	
+	local Item, Link = self:GetItem()
+	
+	if Item then
+		local ID = match(Link, "^|cff%x+|Hitem:(%d+)")
+		local Price = Gathering:GetPrice(ID, Link)
+		
+		if (Price and Price > 0) then
+			self:AddLine(" ")
+			self:AddLine("|cff00CC6AGathering|r")
+			self:AddLine(format("Price per unit: %s", Gathering:CopperToGold(Price)), 1, 1, 1)
+		end
+	end
+end
+
 function Gathering:PLAYER_ENTERING_WORLD()
 	self.MarketPrices = GatheringMarketPrices or {}
 	self.Ignored = GatheringIgnore or {}
@@ -1163,6 +1228,8 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	if IsAddOnLoaded("TradeSkillMaster") then
 		self.HasTSM = true
 	end
+	
+	GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
 	
 	if self.Settings["hide-idle"] then
 		self:Hide()
