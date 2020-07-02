@@ -1245,7 +1245,7 @@ function Gathering:OnEnter()
 	self.Tooltip:AddLine(" ")
 	self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
 	
-	if IsShiftKeyDown() then
+	if (IsShiftKeyDown() and MarketTotal > 0) then
 		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
 	else
 		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
