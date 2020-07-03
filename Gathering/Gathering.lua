@@ -1199,7 +1199,7 @@ function Gathering:OnTooltipSetItem()
 	local Item, Link = self:GetItem()
 	
 	if Item then
-		local ID = match(Link, "^|cff%x+|Hitem:(%d+)")
+		local ID = tonumber(match(Link, "^|cff%x+|Hitem:(%d+)"))
 		local Price = Gathering:GetPrice(ID, Link)
 		
 		if (Price and Price > 0) then
