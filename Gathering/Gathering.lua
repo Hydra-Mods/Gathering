@@ -392,7 +392,7 @@ Gathering.TrackedItemTypes = {
 	[LE_ITEM_CLASS_ARMOR] = {},
 	[LE_ITEM_CLASS_TRADEGOODS] = {},
 	[LE_ITEM_CLASS_MISCELLANEOUS] = {},
-	[LE_ITEM_CLASS_BATTLEPET] = {},
+	--[LE_ITEM_CLASS_BATTLEPET] = {},
 }
 
 function Gathering:UpdateWeaponTracking(value)
@@ -910,8 +910,6 @@ function Gathering:InitiateSettings()
 	self:UpdateCookingTracking(self.Settings["track-cooking"])
 	self:UpdateHerbTracking(self.Settings["track-herbs"])
 	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
-	--self:UpdatePetTracking(self.Settings["track-pets"])
-	--self:UpdateHolidayTracking(self.Settings["track-holiday"])
 	self:UpdateMountTracking(self.Settings["track-mounts"])
 	self:UpdateConsumableTracking(self.Settings["track-consumables"])
 	self:UpdateReagentTracking(self.Settings["track-reagents"])
@@ -1007,11 +1005,9 @@ function Gathering:CreateGUI()
 	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
 	self:CreateCheckbox("track-weapons", L["Weapons"], self.UpdateWeaponTracking)
 	self:CreateCheckbox("track-armor", L["Armor"], self.UpdateArmorTracking)
-	--self:CreateCheckbox("track-pets", L["Pets"], self.UpdatePetTracking)
 	self:CreateCheckbox("track-mounts", L["Mounts"], self.UpdateMountTracking)
 	self:CreateCheckbox("track-consumables", L["Consumables"], self.UpdateConsumableTracking)
 	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
-	--self:CreateCheckbox("track-other", L["Other"], self.UpdateOtherTracking)
 	
 	self:CreateHeader(MISCELLANEOUS)
 	
