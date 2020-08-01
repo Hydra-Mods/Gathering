@@ -751,6 +751,12 @@ function Gathering:EditBoxOnEnterPressed()
 	self:SetText(L["Ignore items"])
 end
 
+function Gathering:OnEscapePressed()
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	self:SetText(L["Ignore items"])
+end
+
 function Gathering:EditBoxOnMouseDown()
 	local Type, ID, Link = GetCursorInfo()
 	
@@ -804,7 +810,7 @@ function Gathering:CreateEditBox(text, func)
 	EditBox:SetTextInsets(5, 0, 0, 0)
 	EditBox:SetText(text)
 	EditBox:SetScript("OnEnterPressed", self.EditBoxOnEnterPressed)
-	EditBox:SetScript("OnEscapePressed", self.EditBoxOnEnterPressed)
+	EditBox:SetScript("OnEscapePressed", self.OnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.EditBoxOnMouseDown)
 	EditBox:SetScript("OnEditFocusLost", self.OnEditFocusLost)
 	EditBox:SetScript("OnChar", self.OnEditChar)
