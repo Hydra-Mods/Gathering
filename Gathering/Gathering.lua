@@ -33,11 +33,11 @@ if (Locale == "deDE") then -- German
 	L["Left click: Toggle timer"] = "Linksklick: Timer anhalten/fortsetzen"
 	L["Right click: Reset data"] = "Rechtsklick: Daten zur\195\188cksetzen"
 	L["Hr"] = "Std."
-	
+
 	L["You must wait %s until you can scan again."] = "Du musst %s warten bevor du wieder scannen kannst."
 	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r scannt gerade die Marktpreise, dies sollte weniger als 10 Sekunden dauern."
 	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r hat die Marktpreise aktualisiert"
-	
+
 	L["Ore"] = "Erz"
 	L["Herbs"] = "Kr\195\164uter"
 	L["Leather"] = "Leder"
