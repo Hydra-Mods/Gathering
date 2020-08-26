@@ -374,7 +374,6 @@ Gathering.DefaultSettings = {
 	["track-jewelcrafting"] = true,
 	["track-weapons"] = false,
 	["track-armor"] = false,
-	["track-pets"] = false,
 	["track-mounts"] = false,
 	["track-consumables"] = false,
 	["track-reagents"] = false,
@@ -392,7 +391,6 @@ Gathering.TrackedItemTypes = {
 	[LE_ITEM_CLASS_ARMOR] = {},
 	[LE_ITEM_CLASS_TRADEGOODS] = {},
 	[LE_ITEM_CLASS_MISCELLANEOUS] = {},
-	--[LE_ITEM_CLASS_BATTLEPET] = {},
 }
 
 function Gathering:UpdateWeaponTracking(value)
@@ -453,10 +451,6 @@ end
 
 function Gathering:UpdateEnchantingTracking(value)
 	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][12] = value
-end
-
-function Gathering:UpdatePetTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_COMPANION_PET] = value
 end
 
 function Gathering:UpdateHolidayTracking(value)
