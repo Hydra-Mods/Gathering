@@ -332,7 +332,7 @@ local Outline = {
 }
 
 -- Header
-local Gathering = CreateFrame("Frame", "Gathering Header", UIParent)
+local Gathering = CreateFrame("Frame", "Gathering Header", UIParent, "BackdropTemplate")
 Gathering:SetSize(140, 28)
 Gathering:SetPoint("TOP", UIParent, 0, -100)
 Gathering:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
@@ -985,7 +985,7 @@ function Gathering:CreateGUI()
 	self.GUI.ButtonParent:SetFrameStrata("HIGH")
 	self.GUI.ButtonParent:EnableMouse(true)
 	
-	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window)
+	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
 	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
 	self.GUI.OuterBackdrop:SetBackdrop(Outline)
@@ -1024,7 +1024,7 @@ function Gathering:CreateGUI()
 	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
 	
 	-- Scroll bar
-	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent)
+	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent, "BackdropTemplate")
 	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
 	self.GUI.Window.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 2)
 	self.GUI.Window.ScrollBar:SetWidth(14)
@@ -1243,6 +1243,7 @@ end
 function Gathering:GetPrice(id, link)
 	if self.HasTSM then
 		return TSM_API.GetCustomPriceValue("dbMarket", TSM_API.ToItemString(link))
+		--return TSM_API.GetCustomPriceValue("dbMinBuyout", TSM_API.ToItemString(link))
 	else
 		return self.MarketPrices[id]
 	end
