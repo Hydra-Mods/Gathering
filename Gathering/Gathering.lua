@@ -1098,6 +1098,11 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	end
 	
 	local PreMessage, _, ItemString, Name, Quantity = match(msg, LootMatch)
+	
+	if (not ItemString) then
+		return
+	end
+	
 	local LinkType, ID = match(ItemString, "^(%a+):(%d+)")
 	
 	if (PreMessage ~= LootMessage) then
