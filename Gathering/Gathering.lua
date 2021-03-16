@@ -324,7 +324,14 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	Font = "Fonts\\bLEI00D.ttf"
 end
 
-local Outline = {
+local Backdrop = {
+	bgFile = BlankTexture,
+	edgeFile = BlankTexture,
+	edgeSize = 1,
+	insets = {top = 0, left = 0, bottom = 0, right = 0},
+}
+
+local BackdropAndBorder = {
 	bgFile = BlankTexture,
 	edgeFile = BlankTexture,
 	edgeSize = 1,
@@ -333,10 +340,13 @@ local Outline = {
 
 -- Header
 local Gathering = CreateFrame("Frame", "Gathering Header", UIParent, "BackdropTemplate")
-Gathering:SetSize(140, 28)
+Gathering:SetSize(140, 26)
 Gathering:SetPoint("TOP", UIParent, 0, -100)
-Gathering:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
-Gathering:SetBackdropColor(0, 0, 0, 1)
+--Gathering:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
+--Gathering:SetBackdropColor(0, 0, 0, 1)
+Gathering:SetBackdrop(Backdrop)
+Gathering:SetBackdropBorderColor(0, 0, 0)
+Gathering:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
 Gathering:EnableMouse(true)
 Gathering:SetMovable(true)
 Gathering:SetUserPlaced(true)
@@ -350,10 +360,21 @@ Gathering.Text = Gathering:CreateFontString(nil, "OVERLAY")
 Gathering.Text:SetPoint("CENTER", Gathering, 0, 0)
 Gathering.Text:SetJustifyH("CENTER")
 Gathering.Text:SetFont(Font, 14)
+Gathering.Text:SetShadowColor(0, 0, 0)
+Gathering.Text:SetShadowOffset(1, -1)
 Gathering.Text:SetText("Gathering")
 
 -- Tooltip
 Gathering.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
+Gathering.Tooltip:SetFrameLevel(10)
+
+Gathering.Tooltip.Backdrop = CreateFrame("Frame", nil, Gathering.Tooltip, "BackdropTemplate")
+Gathering.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
+Gathering.Tooltip.Backdrop:SetBackdrop(Backdrop)
+Gathering.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
+Gathering.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
+Gathering.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
+Gathering.Tooltip.Backdrop:SetFrameLevel(1)
 
 -- Data
 Gathering.Gathered = {}
@@ -525,13 +546,15 @@ function Gathering:ToggleTimerPanel(value)
 end
 
 function Gathering:UpdateFont()
+	self.Tooltip:SetBackdrop(nil)
+	
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
 		
 		if (Region:GetObjectType() == "FontString" and not Region.Handled) then
 			Region:SetFont(Font, 12)
 			Region:SetShadowColor(0, 0, 0)
-			Region:SetShadowOffset(1.25, -1.25)
+			Region:SetShadowOffset(1, -1)
 			Region.Handled = true
 		end
 	end
@@ -653,7 +676,7 @@ function Gathering:CreateHeader(text)
 	Header.Tex:SetTexture(BarTexture)
 	Header.Tex:SetPoint("TOPLEFT", Header, 1, -1)
 	Header.Tex:SetPoint("BOTTOMRIGHT", Header, -1, 1)
-	Header.Tex:SetVertexColor(0.25, 0.25, 0.25)
+	Header.Tex:SetVertexColor(0.2, 0.2, 0.2)
 	
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
 	Header.Text:SetFont(Font, 12)
@@ -938,7 +961,7 @@ function Gathering:CreateGUI()
 	self.GUI.Texture:SetPoint("TOPLEFT", self.GUI, 0, 0)
 	self.GUI.Texture:SetPoint("BOTTOMRIGHT", self.GUI, 0, 0)
 	self.GUI.Texture:SetTexture(BarTexture)
-	self.GUI.Texture:SetVertexColor(0.25, 0.25, 0.25)
+	self.GUI.Texture:SetVertexColor(0.2, 0.2, 0.2)
 	
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
 	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
@@ -977,7 +1000,7 @@ function Gathering:CreateGUI()
 	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Inside:SetAllPoints()
 	self.GUI.Inside:SetTexture(BlankTexture)
-	self.GUI.Inside:SetVertexColor(0.3, 0.3, 0.3)
+	self.GUI.Inside:SetVertexColor(0.2, 0.2, 0.2)
 	
 	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
 	self.GUI.ButtonParent:SetAllPoints()
@@ -988,8 +1011,8 @@ function Gathering:CreateGUI()
 	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
 	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
-	self.GUI.OuterBackdrop:SetBackdrop(Outline)
-	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.OuterBackdrop:SetBackdrop(Backdrop)
+	self.GUI.OuterBackdrop:SetBackdropColor(0.2, 0.2, 0.2)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
 	
@@ -1031,8 +1054,8 @@ function Gathering:CreateGUI()
 	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
 	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
 	self.GUI.Window.ScrollBar:SetValueStep(1)
-	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
-	self.GUI.Window.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.Window.ScrollBar:SetBackdrop(Backdrop)
+	self.GUI.Window.ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
 	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
 	self.GUI.Window.ScrollBar:SetValue(1)
@@ -1112,7 +1135,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
 	
-	local Type, SubType, _, _, _, _, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
+	local _, _, Quality, _, _, Type, SubType, _, _, Texture, _, ClassID, SubClassID, BindType = GetItemInfo(ID)
 	
 	if (self.Ignored[ID] or self.Ignored[Name] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
 		return
@@ -1265,7 +1288,7 @@ function Gathering:OnEnter()
 	local MarketTotal = 0
 	
 	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
-	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+	self.Tooltip:SetPoint("TOP", self, "BOTTOM", 0, -2)
 	self.Tooltip:ClearLines()
 	
 	self.Tooltip:AddLine(L["Gathering"])
@@ -1358,19 +1381,3 @@ Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
 Gathering:SetScript("OnMouseUp", Gathering.OnMouseUp)
-
-SLASH_GATHERING1 = "/gather"
-SLASH_GATHERING2 = "/gathering"
-SlashCmdList["GATHERING"] = function(cmd)
-	if (not Gathering.GUI) then
-		Gathering:CreateGUI()
-		
-		return
-	end
-	
-	if Gathering.GUI:IsShown() then
-		Gathering.GUI:Hide()
-	else
-		Gathering.GUI:Show()
-	end
-end
