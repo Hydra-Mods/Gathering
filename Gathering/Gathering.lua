@@ -16,9 +16,23 @@ local LootMessage = LOOT_ITEM_SELF:gsub("%%.*", "")
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
 local Locale = GetLocale()
 local MaxWidgets = 11
-local BlankTexture = "Interface\\AddOns\\Gathering\\vUIBlank.tga"
-local BarTexture = "Interface\\AddOns\\Gathering\\vUI4.tga"
-local Font = "Interface\\Addons\\Gathering\\PTSans.ttf"
+local MaxSelections = 8
+local BlankTexture = "Interface\\AddOns\\Gathering\\HydraUIBlank.tga"
+local BarTexture = "Interface\\AddOns\\Gathering\\HydraUI4.tga"
+local SendAddonMessage = C_ChatInfo.SendAddonMessage
+local IsInGuild = IsInGuild
+local IsInGroup = IsInGroup
+local IsInRaid = IsInRaid
+local AddOnVersion = tonumber(GetAddOnMetadata("Gathering", "Version"))
+local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
+local Textures = SharedMedia:HashTable("statusbar")
+local Fonts = SharedMedia:HashTable("font")
+local Me = UnitName("player")
+local MyRealm = GetRealmName()
+local MyFaction = UnitFactionGroup("player")
+
+SharedMedia:Register("font", "PT Sans", "Interface\\Addons\\Gathering\\PTSans.ttf")
+SharedMedia:Register("statusbar", "HydraUI 4", BarTexture)
 
 local Index = function(self, key)
 	return key
@@ -200,8 +214,6 @@ elseif (Locale == "koKR") then -- Korean
 	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
-	
-	Font = "Fonts\\2002b.ttf"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -289,8 +301,6 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
-	
-	Font = "Fonts\\ARHei.ttf"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -320,69 +330,60 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
-	
-	Font = "Fonts\\bLEI00D.ttf"
 end
 
-local Backdrop = {
+local Outline = {
 	bgFile = BlankTexture,
 	edgeFile = BlankTexture,
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 }
 
-local BackdropAndBorder = {
-	bgFile = BlankTexture,
-	edgeFile = BlankTexture,
-	edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
--- Header
 local Gathering = CreateFrame("Frame", "Gathering Header", UIParent, "BackdropTemplate")
-Gathering:SetSize(140, 26)
 Gathering:SetPoint("TOP", UIParent, 0, -100)
---Gathering:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
---Gathering:SetBackdropColor(0, 0, 0, 1)
-Gathering:SetBackdrop(Backdrop)
-Gathering:SetBackdropBorderColor(0, 0, 0)
-Gathering:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
 Gathering:EnableMouse(true)
 Gathering:SetMovable(true)
 Gathering:SetUserPlaced(true)
-Gathering:SetClampedToScreen(true)
-Gathering:RegisterForDrag("LeftButton")
-Gathering:SetScript("OnDragStart", Gathering.StartMoving)
-Gathering:SetScript("OnDragStop", Gathering.StopMovingOrSizing)
 
--- Text
-Gathering.Text = Gathering:CreateFontString(nil, "OVERLAY")
-Gathering.Text:SetPoint("CENTER", Gathering, 0, 0)
-Gathering.Text:SetJustifyH("CENTER")
-Gathering.Text:SetFont(Font, 14)
-Gathering.Text:SetShadowColor(0, 0, 0)
-Gathering.Text:SetShadowOffset(1, -1)
-Gathering.Text:SetText("Gathering")
+function Gathering:CreateWindow()
+	self:SetSize(140, 26)
+	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1, insets = {top = 0, left = 0, bottom = 0, right = 0}})
+	self:SetBackdropBorderColor(0, 0, 0)
+	self:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
+	self:SetClampedToScreen(true)
+	self:RegisterForDrag("LeftButton")
+	self:SetScript("OnDragStart", self.StartMoving)
+	self:SetScript("OnDragStop", self.StopMovingOrSizing)
 
--- Tooltip
-Gathering.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
-Gathering.Tooltip:SetFrameLevel(10)
+	-- Text
+	self.Text = self:CreateFontString(nil, "OVERLAY")
+	self.Text:SetPoint("CENTER", self, 0, 0)
+	self.Text:SetJustifyH("CENTER")
+	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14)
+	self.Text:SetShadowColor(0, 0, 0)
+	self.Text:SetShadowOffset(1, -1)
+	self.Text:SetText("Gathering")
 
-Gathering.Tooltip.Backdrop = CreateFrame("Frame", nil, Gathering.Tooltip, "BackdropTemplate")
-Gathering.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
-Gathering.Tooltip.Backdrop:SetBackdrop(Backdrop)
-Gathering.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
-Gathering.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
-Gathering.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
-Gathering.Tooltip.Backdrop:SetFrameLevel(1)
+	-- Tooltip
+	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
+	self.Tooltip:SetFrameLevel(10)
 
--- Data
-Gathering.Gathered = {}
-Gathering.TotalGathered = 0
-Gathering.NumTypes = 0
-Gathering.Elapsed = 0
-Gathering.Seconds = 0
-Gathering.SecondsPerItem = {}
+	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
+	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
+	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1, insets = {top = 0, left = 0, bottom = 0, right = 0}})
+	self.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
+	self.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
+	self.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
+	self.Tooltip.Backdrop:SetFrameLevel(1)
+
+	-- Data
+	self.Gathered = {}
+	self.TotalGathered = 0
+	self.NumTypes = 0
+	self.Elapsed = 0
+	self.Seconds = 0
+	self.SecondsPerItem = {}
+end
 
 Gathering.DefaultSettings = {
 	-- Tracking
@@ -404,6 +405,9 @@ Gathering.DefaultSettings = {
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	["hide-idle"] = false, -- Hide the tracker frame while not running
 	["show-tooltip"] = false, -- Show tooltip data about item prices
+	
+	-- Styling
+	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
 }
 
 Gathering.TrackedItemTypes = {
@@ -545,17 +549,20 @@ function Gathering:ToggleTimerPanel(value)
 	end
 end
 
-function Gathering:UpdateFont()
+function Gathering:UpdateTooltipFont()
+	local Font = SharedMedia:Fetch("font", self.Settings["window-font"])
+	
 	self.Tooltip:SetBackdrop(nil)
 	
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
 		
-		if (Region:GetObjectType() == "FontString" and not Region.Handled) then
+		--if (Region:GetObjectType() == "FontString" and not Region.Handled) then
+		if (Region:GetObjectType() == "FontString") then
 			Region:SetFont(Font, 12)
 			Region:SetShadowColor(0, 0, 0)
 			Region:SetShadowOffset(1, -1)
-			Region.Handled = true
+			--Region.Handled = true
 		end
 	end
 end
@@ -679,7 +686,7 @@ function Gathering:CreateHeader(text)
 	Header.Tex:SetVertexColor(0.2, 0.2, 0.2)
 	
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
-	Header.Text:SetFont(Font, 12)
+	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
 	Header.Text:SetPoint("LEFT", Header, 3, 0)
 	Header.Text:SetJustifyH("LEFT")
 	Header.Text:SetShadowColor(0, 0, 0)
@@ -735,7 +742,7 @@ function Gathering:CreateCheckbox(key, text, func)
 	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
 	
 	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
-	Checkbox.Text:SetFont(Font, 12)
+	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
 	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 3, 0)
 	Checkbox.Text:SetJustifyH("LEFT")
 	Checkbox.Text:SetShadowColor(0, 0, 0)
@@ -813,10 +820,82 @@ function Gathering:OnEditChar(text)
 	end
 end
 
+function Gathering:DiscordOnEscapePressed()
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	self:SetText("discord.gg/XefDFa6nJR")
+end
+
+function Gathering:DiscordOnMouseDown()
+	self:SetAutoFocus(true)
+	self:HighlightText()
+end
+
+function Gathering:DiscordButtonOnMouseDown()
+	local Parent = self:GetParent()
+	
+	Parent:SetAutoFocus(true)
+	Parent:HighlightText()
+end
+
+function Gathering:CreateDiscord()
+	local EditBox = CreateFrame("EditBox", nil, self.GUI.OuterBackdrop)
+	EditBox:SetSize(116, 20)
+	EditBox:SetPoint("BOTTOMLEFT", 4, 3)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetShadowColor(0, 0, 0)
+	EditBox:SetShadowOffset(1, -1)
+	EditBox:SetFrameLevel(10)
+	EditBox:SetFrameStrata("MEDIUM")
+	EditBox:SetJustifyH("LEFT")
+	EditBox:SetAutoFocus(false)
+	EditBox:EnableKeyboard(true)
+	EditBox:EnableMouse(true)
+	EditBox:SetMaxLetters(19)
+	EditBox:SetTextInsets(5, 0, 0, 0)
+	EditBox:SetText("discord.gg/XefDFa6nJR")
+	EditBox:SetScript("OnEnterPressed", self.DiscordOnEscapePressed)
+	EditBox:SetScript("OnEscapePressed", self.DiscordOnEscapePressed)
+	EditBox:SetScript("OnMouseDown", self.DiscordOnMouseDown)
+	--EditBox:SetScript("OnChar", self.OnEditChar)
+	
+	--[[EditBox.Tex = EditBox:CreateTexture(nil, "BACKGROUND")
+	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
+	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
+	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)]]
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0.3, 0.3, 0.3)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", self.GUI.OuterBackdrop, -4, 4)
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0.2, 0.2, 0.2)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, -0, 1)
+	
+	EditBox.Button = CreateFrame("Frame", nil, EditBox)
+	EditBox.Button:SetHeight(20)
+	EditBox.Button:SetPoint("LEFT", EditBox, "RIGHT", 0, 0)
+	EditBox.Button:SetPoint("BOTTOMRIGHT", self.GUI.OuterBackdrop, 4, 3)
+	EditBox.Button:SetScript("OnMouseUp", self.DiscordButtonOnMouseDown)
+	
+	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
+	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 5, 0)
+	EditBox.Text:SetJustifyH("LEFT")
+	EditBox.Text:SetShadowColor(0, 0, 0)
+	EditBox.Text:SetShadowOffset(1, -1)
+	EditBox.Text:SetText("Join Discord")
+end
+
 function Gathering:CreateEditBox(text, func)
 	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
 	EditBox:SetSize(168, 20)
-	EditBox:SetFont(Font, 12)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
 	EditBox:SetJustifyH("LEFT")
@@ -861,6 +940,166 @@ function Gathering:CreateEditBox(text, func)
 	end
 	
 	tinsert(self.GUI.Window.Widgets, EditBox)
+end
+
+local ScrollSelections = function(self)
+	local First = false
+	
+	for i = 1, #self do
+		if (i >= self.Offset) and (i <= self.Offset + MaxSelections - 1) then
+			if (not First) then
+				self[i]:SetPoint("TOPLEFT", self, 0, -1)
+				First = true
+			else
+				self[i]:SetPoint("TOPLEFT", self[i-1], "BOTTOMLEFT", 0, 1)
+			end
+			
+			self[i]:Show()
+		else
+			self[i]:Hide()
+		end
+	end
+end
+
+local SelectionOnMouseWheel = function(self, delta)
+	if (delta == 1) then
+		self.Offset = self.Offset - 1
+		
+		if (self.Offset <= 1) then
+			self.Offset = 1
+		end
+	else
+		self.Offset = self.Offset + 1
+		
+		if (self.Offset > (#self - (MaxSelections - 1))) then
+			self.Offset = self.Offset - 1
+		end
+	end
+	
+	ScrollSelections(self)
+	--self.ScrollBar:SetValue(self.Offset)
+end
+
+local FontListOnMouseUp = function(self)
+	local Selection = self:GetParent():GetParent()
+	
+	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Key), 12)
+	Selection.Current:SetText(self.Key)
+	
+	Selection.List:Hide()
+	
+	Gathering:UpdateSettingValue(Selection.Setting, self.Key)
+	
+	if Selection.Hook then
+		Selection:Hook(self.Key)
+	end
+	
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+end
+
+local FontSelectionOnMouseUp = function(self)
+	if (not self.List) then
+		self.List = CreateFrame("Frame", nil, self)
+		self.List:SetSize(128, 20 * MaxSelections)
+		self.List:SetPoint("TOP", self, "BOTTOM", 0, -1)
+		self.List.Offset = 1
+		self.List:EnableMouseWheel(true)
+		self.List:SetScript("OnMouseWheel", SelectionOnMouseWheel)
+		self.List:Hide()
+		
+		for Key, Path in next, self.Selections do
+			local Selection = CreateFrame("Frame", nil, self.List)
+			Selection:SetSize(128, 20)
+			Selection.Key = Key
+			Selection.Path = Path
+			Selection:SetScript("OnMouseUp", FontListOnMouseUp)
+			
+			Selection.BG = Selection:CreateTexture(nil, "BORDER")
+			Selection.BG:SetTexture(BlankTexture)
+			Selection.BG:SetVertexColor(0, 0, 0)
+			Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
+			Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+			
+			Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
+			Selection.Tex:SetTexture(BarTexture)
+			Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
+			Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
+			Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+			
+			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
+			Selection.Text:SetFont(Path, 12)
+			Selection.Text:SetSize(122, 18)
+			Selection.Text:SetPoint("LEFT", Selection, 3, 0)
+			Selection.Text:SetJustifyH("LEFT")
+			Selection.Text:SetShadowColor(0, 0, 0)
+			Selection.Text:SetShadowOffset(1, -1)
+			Selection.Text:SetText(Key)
+			
+			tinsert(self.List, Selection)
+		end
+		
+		table.sort(self.List, function(a, b)
+			return a.Key < b.Key
+		end)
+		
+		ScrollSelections(self.List)
+	end
+	
+	if self.List:IsShown() then
+		self.List:Hide()
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+	else
+		self.List:Show()
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowUp.tga")
+	end
+end
+
+function Gathering:CreateFontSelection(key, text, selections, func)
+	local Selection = CreateFrame("Frame", nil, self.GUI.ButtonParent)
+	Selection:SetSize(128, 20)
+	Selection:SetScript("OnMouseUp", FontSelectionOnMouseUp)
+	Selection.Selections = selections
+	Selection.Setting = key
+	
+	Selection.BG = Selection:CreateTexture(nil, "BORDER")
+	Selection.BG:SetTexture(BlankTexture)
+	Selection.BG:SetVertexColor(0, 0, 0)
+	Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
+	Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+	
+	Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
+	Selection.Tex:SetTexture(BarTexture)
+	Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
+	Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
+	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	
+	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
+	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
+	
+	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
+	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12)
+	Selection.Current:SetSize(122, 18)
+	Selection.Current:SetPoint("LEFT", Selection, 3, 0)
+	Selection.Current:SetJustifyH("LEFT")
+	Selection.Current:SetShadowColor(0, 0, 0)
+	Selection.Current:SetShadowOffset(1, -1)
+	Selection.Current:SetText(self.Settings[key])
+	
+	Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
+	Selection.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	Selection.Text:SetPoint("LEFT", Selection, "RIGHT", 3, 0)
+	Selection.Text:SetJustifyH("LEFT")
+	Selection.Text:SetShadowColor(0, 0, 0)
+	Selection.Text:SetShadowOffset(1, -1)
+	Selection.Text:SetText(text)
+	
+	if func then
+		Selection.Hook = func
+	end
+	
+	tinsert(self.GUI.Window.Widgets, Selection)
 end
 
 local Scroll = function(self)
@@ -909,34 +1148,46 @@ local ScrollBarOnValueChanged = function(self, value)
 	Scroll(self.Parent)
 end
 
-function Gathering:InitiateSettings()
-	self.Settings = {}
+function Gathering:UpdateFontSetting(value)
+	Gathering.Text:SetFont(SharedMedia:Fetch("font", value), 14)
+	Gathering:UpdateTooltipFont()
+end
+
+function Gathering:SettingsLayout()
+	self:CreateHeader("Set Font")
 	
-	for Key, Value in pairs(self.DefaultSettings) do -- Add default values
-		self.Settings[Key] = Value
-	end
+	self:CreateFontSelection("window-font", "", Fonts, self.UpdateFontSetting)
 	
-	if (not GatheringSettings) then
-		GatheringSettings = {}
-	else
-		for Key, Value in pairs(GatheringSettings) do -- Add stored values
-			self.Settings[Key] = Value
-		end
-	end
+	self:CreateHeader(TRACKING)
 	
-	self:UpdateWeaponTracking(self.Settings["track-weapons"])
-	self:UpdateArmorTracking(self.Settings["track-armor"])
-	self:UpdateJewelcraftingTracking(self.Settings["track-jewelcrafting"])
-	self:UpdateClothTracking(self.Settings["track-cloth"])
-	self:UpdateLeatherTracking(self.Settings["track-leather"])
-	self:UpdateOreTracking(self.Settings["track-ore"])
-	self:UpdateCookingTracking(self.Settings["track-cooking"])
-	self:UpdateHerbTracking(self.Settings["track-herbs"])
-	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
-	self:UpdateMountTracking(self.Settings["track-mounts"])
-	self:UpdateConsumableTracking(self.Settings["track-consumables"])
-	self:UpdateReagentTracking(self.Settings["track-reagents"])
-	self:UpdateOtherTracking(self.Settings["track-other"])
+	self:CreateCheckbox("track-ore", L["Ore"], self.UpdateOreTracking)
+	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
+	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
+	self:CreateCheckbox("track-cooking", L["Cooking"], self.UpdateCookingTracking)
+	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
+	self:CreateCheckbox("track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
+	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
+	self:CreateCheckbox("track-weapons", L["Weapons"], self.UpdateWeaponTracking)
+	self:CreateCheckbox("track-armor", L["Armor"], self.UpdateArmorTracking)
+	self:CreateCheckbox("track-mounts", L["Mounts"], self.UpdateMountTracking)
+	self:CreateCheckbox("track-consumables", L["Consumables"], self.UpdateConsumableTracking)
+	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
+	
+	self:CreateHeader(MISCELLANEOUS)
+	
+	self:CreateCheckbox("ignore-bop", L[L["Ignore Bind on Pickup"]])
+	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
+	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
+	
+	self:CreateHeader(IGNORE)
+	
+	self:CreateEditBox(L["Ignore items"], self.AddIgnoredItem)
+	
+	self:CreateHeader(UNIGNORE_QUEST)
+	
+	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
+	
+	self:CreateDiscord()
 end
 
 function Gathering:CreateGUI()
@@ -965,11 +1216,11 @@ function Gathering:CreateGUI()
 	
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
 	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
-	self.GUI.Text:SetFont(Font, 12)
+	self.GUI.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
 	self.GUI.Text:SetJustifyH("LEFT")
 	self.GUI.Text:SetShadowColor(0, 0, 0)
 	self.GUI.Text:SetShadowOffset(1, -1)
-	self.GUI.Text:SetText("|cff00CC6AGathering|r " .. GetAddOnMetadata("Gathering", "Version"))
+	self.GUI.Text:SetText("|cff00CC6AGathering|r " .. AddOnVersion)
 	
 	self.GUI.CloseButton = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.CloseButton:SetPoint("TOPRIGHT", self.GUI, 0, 0)
@@ -980,7 +1231,7 @@ function Gathering:CreateGUI()
 	
 	self.GUI.CloseButton.Texture = self.GUI.CloseButton:CreateTexture(nil, "OVERLAY")
 	self.GUI.CloseButton.Texture:SetPoint("CENTER", self.GUI.CloseButton, 0, -0.5)
-	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\vUIClose.tga")
+	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\HydraUIClose.tga")
 	
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.Window:SetSize(210, 244)
@@ -993,7 +1244,7 @@ function Gathering:CreateGUI()
 	
 	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
-	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -1)
+	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -21) --  -1
 	self.GUI.Backdrop:SetTexture(BlankTexture)
 	self.GUI.Backdrop:SetVertexColor(0, 0, 0)
 	
@@ -1010,41 +1261,13 @@ function Gathering:CreateGUI()
 	
 	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
-	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
-	self.GUI.OuterBackdrop:SetBackdrop(Backdrop)
+	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -24) -- -4
+	self.GUI.OuterBackdrop:SetBackdrop(Outline)
 	self.GUI.OuterBackdrop:SetBackdropColor(0.2, 0.2, 0.2)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
 	
-	-- Layout
-	self:CreateHeader(TRACKING)
-	
-	self:CreateCheckbox("track-ore", L["Ore"], self.UpdateOreTracking)
-	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
-	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
-	self:CreateCheckbox("track-cooking", L["Cooking"], self.UpdateCookingTracking)
-	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
-	self:CreateCheckbox("track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
-	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
-	self:CreateCheckbox("track-weapons", L["Weapons"], self.UpdateWeaponTracking)
-	self:CreateCheckbox("track-armor", L["Armor"], self.UpdateArmorTracking)
-	self:CreateCheckbox("track-mounts", L["Mounts"], self.UpdateMountTracking)
-	self:CreateCheckbox("track-consumables", L["Consumables"], self.UpdateConsumableTracking)
-	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
-	
-	self:CreateHeader(MISCELLANEOUS)
-	
-	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
-	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
-	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
-	
-	self:CreateHeader(IGNORE)
-	
-	self:CreateEditBox(L["Ignore items"], self.AddIgnoredItem)
-	
-	self:CreateHeader(UNIGNORE_QUEST)
-	
-	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
+	self:SettingsLayout()
 	
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent, "BackdropTemplate")
@@ -1054,7 +1277,7 @@ function Gathering:CreateGUI()
 	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
 	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
 	self.GUI.Window.ScrollBar:SetValueStep(1)
-	self.GUI.Window.ScrollBar:SetBackdrop(Backdrop)
+	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
 	self.GUI.Window.ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
 	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
@@ -1233,11 +1456,34 @@ function Gathering:OnTooltipSetItem()
 	end
 end
 
+local SendVersion = function()
+	local Info
+	local NumFriends = BNGetNumFriends()
+	
+	for i = 1, NumFriends do
+		Info = C_BattleNet.GetFriendAccountInfo(i)
+		
+		if (Info.gameAccountInfo.clientProgram == "WoW") then
+			if (Info.gameAccountInfo.wowProjectID == 1) and Info.gameAccountInfo.isOnline and (Info.gameAccountInfo.realmName == MyRealm) and Info.gameAccountInfo.factionName == UnitFactionGroup("player") then
+				SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", Info.gameAccountInfo.characterName)
+			end
+		end
+	end
+	
+	for i = 1, C_FriendList.GetNumFriends() do
+		Info = C_FriendList.GetFriendInfoByIndex(i)
+		
+		if Info.connected then
+			SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", Info.name)
+		end
+	end
+	
+	Info = nil
+end
+
 function Gathering:PLAYER_ENTERING_WORLD()
 	self.MarketPrices = GatheringMarketPrices or {}
 	self.Ignored = GatheringIgnore or {}
-	
-	self:InitiateSettings()
 	
 	if IsAddOnLoaded("TradeSkillMaster") then
 		self.HasTSM = true
@@ -1245,11 +1491,87 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	
 	GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
 	
+	if (not GatheringSettings) then
+		GatheringSettings = {}
+	end
+	
+	self.Settings = setmetatable(GatheringSettings, {__index = self.DefaultSettings})
+	
+	self:CreateWindow()
+	
+	self:UpdateWeaponTracking(self.Settings["track-weapons"])
+	self:UpdateArmorTracking(self.Settings["track-armor"])
+	self:UpdateJewelcraftingTracking(self.Settings["track-jewelcrafting"])
+	self:UpdateClothTracking(self.Settings["track-cloth"])
+	self:UpdateLeatherTracking(self.Settings["track-leather"])
+	self:UpdateOreTracking(self.Settings["track-ore"])
+	self:UpdateCookingTracking(self.Settings["track-cooking"])
+	self:UpdateHerbTracking(self.Settings["track-herbs"])
+	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
+	self:UpdateMountTracking(self.Settings["track-mounts"])
+	self:UpdateConsumableTracking(self.Settings["track-consumables"])
+	self:UpdateReagentTracking(self.Settings["track-reagents"])
+	self:UpdateOtherTracking(self.Settings["track-other"])
+	
 	if self.Settings["hide-idle"] then
 		self:Hide()
 	end
 	
+	if IsInGuild() then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
+	end
+	
+	if (IsInRaid() and UnitExists("raid1")) then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
+	elseif (IsInGroup() and UnitExists("party1")) then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
+	end
+	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function Gathering:GUILD_ROSTER_UPDATE()
+	if IsInGuild() then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
+	end
+end
+
+function Gathering:GROUP_ROSTER_UPDATE()
+	if IsInRaid() and UnitExists("raid1") then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
+	elseif IsInGroup() and UnitExists("party1") then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
+	end
+end
+
+function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+	sender = match(sender, "(%S+)-%S+")
+	
+	if (sender == Me or prefix ~= "Gathering-Version") then
+		return
+	end
+	
+	message = tonumber(message)
+	
+	if (channel == "WHISPER") then
+		if (message > AddOnVersion) then
+			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
+			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
+			
+			-- Store this higher version and tell anyone else who asks
+			AddOnVersion = message
+		end
+	else
+		if (AddOnVersion > message) then -- We have a higher version, share it
+			SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", sender)
+		elseif (message > AddOnVersion) then -- We're behind!
+			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
+			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
+			
+			-- Store this higher version and tell anyone else who asks
+			AddOnVersion = message
+		end
+	end
 end
 
 function Gathering:AUCTION_HOUSE_SHOW()
@@ -1341,7 +1663,7 @@ function Gathering:OnEnter()
 	self.Tooltip:AddLine(L["Left click: Toggle timer"])
 	self.Tooltip:AddLine(L["Right click: Reset data"])
 	
-	self:UpdateFont()
+	self:UpdateTooltipFont()
 	
 	self:RegisterEvent("MODIFIER_STATE_CHANGED")
 	
@@ -1374,6 +1696,9 @@ function Gathering:OnMouseUp(button)
 	end
 end
 
+Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
+Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
+Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -1397,3 +1722,5 @@ SlashCmdList["GATHERING"] = function(cmd)
 		Gathering.GUI:Show()
 	end
 end
+
+C_ChatInfo.RegisterAddonMessagePrefix("Gathering-Version")
