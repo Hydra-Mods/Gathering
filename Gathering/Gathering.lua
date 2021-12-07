@@ -552,7 +552,9 @@ end
 function Gathering:UpdateTooltipFont()
 	local Font = SharedMedia:Fetch("font", self.Settings["window-font"])
 	
-	self.Tooltip:SetBackdrop(nil)
+	if self.Tooltip.NineSlice then
+		self.Tooltip.NineSlice:Hide()
+	end
 	
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
