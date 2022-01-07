@@ -1,5 +1,5 @@
 local date = date
-local pairs = pairs
+local next = next
 local select = select
 local max = math.max
 local floor = floor
@@ -8,18 +8,16 @@ local tonumber = tonumber
 local match = string.match
 local GetItemInfo = GetItemInfo
 local BreakUpLargeNumbers = BreakUpLargeNumbers
-local ReplicateItems = C_AuctionHouse.ReplicateItems
-local GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
-local GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local LootMessage = LOOT_ITEM_SELF:gsub("%%.*", "")
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
 local Locale = GetLocale()
 local MaxWidgets = 11
 local MaxSelections = 8
-local BlankTexture = "Interface\\AddOns\\Gathering\\HydraUIBlank.tga"
-local BarTexture = "Interface\\AddOns\\Gathering\\HydraUI4.tga"
+local BlankTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUIBlank.tga"
+local BarTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUI4.tga"
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
+local UnitInBattleground = UnitInBattleground
 local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
@@ -31,7 +29,7 @@ local Me = UnitName("player")
 local MyRealm = GetRealmName()
 local MyFaction = UnitFactionGroup("player")
 
-SharedMedia:Register("font", "PT Sans", "Interface\\Addons\\Gathering\\PTSans.ttf")
+SharedMedia:Register("font", "PT Sans", "Interface\\Addons\\Gathering\\Assets\\PTSans.ttf")
 SharedMedia:Register("statusbar", "HydraUI 4", BarTexture)
 
 local Index = function(self, key)
@@ -47,26 +45,16 @@ if (Locale == "deDE") then -- German
 	L["Left click: Toggle timer"] = "Linksklick: Timer anhalten/fortsetzen"
 	L["Right click: Reset data"] = "Rechtsklick: Daten zur\195\188cksetzen"
 	L["Hr"] = "Std."
-
-	L["You must wait %s until you can scan again."] = "Du musst %s warten bevor du wieder scannen kannst."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r scannt gerade die Marktpreise, dies sollte weniger als 10 Sekunden dauern."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r hat die Marktpreise aktualisiert"
-
+	
 	L["Ore"] = "Erz"
 	L["Herbs"] = "Kr\195\164uter"
 	L["Leather"] = "Leder"
-	L["Cooking"] = "Kochen"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Stoffe"
 	L["Enchanting"] = "Verzaubern"
-	L["Jewelcrafting"] = "Juwelen"
-	L["Weapons"] = "Waffen"
-	L["Armor"] = "R\195\188stung"
-	L["Pets"] = "Haustiere"
-	L["Mounts"] = "Reittiere"
-	L["Consumables"] = "Verbrauchbares"
 	L["Reagents"] = "Reagenzien"
 	L["Ignore Bind on Pickup"] = "Ignoriere Items, welche beim aufheben Seelengebunden werden"
-	L["%s is now being unignored."] = "%s wird nun nicht mehr ignoriert."
 	L["Show tooltip data"] = "Zeige Tooltip Daten"
 	L["Price per unit: %s"] = "Preis pro Einheit: %s"
 elseif (Locale == "esES") then -- Spanish (Spain)
@@ -77,25 +65,15 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
-	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
@@ -106,25 +84,15 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
-	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "frFR") then -- French
@@ -135,25 +103,15 @@ elseif (Locale == "frFR") then -- French
 	L["Right click: Reset data"] = "Clic droit : Réinitialisation des données"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "Vous devez attendre %s pour que vous puissiez à nouveau scanner."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r scrute les prix du marché. Cela devrait prendre moins de 10 secondes."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r a fini d'actualiser les prix du marché."
-	
 	L["Ore"] = "Minerai"
 	L["Herbs"] = "Herbes"
 	L["Leather"] = "Cuir"
-	L["Cooking"] = "Cuisine"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Tissu"
 	L["Enchanting"] = "Enchanteur"
-	L["Jewelcrafting"] = "Joaillerie"
-	L["Weapons"] = "Armes"
-	L["Armor"] = "Armure"
-	L["Pets"] = "Mascottes"
-	L["Mounts"] = "Montures"
-	L["Consumables"] = "Consommables"
 	L["Reagents"] = "Réactifs"
 	L["Ignore Bind on Pickup"] = "Ignorer les objets liés au ramassage"
-	L["%s is now being unignored."] = "%s n'est désormais plus ignorée."
 	L["Show tooltip data"] = "Afficher les données de l'infobulle"
 	L["Price per unit: %s"] = "Prix par unité: %s"
 elseif (Locale == "itIT") then -- Italian
@@ -164,25 +122,15 @@ elseif (Locale == "itIT") then -- Italian
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
-	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "koKR") then -- Korean
@@ -193,25 +141,15 @@ elseif (Locale == "koKR") then -- Korean
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
-	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
@@ -222,25 +160,15 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
-	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
 elseif (Locale == "ruRU") then -- Russian
@@ -251,133 +179,107 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r updated market prices."
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
+elseif (Locale == "zhCN") then -- Chinese (Simplified)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
-	L["Cooking"] = "Cooking"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Weapons"] = "Weapons"
-	L["Armor"] = "Armor"
-	L["Pets"] = "Pets"
-	L["Mounts"] = "Mounts"
-	L["Consumables"] = "Consumables"
 	L["Reagents"] = "Reagents"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
-	L["%s is now being unignored."] = "%s is now being unignored."
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
-elseif (Locale == "zhCN") then -- Chinese (Simplified) | Contributed by zhousp
-	L["Total Gathered:"] = "总计:"
-	L["Total Average Per Hour:"] = "每小时:"
-	L["Total Value:"] = "总价值:"
-	L["Left click: Toggle timer"] = "左键点击: 开始/暂停"
-	L["Right click: Reset data"] = "右键点击: 重置数据"
-	L["Hr"] = "小时"
+elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
 	
-	L["You must wait %s until you can scan again."] = "必须 %s 后才能再次扫描."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r 正在扫描拍卖行价格."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r 更新价格数据成功."
-	
-	L["Ore"] = "矿石"
-	L["Herbs"] = "草药"
-	L["Leather"] = "皮"
-	L["Cooking"] = "烹饪"
-	L["Cloth"] = "布"
-	L["Enchanting"] = "附魔"
-	L["Jewelcrafting"] = "珠宝加工"
-	L["Weapons"] = "武器"
-	L["Armor"] = "护甲"
-	L["Pets"] = "宠物"
-	L["Mounts"] = "坐骑"
-	L["Consumables"] = "消耗品"
-	L["Reagents"] = "药剂"
-	L["Ignore Bind on Pickup"] = "忽略拾取绑定物品"
-	L["%s is now being unignored."] = "%s 已取消屏蔽名单."
-	L["Show tooltip data"] = "鼠标显示拍卖行价格"
-	L["Price per unit: %s"] = "拍卖行最低价: %s"
-elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan) | Contributed by zhousp
-	L["Total Gathered:"] = "總計:"
-	L["Total Average Per Hour:"] = "每小時:"
-	L["Total Value:"] = "總價值:"
-	L["Left click: Toggle timer"] = "左鍵點擊: 開始/暫停"
-	L["Right click: Reset data"] = "右鍵點擊: 重置數據"
-	L["Hr"] = "小時"
-	
-	L["You must wait %s until you can scan again."] = "必須 %s 後才能再次掃描."
-	L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cff00CC6AGathering|r 正在掃描拍賣行價格."
-	L["|cff00CC6AGathering|r updated market prices."] = "|cff00CC6AGathering|r 更新價格數據成功."
-	
-	L["Ore"] = "礦石"
-	L["Herbs"] = "草藥"
-	L["Leather"] = "皮"
-	L["Cooking"] = "烹飪"
-	L["Cloth"] = "布"
-	L["Enchanting"] = "附魔"
-	L["Jewelcrafting"] = "珠寶加工"
-	L["Weapons"] = "武器"
-	L["Armor"] = "護甲"
-	L["Pets"] = "寵物"
-	L["Mounts"] = "坐騎"
-	L["Consumables"] = "消耗品"
-	L["Reagents"] = "藥劑"
-	L["Ignore Bind on Pickup"] = "忽略拾取綁定物品"
-	L["%s is now being unignored."] = "%s 已取消屏蔽名單."
-	L["Show tooltip data"] = "鼠標顯示拍賣行價格"
-	L["Price per unit: %s"] = "拍賣行最低價: %s"
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Fish"] = "Fish"
+	L["Meat"] = "Meat"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Reagents"] = "Reagents"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
 end
 
 local Outline = {
 	bgFile = BlankTexture,
 	edgeFile = BlankTexture,
 	edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
 }
 
-local Gathering = CreateFrame("Frame", "Gathering Header", UIParent, "BackdropTemplate")
+-- Header
+local Gathering = CreateFrame("Frame", "Gathering_Header", UIParent, "BackdropTemplate")
 Gathering:SetPoint("TOP", UIParent, 0, -100)
 Gathering:EnableMouse(true)
 Gathering:SetMovable(true)
 Gathering:SetUserPlaced(true)
 
 function Gathering:CreateWindow()
-	self:SetSize(140, 26)
-	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1, insets = {top = 0, left = 0, bottom = 0, right = 0}})
+	self:SetSize(140, 28)
+	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
 	self:SetBackdropBorderColor(0, 0, 0)
 	self:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
 	self:SetClampedToScreen(true)
 	self:RegisterForDrag("LeftButton")
 	self:SetScript("OnDragStart", self.StartMoving)
 	self:SetScript("OnDragStop", self.StopMovingOrSizing)
-
+	
 	-- Text
 	self.Text = self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetPoint("CENTER", self, 0, 0)
 	self.Text:SetJustifyH("CENTER")
 	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14)
-	self.Text:SetShadowColor(0, 0, 0)
-	self.Text:SetShadowOffset(1, -1)
 	self.Text:SetText("Gathering")
-
-	-- Tooltip
+	
+	--[[ Tooltip
+	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
+	self.Tooltip:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
+	self.Tooltip:SetBackdropBorderColor(0, 0, 0)
+	self.Tooltip:SetBackdropColor(0.2, 0.2, 0.2, 0.7)]]
+	
 	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
 	self.Tooltip:SetFrameLevel(10)
 
 	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
 	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
-	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1, insets = {top = 0, left = 0, bottom = 0, right = 0}})
+	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
 	self.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
 	self.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
 	self.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
 	self.Tooltip.Backdrop:SetFrameLevel(1)
-
+	
 	-- Data
 	self.Gathered = {}
+	self.Tracked = {}
 	self.TotalGathered = 0
 	self.NumTypes = 0
 	self.Elapsed = 0
@@ -390,16 +292,12 @@ Gathering.DefaultSettings = {
 	["track-ore"] = true,
 	["track-herbs"] = true,
 	["track-leather"] = true,
-	["track-cooking"] = true,
+	["track-fish"] = true,
+	["track-meat"] = true,
 	["track-cloth"] = true,
 	["track-enchanting"] = true,
-	["track-jewelcrafting"] = true,
-	["track-weapons"] = false,
-	["track-armor"] = false,
-	["track-mounts"] = false,
-	["track-consumables"] = false,
-	["track-reagents"] = false,
-	["track-other"] = false,
+	["track-reagents"] = true,
+	["track-quest"] = true,
 	
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
@@ -410,95 +308,291 @@ Gathering.DefaultSettings = {
 	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
 }
 
-Gathering.TrackedItemTypes = {
-	[LE_ITEM_CLASS_CONSUMABLE] = {},
-	[LE_ITEM_CLASS_WEAPON] = {},
-	[LE_ITEM_CLASS_ARMOR] = {},
-	[LE_ITEM_CLASS_TRADEGOODS] = {},
-	[LE_ITEM_CLASS_MISCELLANEOUS] = {},
-}
-
-function Gathering:UpdateWeaponTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BOWS] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GUNS] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_POLEARM] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WARGLAIVE] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_STAFF] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BEARCLAW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CATCLAW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_UNARMED] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GENERIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CROSSBOW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WAND] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_FISHINGPOLE] = value
-end
-
-function Gathering:UpdateArmorTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_GENERIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_CLOTH] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LEATHER] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_MAIL] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_PLATE] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_COSMETIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SHIELD] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_RELIC] = value
-end
-
-function Gathering:UpdateJewelcraftingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][4] = value
-end
-
-function Gathering:UpdateClothTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][5] = value
-end
-
-function Gathering:UpdateLeatherTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][6] = value
+function Gathering:UpdateHerbTracking(value)
+	Gathering.Tracked[765] = value     -- Silverleaf
+	Gathering.Tracked[785] = value     -- Mageroyal
+	Gathering.Tracked[2044] = value    -- Dragon's Teeth
+	Gathering.Tracked[2447] = value    -- Peacebloom
+	Gathering.Tracked[2449] = value    -- Earthroot
+	Gathering.Tracked[2450] = value    -- Briarthorn
+	Gathering.Tracked[2452] = value    -- Swiftthistle
+	Gathering.Tracked[2453] = value    -- Bruiseweed
+	Gathering.Tracked[3355] = value    -- Wild Steelbloom
+	Gathering.Tracked[3356] = value    -- Kingsblood
+	Gathering.Tracked[3357] = value    -- Liferoot
+	Gathering.Tracked[3358] = value    -- Khadgar's Whisker
+	Gathering.Tracked[3369] = value    -- Grave Moss
+	Gathering.Tracked[3818] = value    -- Fadeleaf
+	Gathering.Tracked[3819] = value    -- Wintersbite
+	Gathering.Tracked[3820] = value    -- Stranglekelp
+	Gathering.Tracked[3821] = value    -- Goldthorn
+	Gathering.Tracked[4625] = value    -- Firebloom
+	Gathering.Tracked[8831] = value    -- Purple Lotus
+	Gathering.Tracked[8836] = value    -- Arthas' Tears
+	Gathering.Tracked[8838] = value    -- Sungrass
+	Gathering.Tracked[8839] = value    -- Blindweed
+	Gathering.Tracked[8845] = value    -- Ghost Mushroom
+	Gathering.Tracked[8846] = value    -- Gromsblood
+	Gathering.Tracked[13463] = value   -- Dreamfoil
+	Gathering.Tracked[13466] = value   -- Sorrowmoss
+	Gathering.Tracked[13464] = value   -- Golden Sansam
+	Gathering.Tracked[13465] = value   -- Mountain Silversage
+	Gathering.Tracked[13466] = value   -- Plaguebloom
+	Gathering.Tracked[13467] = value   -- Icecap
+	Gathering.Tracked[13468] = value   -- Black Lotus
+	Gathering.Tracked[19726] = value   -- Bloodvine
+	
+	Gathering.Tracked[22785] = value   -- Felweed
+	--Gathering.Tracked[108344] = value  -- Felweed Stalk
+	Gathering.Tracked[22786] = value   -- Dreaming Glory
+	--Gathering.Tracked[108345] = value  -- Dreaming Glory Petal
+	Gathering.Tracked[22787] = value   -- Ragveil
+	--Gathering.Tracked[108346] = value  -- Ragveil Cap
+	Gathering.Tracked[22788] = value   -- Flame Cap
+	Gathering.Tracked[22789] = value   -- Terocone
+	--Gathering.Tracked[108347] = value  -- Terocone Leaf
+	Gathering.Tracked[22790] = value   -- Ancient Lichen
+	--Gathering.Tracked[108348] = value  -- Ancient Lichen Petal
+	Gathering.Tracked[22791] = value   -- Netherbloom
+	--Gathering.Tracked[108349] = value  -- Netherbloom Leaf
+	Gathering.Tracked[22792] = value   -- Nightmare Vine
+	--Gathering.Tracked[108350] = value  -- Nightmare Vine Stem
+	Gathering.Tracked[22793] = value   -- Mana Thistle
+	--Gathering.Tracked[108351] = value  -- Mana Thistle Leaf
+	Gathering.Tracked[22794] = value   -- Fel Lotus
 end
 
 function Gathering:UpdateOreTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][7] = value
+	Gathering.Tracked[2770] = value    -- Copper Ore
+	Gathering.Tracked[2771] = value    -- Tin Ore
+	Gathering.Tracked[2775] = value    -- Silver Ore
+	Gathering.Tracked[2772] = value    -- Iron Ore
+	Gathering.Tracked[2776] = value    -- Gold Ore
+	Gathering.Tracked[3858] = value    -- Mithril Ore
+	Gathering.Tracked[7911] = value    -- Truesilver Ore
+	Gathering.Tracked[10620] = value   -- Thorium Ore
+	Gathering.Tracked[11370] = value   -- Dark Iron Ore
+	Gathering.Tracked[12363] = value   -- Arcane Crystal
+	Gathering.Tracked[19774] = value   -- Souldarite
+	
+	Gathering.Tracked[23424] = value   -- Fel Iron Ore
+	Gathering.Tracked[23425] = value   -- Adamantite Ore
+	Gathering.Tracked[23426] = value   -- Khorium Ore
+	Gathering.Tracked[23427] = value   -- Eternium Ore
 end
 
-function Gathering:UpdateCookingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][8] = value
+function Gathering:UpdateLeatherTracking(value)
+	Gathering.Tracked[2934] = value    -- Ruined Leather Scraps
+	Gathering.Tracked[2318] = value    -- Light Leather
+	Gathering.Tracked[783] = value     -- Light Hide
+	Gathering.Tracked[2319] = value    -- Medium Leather
+	Gathering.Tracked[4232] = value    -- Medium Hide
+	Gathering.Tracked[4234] = value   -- Heavy Leather
+	Gathering.Tracked[4304] = value    -- Thick Leather
+	Gathering.Tracked[8170] = value    -- Rugged Leather
+	Gathering.Tracked[8171] = value    -- Rugged Hide
+	Gathering.Tracked[15417] = value   -- Devilsaur Leather
+	Gathering.Tracked[19767] = value   -- Primal Bat Leather
+	
+	Gathering.Tracked[25649] = value   -- Knothide Leather Scraps
+	Gathering.Tracked[21887] = value   -- Knothide Leather
+	Gathering.Tracked[23793] = value   -- Heavy Knothide Leather
+	Gathering.Tracked[25700] = value   -- Fel Scales
+	Gathering.Tracked[29539] = value   -- Cobra Scales
+	Gathering.Tracked[25707] = value   -- Fel Hide
+	Gathering.Tracked[25708] = value   -- Thick Clefthoof Leather
 end
 
-function Gathering:UpdateHerbTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][9] = value
+function Gathering:UpdateFishTracking(value)
+	Gathering.Tracked[6291] = value    -- Raw Brilliant Smallfish
+	Gathering.Tracked[6299] = value    -- Sickly Looking Fish
+	Gathering.Tracked[6303] = value    -- Raw Slitherskin Mackerel
+	Gathering.Tracked[6289] = value    -- Raw Longjaw Mud Snapper
+	Gathering.Tracked[6317] = value    -- Raw Loch Frenzy
+	Gathering.Tracked[6358] = value    -- Oily Blackmouth
+	Gathering.Tracked[6361] = value    -- Raw Rainbow Fin Albacore
+	Gathering.Tracked[21071] = value   -- Raw Sagefish
+	Gathering.Tracked[6308] = value    -- Raw Bristle Whisker Catfish
+	Gathering.Tracked[6359] = value    -- Firefin Snapper
+	Gathering.Tracked[6362] = value    -- Raw Rockscale Cod
+	Gathering.Tracked[4603] = value    -- Raw Spotted Yellowtail
+	Gathering.Tracked[12238] = value   -- Darkshore Grouper
+	Gathering.Tracked[13422] = value   -- Stonescale Eel
+	Gathering.Tracked[13754] = value   -- Raw Glossy Mightfish
+	Gathering.Tracked[13755] = value   -- Winter Squid
+	Gathering.Tracked[13756] = value   -- Raw Summer Bass
+	Gathering.Tracked[13757] = value   -- Lightning Eel
+	Gathering.Tracked[13758] = value   -- Raw Redgill
+	Gathering.Tracked[13759] = value   -- Raw Nightfin Snapper
+	Gathering.Tracked[13760] = value   -- Raw Sunscale Salmon
+	Gathering.Tracked[13888] = value   -- Darkclaw Lobster
+	Gathering.Tracked[13889] = value   -- Raw Whitescale Salmon
+	Gathering.Tracked[13893] = value   -- Large Raw Mightfish
+	Gathering.Tracked[6522] = value    -- Deviate Fish
+	Gathering.Tracked[8365] = value    -- Raw Mithril Head Trout
+	
+	Gathering.Tracked[27422] = value   -- Barbed Gill Trout
+	Gathering.Tracked[27516] = value   -- Enormous Barbed Gill Trout
+	Gathering.Tracked[27435] = value   -- Figluster's Mudfish
+	Gathering.Tracked[27438] = value   -- Golden Darter
+	Gathering.Tracked[27439] = value   -- Furious Crawdad
+	Gathering.Tracked[27515] = value   -- Huge Spotted Feltail
+	Gathering.Tracked[27437] = value   -- Icefin Bluefish
+	Gathering.Tracked[21153] = value   -- Raw Greater Sagefish
+	Gathering.Tracked[27425] = value   -- Spotted Feltail
+	Gathering.Tracked[27429] = value   -- Zangarian Sporefish
+	Gathering.Tracked[33823] = value   -- Bloodfin Catfish
+	Gathering.Tracked[33824] = value   -- Crescent-Tail Skullfish
+	Gathering.Tracked[27388] = value   -- Mr. Pinchy
+end
+
+function Gathering:UpdateMeatTracking(value)
+	Gathering.Tracked[769] = value      -- Chunk of Boar Meat
+	Gathering.Tracked[1015] = value     -- Lean Wolf Flank
+	Gathering.Tracked[2674] = value     -- Crawler Meat
+	Gathering.Tracked[2675] = value     -- Crawler Claw
+	Gathering.Tracked[3173] = value     -- Bear Meat
+	Gathering.Tracked[3685] = value     -- Raptor Egg
+	Gathering.Tracked[3712] = value     -- Turtle Meat
+	Gathering.Tracked[3731] = value     -- Lion Meat
+	Gathering.Tracked[5503] = value     -- Clam Meat
+	Gathering.Tracked[12202] = value    -- Tiger Meat
+	Gathering.Tracked[12203] = value    -- Red Wolf Meat
+	Gathering.Tracked[12037] = value    -- Mystery Meat <3
+	Gathering.Tracked[12205] = value    -- White Spider Meat
+	Gathering.Tracked[12207] = value    -- Giant Egg
+	Gathering.Tracked[12184] = value    -- Raptor Flesh
+	Gathering.Tracked[20424] = value    -- Sandworm Meat
+	
+	Gathering.Tracked[27674] = value    -- Ravager Flesh
+	Gathering.Tracked[27678] = value    -- Clefthoof Meat
+	Gathering.Tracked[27681] = value    -- Warped Flesh
+	Gathering.Tracked[31670] = value    -- Raptor Ribs
+	Gathering.Tracked[31671] = value    -- Serpent Flesh
+	Gathering.Tracked[27681] = value    -- Warped Flesh
+end
+
+function Gathering:UpdateClothTracking(value)
+	Gathering.Tracked[2589] = value     -- Linen Cloth
+	Gathering.Tracked[2592] = value     -- Wool Cloth
+	Gathering.Tracked[4306] = value     -- Silk Cloth
+	Gathering.Tracked[4338] = value     -- Mageweave Cloth
+	Gathering.Tracked[14047] = value    -- Runecloth
+	Gathering.Tracked[14256] = value    -- Felcloth
+	
+	Gathering.Tracked[21877] = value    -- Netherweave Cloth
 end
 
 function Gathering:UpdateEnchantingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][12] = value
-end
-
-function Gathering:UpdateHolidayTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_HOLIDAY] = value
-end
-
-function Gathering:UpdateMountTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_MOUNT] = value
-end
-
-function Gathering:UpdateConsumableTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][1] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][2] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][3] = value
+	Gathering.Tracked[10938] = value    -- Lesser Magic Essence
+	Gathering.Tracked[10939] = value    -- Greater Magic Essence
+	Gathering.Tracked[10940] = value    -- Strange Dust
+	Gathering.Tracked[10998] = value    -- Lesser Astral Essence
+	Gathering.Tracked[11082] = value    -- Greater Astral Essence
+	Gathering.Tracked[11083] = value    -- Soul Dust
+	Gathering.Tracked[11134] = value    -- Lesser Mystic Essence
+	Gathering.Tracked[11135] = value    -- Greater Mystic Essence
+	Gathering.Tracked[11137] = value    -- Vision Dust
+	Gathering.Tracked[11174] = value    -- Lesser Nether Essence
+	Gathering.Tracked[11175] = value    -- Greater Nether Essence
+	Gathering.Tracked[11176] = value    -- Dream Dust
+	Gathering.Tracked[11177] = value    -- Small Radiant Shard
+	Gathering.Tracked[11178] = value    -- Large Radiant Shard
+	Gathering.Tracked[14343] = value    -- Small Brilliant Shard
+	Gathering.Tracked[14344] = value    -- Large Brilliant Shard
+	Gathering.Tracked[16202] = value    -- Lesser Eternal Essence
+	Gathering.Tracked[16203] = value    -- Greater Eternal Essence
+	Gathering.Tracked[16204] = value    -- Illusion Dust
+	
+	Gathering.Tracked[22445] = value    -- Arcane Dust
+	Gathering.Tracked[22447] = value    -- Lesser Planar Essence
+	Gathering.Tracked[22446] = value    -- Greater Planar Essence
+	Gathering.Tracked[22448] = value    -- Small Prismatic Shard
+	Gathering.Tracked[22449] = value    -- Large Prismatic Shard
+	Gathering.Tracked[22450] = value    -- Void Crystal
 end
 
 function Gathering:UpdateReagentTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_REAGENT] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][10] = value
+	Gathering.Tracked[12811] = value -- Righteous Orb
+	Gathering.Tracked[12803] = value -- Living Essence
+	Gathering.Tracked[7076] = value  -- Essence of Earth
+	Gathering.Tracked[7078] = value  -- Essence of Fire
+	Gathering.Tracked[7080] = value  -- Essence of Water
+	Gathering.Tracked[7082] = value  -- Essence of Air
+	Gathering.Tracked[12938] = value -- Blood of Heroes
+	Gathering.Tracked[12820] = value -- Winterfall Firewater
+	Gathering.Tracked[21377] = value -- Deadwood Headdress Feather
+	Gathering.Tracked[21383] = value -- Winterfall Spirit Beads
+	
+	-- Mining
+	Gathering.Tracked[774] = value   -- Malachite
+	Gathering.Tracked[818] = value   -- Tigerseye
+	Gathering.Tracked[1206] = value  -- Moss Agate
+	Gathering.Tracked[1210] = value  -- Shadowgem
+	Gathering.Tracked[1529] = value  -- Jade
+	Gathering.Tracked[1705] = value  -- Lesser Moonstone
+	Gathering.Tracked[3864] = value  -- Citrine
+	Gathering.Tracked[7909] = value  -- Aquamarine
+	Gathering.Tracked[7910] = value  -- Star Ruby
+	Gathering.Tracked[11382] = value -- Blood of the Mountain
+	Gathering.Tracked[11754] = value -- Black Diamond
+	Gathering.Tracked[12361] = value -- Blue Sapphire
+	Gathering.Tracked[12363] = value -- Arcane Crystal
+	Gathering.Tracked[12364] = value -- Huge Emerald
+	Gathering.Tracked[12799] = value -- Large Opal
+	Gathering.Tracked[12800] = value -- Azerothian Diamond
+	
+	Gathering.Tracked[2835] = value  -- Rough Stone
+	Gathering.Tracked[2838] = value  -- Heavy Stone
+	Gathering.Tracked[7912] = value  -- Solid Stone
+	Gathering.Tracked[12365] = value -- Dense Stone
+	
+	-- Jewelcrafting
+	Gathering.Tracked[23077] = value -- Blood Garnet
+	Gathering.Tracked[21929] = value -- Flame Spessarite
+	Gathering.Tracked[23079] = value -- Deep Peridot
+	Gathering.Tracked[23107] = value -- Shadow Draenite
+	Gathering.Tracked[23112] = value -- Golden Draenite
+	Gathering.Tracked[23117] = value -- Azure Moonstone
+	Gathering.Tracked[23439] = value -- Noble Topaz
+	Gathering.Tracked[23438] = value -- Star of Elune
+	Gathering.Tracked[23437] = value -- Talasite
+	Gathering.Tracked[23436] = value -- Living Ruby
+	Gathering.Tracked[23440] = value -- Dawnstone
+	Gathering.Tracked[23441] = value -- Nightseye
+	
+	-- Motes
+	Gathering.Tracked[22574] = value -- Mote of Fire
+	Gathering.Tracked[22576] = value -- Mote of Mana
+	Gathering.Tracked[22578] = value -- Mote of Water
+	Gathering.Tracked[22572] = value -- Mote of Air
+	Gathering.Tracked[22573] = value -- Mote of Earth
+	Gathering.Tracked[22577] = value -- Mote of Shadow
+	Gathering.Tracked[22575] = value -- Mote of Life
+	
+	-- Primals
+	Gathering.Tracked[21884] = value -- Primal Fire
+	Gathering.Tracked[22457] = value -- Primal Mana
+	Gathering.Tracked[21885] = value -- Primal Water
+	Gathering.Tracked[22451] = value -- Primal Air
+	Gathering.Tracked[22452] = value -- Primal Earth
+	Gathering.Tracked[22456] = value -- Primal Shadow
+	Gathering.Tracked[21886] = value -- Primal Life
 end
 
-function Gathering:UpdateOtherTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_OTHER] = value
+function Gathering:UpdateQuestItemTracking(value)
+    Gathering.Tracked[24246] = value    -- sanguine-hibiscus
+    Gathering.Tracked[24368] = value    -- coilfang-armaments
+    Gathering.Tracked[24401] = value    -- unidentified-plant-parts
+    Gathering.Tracked[25719] = value    -- arakkoa-feather
+    Gathering.Tracked[29425] = value    -- mark-of-kiljaeden
+    Gathering.Tracked[29426] = value    -- firewing-signet
+    Gathering.Tracked[29739] = value    -- arcane-tome
+    Gathering.Tracked[29740] = value    -- fel-armament
+    Gathering.Tracked[30809] = value    -- mark-of-sargeras
+    Gathering.Tracked[30810] = value    -- sunfury-signet
+    Gathering.Tracked[32388] = value    -- shadow-dust
+    Gathering.Tracked[32620] = value    -- time-lost-scroll
 end
 
 function Gathering:AddIgnoredItem(text)
@@ -552,9 +646,7 @@ end
 function Gathering:UpdateTooltipFont()
 	local Font = SharedMedia:Fetch("font", self.Settings["window-font"])
 	
-	if self.Tooltip.NineSlice then
-		self.Tooltip.NineSlice:Hide()
-	end
+	self.Tooltip:SetBackdrop(nil)
 	
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
@@ -599,7 +691,7 @@ function Gathering:OnUpdate(ela)
 	if (self.Elapsed >= 1) then
 		self.Seconds = self.Seconds + 1
 		
-		for key in pairs(self.SecondsPerItem) do
+		for key in next, self.SecondsPerItem do
 			self.SecondsPerItem[key] = self.SecondsPerItem[key] + 1
 		end
 		
@@ -685,7 +777,7 @@ function Gathering:CreateHeader(text)
 	Header.Tex:SetTexture(BarTexture)
 	Header.Tex:SetPoint("TOPLEFT", Header, 1, -1)
 	Header.Tex:SetPoint("BOTTOMRIGHT", Header, -1, 1)
-	Header.Tex:SetVertexColor(0.2, 0.2, 0.2)
+	Header.Tex:SetVertexColor(0.25, 0.25, 0.25)
 	
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
 	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
@@ -996,7 +1088,7 @@ local FontListOnMouseUp = function(self)
 		Selection:Hook(self.Key)
 	end
 	
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
 end
 
 local FontSelectionOnMouseUp = function(self)
@@ -1049,10 +1141,10 @@ local FontSelectionOnMouseUp = function(self)
 	
 	if self.List:IsShown() then
 		self.List:Hide()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
 	else
 		self.List:Show()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowUp.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowUp.tga")
 	end
 end
 
@@ -1076,7 +1168,7 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
 	
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
 	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
 	
@@ -1165,15 +1257,12 @@ function Gathering:SettingsLayout()
 	self:CreateCheckbox("track-ore", L["Ore"], self.UpdateOreTracking)
 	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
 	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
-	self:CreateCheckbox("track-cooking", L["Cooking"], self.UpdateCookingTracking)
+	self:CreateCheckbox("track-fish", L["Fish"], self.UpdateFishTracking)
+	self:CreateCheckbox("track-meat", L["Meat"], self.UpdateMeatracking)
 	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
 	self:CreateCheckbox("track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
-	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
-	self:CreateCheckbox("track-weapons", L["Weapons"], self.UpdateWeaponTracking)
-	self:CreateCheckbox("track-armor", L["Armor"], self.UpdateArmorTracking)
-	self:CreateCheckbox("track-mounts", L["Mounts"], self.UpdateMountTracking)
-	self:CreateCheckbox("track-consumables", L["Consumables"], self.UpdateConsumableTracking)
 	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
+	self:CreateCheckbox("track-quest", QUESTS_LABEL, self.UpdateQuestItemTracking)
 	
 	self:CreateHeader(MISCELLANEOUS)
 	
@@ -1214,7 +1303,7 @@ function Gathering:CreateGUI()
 	self.GUI.Texture:SetPoint("TOPLEFT", self.GUI, 0, 0)
 	self.GUI.Texture:SetPoint("BOTTOMRIGHT", self.GUI, 0, 0)
 	self.GUI.Texture:SetTexture(BarTexture)
-	self.GUI.Texture:SetVertexColor(0.2, 0.2, 0.2)
+	self.GUI.Texture:SetVertexColor(0.25, 0.25, 0.25)
 	
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
 	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
@@ -1233,14 +1322,13 @@ function Gathering:CreateGUI()
 	
 	self.GUI.CloseButton.Texture = self.GUI.CloseButton:CreateTexture(nil, "OVERLAY")
 	self.GUI.CloseButton.Texture:SetPoint("CENTER", self.GUI.CloseButton, 0, -0.5)
-	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\HydraUIClose.tga")
+	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
 	
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.Window:SetSize(210, 244)
 	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
 	self.GUI.Window.Offset = 1
 	self.GUI.Window.Widgets = {}
-	
 	self.GUI.Window:EnableMouseWheel(true)
 	self.GUI.Window:SetScript("OnMouseWheel", WindowOnMouseWheel)
 	
@@ -1253,7 +1341,7 @@ function Gathering:CreateGUI()
 	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Inside:SetAllPoints()
 	self.GUI.Inside:SetTexture(BlankTexture)
-	self.GUI.Inside:SetVertexColor(0.2, 0.2, 0.2)
+	self.GUI.Inside:SetVertexColor(0.3, 0.3, 0.3)
 	
 	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
 	self.GUI.ButtonParent:SetAllPoints()
@@ -1265,7 +1353,7 @@ function Gathering:CreateGUI()
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
 	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -24) -- -4
 	self.GUI.OuterBackdrop:SetBackdrop(Outline)
-	self.GUI.OuterBackdrop:SetBackdropColor(0.2, 0.2, 0.2)
+	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
 	
@@ -1280,7 +1368,7 @@ function Gathering:CreateGUI()
 	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
 	self.GUI.Window.ScrollBar:SetValueStep(1)
 	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
-	self.GUI.Window.ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
+	self.GUI.Window.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
 	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
 	self.GUI.Window.ScrollBar:SetValue(1)
@@ -1311,31 +1399,6 @@ function Gathering:CreateGUI()
 	Scroll(self.GUI.Window)
 end
 
-function Gathering:ScanButtonOnClick()
-	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
-	
-	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
-		print(format(L["You must wait %s until you can scan again."], Gathering:FormatTime(900 - TimeDiff)))
-		return
-	end
-	
-	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
-		if (TimeDiff > 900) then
-			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-		else
-			return
-		end
-	end
-	
-	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-	
-	ReplicateItems()
-	
-	print(L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."])
-	
-	GatheringLastScan = GetTime()
-end
-
 function Gathering:CHAT_MSG_LOOT(msg)
 	if (not msg) then
 		return
@@ -1360,9 +1423,10 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
 	
-	local _, _, Quality, _, _, Type, SubType, _, _, Texture, _, ClassID, SubClassID, BindType = GetItemInfo(ID)
+	local Type, SubType, _, _, _, _, _, _, BindType = select(6, GetItemInfo(ID))
 	
-	if (self.Ignored[ID] or self.Ignored[Name] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
+	-- Check that we want to track the type of item
+	if (self.Ignored[ID] or ((not self.Tracked[ID]))) then
 		return
 	end
 	
@@ -1396,42 +1460,6 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	end
 end
 
-function Gathering:REPLICATE_ITEM_LIST_UPDATE()
-	if (not GatheringMarketPrices) then
-		GatheringMarketPrices = {}
-	end
-	
-	local Count, Buyout, ID, HasAllInfo, PerUnit, _
-	
-	for i = 0, (GetNumReplicateItems() - 1) do
-		_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
-		
-		if HasAllInfo then
-			self.MarketPrices[ID] = Buyout / Count
-			GatheringMarketPrices[ID] = self.MarketPrices[ID]
-		elseif ID then
-			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
-				_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
-				PerUnit = Buyout / Count
-				
-				if self.MarketPrices[ID] then
-					if (self.MarketPrices[ID] > PerUnit) then -- Collect lowest prices
-						self.MarketPrices[ID] = PerUnit
-						GatheringMarketPrices[ID] = self.MarketPrices[ID]
-					end
-				else
-					self.MarketPrices[ID] = PerUnit
-					GatheringMarketPrices[ID] = self.MarketPrices[ID]
-				end
-			end)
-		end
-	end
-	
-	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-	
-	print(L["|cff00CC6AGathering|r updated market prices."])
-end
-
 function Gathering:MODIFIER_STATE_CHANGED()
 	if self.MouseIsOver then
 		self.Tooltip:ClearLines()
@@ -1447,8 +1475,7 @@ function Gathering:OnTooltipSetItem()
 	local Item, Link = self:GetItem()
 	
 	if Item then
-		local ID = tonumber(match(Link, "^|cff%x+|Hitem:(%d+)"))
-		local Price = Gathering:GetPrice(ID, Link)
+		local Price = Gathering:GetPrice(Link)
 		
 		if (Price and Price > 0) then
 			self:AddLine(" ")
@@ -1458,16 +1485,18 @@ function Gathering:OnTooltipSetItem()
 	end
 end
 
-local SendVersion = function()
-	local Info
+function Gathering:FRIENDLIST_UPDATE()
+	local Info, PresenceID, AccountName, BattleTag, IsBattleTagPresence, CharacterName, BNetIDGameAccount, Client, IsOnline, RealmName, Faction, WoWProjectID, _
 	local NumFriends = BNGetNumFriends()
 	
 	for i = 1, NumFriends do
-		Info = C_BattleNet.GetFriendAccountInfo(i)
+		local PresenceID, AccountName, BattleTag, IsBattleTagPresence, CharacterName, BNetIDGameAccount, Client, IsOnline = BNGetFriendInfo(i)
 		
-		if (Info.gameAccountInfo.clientProgram == "WoW") then
-			if (Info.gameAccountInfo.wowProjectID == 1) and Info.gameAccountInfo.isOnline and (Info.gameAccountInfo.realmName == MyRealm) and Info.gameAccountInfo.factionName == UnitFactionGroup("player") then
-				SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", Info.gameAccountInfo.characterName)
+		if (Client == "WoW") then
+			_, CharacterName, Client, RealmName, _, Faction, _, _, _, _, _, _, _, _, IsOnline, _, _, _, _, _, WoWProjectID = BNGetGameAccountInfo((BNetIDGameAccount or PresenceID))
+			
+			if IsOnline and (WoWProjectID == 5) and (RealmName == MyRealm) and (Faction == MyFaction) then
+				SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", CharacterName)
 			end
 		end
 	end
@@ -1481,55 +1510,72 @@ local SendVersion = function()
 	end
 	
 	Info = nil
+	
+	self:UnregisterEvent("FRIENDLIST_UPDATE")
 end
 
 function Gathering:PLAYER_ENTERING_WORLD()
-	self.MarketPrices = GatheringMarketPrices or {}
-	self.Ignored = GatheringIgnore or {}
-	
-	if IsAddOnLoaded("TradeSkillMaster") then
-		self.HasTSM = true
-	end
-	
-	GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
-	
-	if (not GatheringSettings) then
-		GatheringSettings = {}
-	end
-	
-	self.Settings = setmetatable(GatheringSettings, {__index = self.DefaultSettings})
-	
-	self:CreateWindow()
-	
-	self:UpdateWeaponTracking(self.Settings["track-weapons"])
-	self:UpdateArmorTracking(self.Settings["track-armor"])
-	self:UpdateJewelcraftingTracking(self.Settings["track-jewelcrafting"])
-	self:UpdateClothTracking(self.Settings["track-cloth"])
-	self:UpdateLeatherTracking(self.Settings["track-leather"])
-	self:UpdateOreTracking(self.Settings["track-ore"])
-	self:UpdateCookingTracking(self.Settings["track-cooking"])
-	self:UpdateHerbTracking(self.Settings["track-herbs"])
-	self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
-	self:UpdateMountTracking(self.Settings["track-mounts"])
-	self:UpdateConsumableTracking(self.Settings["track-consumables"])
-	self:UpdateReagentTracking(self.Settings["track-reagents"])
-	self:UpdateOtherTracking(self.Settings["track-other"])
-	
-	if self.Settings["hide-idle"] then
-		self:Hide()
+	if (not self.Initial) then
+		self.Ignored = GatheringIgnore or {}
+		
+		if IsAddOnLoaded("TradeSkillMaster") then
+			self.HasTSM = true
+		end
+		
+		if (not IsAddOnLoaded("HydraUI")) then
+			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
+		end
+		
+		GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+		
+		if (not GatheringSettings) then
+			GatheringSettings = {}
+		end
+		
+		self.Settings = setmetatable(GatheringSettings, {__index = self.DefaultSettings})
+		
+		self:CreateWindow()
+		
+		self:UpdateClothTracking(self.Settings["track-cloth"])
+		self:UpdateLeatherTracking(self.Settings["track-leather"])
+		self:UpdateOreTracking(self.Settings["track-ore"])
+		self:UpdateFishTracking(self.Settings["track-fish"])
+		self:UpdateMeatTracking(self.Settings["track-meat"])
+		self:UpdateHerbTracking(self.Settings["track-herbs"])
+		self:UpdateEnchantingTracking(self.Settings["track-enchanting"])
+		self:UpdateReagentTracking(self.Settings["track-reagents"])
+		self:UpdateQuestItemTracking(self.Settings["track-quest"])
+		
+		if self.Settings["hide-idle"] then
+			self:Hide()
+		end
+		
+		C_FriendList.ShowFriends()
+		
+		self.Initial = true
 	end
 	
 	if IsInGuild() then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
 	end
 	
-	if (IsInRaid() and UnitExists("raid1")) then
+	if UnitInBattleground("player") then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "BATTLEGROUND")
+	elseif (IsInRaid() and UnitExists("raid1")) then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
 	elseif (IsInGroup() and UnitExists("party1")) then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
 	end
 	
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	SendAddonMessage("Gathering-Version", AddOnVersion, "YELL")
+	
+	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
+	if (action == "YOU_CHANGED" and id == 1) then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "YELL")
+	end
 end
 
 function Gathering:GUILD_ROSTER_UPDATE()
@@ -1539,7 +1585,9 @@ function Gathering:GUILD_ROSTER_UPDATE()
 end
 
 function Gathering:GROUP_ROSTER_UPDATE()
-	if IsInRaid() and UnitExists("raid1") then
+	if UnitInBattleground("player") then
+		SendAddonMessage("Gathering-Version", AddOnVersion, "BATTLEGROUND")
+	elseif IsInRaid() and UnitExists("raid1") then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
 	elseif IsInGroup() and UnitExists("party1") then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
@@ -1576,28 +1624,15 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	end
 end
 
-function Gathering:AUCTION_HOUSE_SHOW()
-	if (not self.ScanButton and AuctionHouseFrame) then
-		self.ScanButton = CreateFrame("Button", "Gathering Scan Button", AuctionHouseFrame.MoneyFrameBorder, "UIPanelButtonTemplate")
-		self.ScanButton:SetSize(140, 24)
-		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
-		self.ScanButton:SetText("Gathering Scan")
-		self.ScanButton:SetScript("OnClick", self.ScanButtonOnClick)
-	end
-end
-
 function Gathering:OnEvent(event, ...)
 	if self[event] then
 		self[event](self, ...)
 	end
 end
 
-function Gathering:GetPrice(id, link)
+function Gathering:GetPrice(link)
 	if self.HasTSM then
 		return TSM_API.GetCustomPriceValue("dbMarket", TSM_API.ToItemString(link))
-		--return TSM_API.GetCustomPriceValue("dbMinBuyout", TSM_API.ToItemString(link))
-	else
-		return self.MarketPrices[id]
 	end
 end
 
@@ -1612,17 +1647,17 @@ function Gathering:OnEnter()
 	local MarketTotal = 0
 	
 	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
-	self.Tooltip:SetPoint("TOP", self, "BOTTOM", 0, -2)
+	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
 	self.Tooltip:ClearLines()
 	
 	self.Tooltip:AddLine(L["Gathering"])
 	self.Tooltip:AddLine(" ")
 	
-	for SubType, Info in pairs(self.Gathered) do
+	for SubType, Info in next, self.Gathered do
 		self.Tooltip:AddLine(SubType, 1, 1, 0)
 		Count = Count + 1
 		
-		for ID, Value in pairs(Info) do
+		for ID, Value in next, Info do
 			local Name, Link, Rarity = GetItemInfo(ID)
 			local Hex = "|cffFFFFFF"
 			
@@ -1630,7 +1665,7 @@ function Gathering:OnEnter()
 				Hex = ITEM_QUALITY_COLORS[Rarity].hex
 			end
 			
-			local Price = self:GetPrice(ID, Link)
+			local Price = self:GetPrice(Link)
 			
 			if Price then
 				MarketTotal = MarketTotal + (Price * Value)
@@ -1698,11 +1733,118 @@ function Gathering:OnMouseUp(button)
 	end
 end
 
+function Gathering:CheckBagResults()
+	if (not self.BagResults) then
+		return
+	end
+	
+	local Results = {}
+	local ID, Texture, Count
+	
+	for Bag = 0, NUM_BAG_SLOTS do
+		for Slot = 1, GetContainerNumSlots(Bag) do
+			ID = GetContainerItemID(Bag, Slot)
+			Texture, Count = GetContainerItemInfo(Bag, Slot)
+			
+			if ID and (self.Tracked[ID]) then
+				if self.BagResults[Bag][Slot] then
+					if (Count > self.BagResults[Bag][Slot][2]) then
+						local Change = Count - self.BagResults[Bag][Slot][2]
+						
+						tinsert(Results, {ID, Change})
+					end
+				else
+					tinsert(Results, {ID, Count}) -- We just started a stack, and Count is the total of the new item
+				end
+			end
+		end
+	end
+	
+	if (#Results == 0) then
+		self.BagResults = nil
+		
+		return
+	end
+	
+	for i = 1, #Results do
+		local ID = Results[i][1]
+		local Quantity = Results[i][2]
+		local Type, SubType, _, _, _, _, _, _, BindType = select(6, GetItemInfo(ID))
+		
+		if (BindType and ((BindType ~= 0) and self.Settings["ignore-bop"])) then
+			return
+		end
+		
+		if (not self.Gathered[SubType]) then
+			self.Gathered[SubType] = {}
+			self.NumTypes = self.NumTypes + 1
+		end
+		
+		if (not self.Gathered[SubType][ID]) then
+			self.Gathered[SubType][ID] = 0
+		end
+		
+		if (not self.SecondsPerItem[ID]) then
+			self.SecondsPerItem[ID] = 0
+		end
+		
+		self.Gathered[SubType][ID] = self.Gathered[SubType][ID] + Quantity
+		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
+		
+		if (not self:GetScript("OnUpdate")) then
+			self:StartTimer()
+		end
+		
+		if self.MouseIsOver then
+			self:OnLeave()
+			self:OnEnter()
+		end
+	end
+	
+	self.BagResults = nil
+end
+
+function Gathering:BAG_UPDATE_DELAYED()
+	self:CheckBagResults()
+end
+
+function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
+	if (unit ~= "player") then
+		return
+	end
+	
+	if (not id or id ~= 30427) then -- Extract Gas
+		return
+	end
+	
+	self.BagResults = {}
+	
+	local ID, Texture, Count
+	
+	for Bag = 0, NUM_BAG_SLOTS do
+		if (not self.BagResults[Bag]) then
+			self.BagResults[Bag] = {}
+		end
+		
+		for Slot = 1, GetContainerNumSlots(Bag) do
+			ID = GetContainerItemID(Bag, Slot)
+			Texture, Count = GetContainerItemInfo(Bag, Slot)
+			
+			if ID and (self.Tracked[ID]) then
+				self.BagResults[Bag][Slot] = {ID, Count}
+			end
+		end
+	end
+end
+
+Gathering:RegisterEvent("FRIENDLIST_UPDATE")
 Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
+Gathering:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
-Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
+Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START") -- Maybe only register for engineers
+Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)

@@ -1,11 +1,11 @@
-## Interface: 90105
+## Interface: 11401
 ## Author: Hydra
-## Version: 1.50
+## Version: 1.37
 ## Title: Gathering
 ## Notes: Track gathered items.
-## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore
+## SavedVariables: GatheringSettings, GatheringIgnore
 
 Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua
 Libraries\LibSharedMedia-3.0.lua
-Versions\Shadowlands.lua
+Versions\Vanilla.lua
