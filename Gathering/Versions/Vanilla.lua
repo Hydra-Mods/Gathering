@@ -802,7 +802,7 @@ end
 function Gathering:DiscordOnEscapePressed()
 	self:SetAutoFocus(false)
 	self:ClearFocus()
-	self:SetText("discord.gg/XGYDaBF")
+	self:SetText("discord.gg/XefDFa6nJR")
 end
 
 function Gathering:DiscordOnMouseDown()
@@ -832,7 +832,7 @@ function Gathering:CreateDiscord()
 	EditBox:EnableMouse(true)
 	EditBox:SetMaxLetters(19)
 	EditBox:SetTextInsets(5, 0, 0, 0)
-	EditBox:SetText("discord.gg/XGYDaBF")
+	EditBox:SetText("discord.gg/XefDFa6nJR")
 	EditBox:SetScript("OnEnterPressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnEscapePressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.DiscordOnMouseDown)
@@ -1474,7 +1474,7 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	if (channel == "WHISPER") then
 		if (message > AddOnVersion) then
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
-			print("Join the Discord community for support and feedback discord.gg/XGYDaBF")
+			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
@@ -1484,7 +1484,7 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", sender)
 		elseif (message > AddOnVersion) then -- We're behind!
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
-			print("Join the Discord community for support and feedback discord.gg/XGYDaBF")
+			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
