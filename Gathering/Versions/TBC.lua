@@ -260,15 +260,10 @@ function Gathering:CreateWindow()
 	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14)
 	self.Text:SetText("Gathering")
 	
-	--[[ Tooltip
-	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
-	self.Tooltip:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-	self.Tooltip:SetBackdropBorderColor(0, 0, 0)
-	self.Tooltip:SetBackdropColor(0.2, 0.2, 0.2, 0.7)]]
-	
+	-- Tooltip
 	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
 	self.Tooltip:SetFrameLevel(10)
-
+	
 	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
 	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
 	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
@@ -646,7 +641,9 @@ end
 function Gathering:UpdateTooltipFont()
 	local Font = SharedMedia:Fetch("font", self.Settings["window-font"])
 	
-	self.Tooltip:SetBackdrop(nil)
+	if self.Tooltip.NineSlice then
+		self.Tooltip.NineSlice:Hide()
+	end
 	
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
