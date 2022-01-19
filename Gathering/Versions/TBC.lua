@@ -382,7 +382,9 @@ function Gathering:UpdateLeatherTracking(value)
 	Gathering.Tracked[783] = value     -- Light Hide
 	Gathering.Tracked[2319] = value    -- Medium Leather
 	Gathering.Tracked[4232] = value    -- Medium Hide
-	Gathering.Tracked[4234] = value   -- Heavy Leather
+	Gathering.Tracked[6470] = value    -- Deviate Scale
+	Gathering.Tracked[6471] = value    -- Perfect Deviate Scale
+	Gathering.Tracked[4234] = value    -- Heavy Leather
 	Gathering.Tracked[4304] = value    -- Thick Leather
 	Gathering.Tracked[8170] = value    -- Rugged Leather
 	Gathering.Tracked[8171] = value    -- Rugged Hide
