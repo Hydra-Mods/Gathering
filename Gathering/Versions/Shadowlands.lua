@@ -559,12 +559,10 @@ function Gathering:UpdateTooltipFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
 		
-		--if (Region:GetObjectType() == "FontString" and not Region.Handled) then
 		if (Region:GetObjectType() == "FontString") then
 			Region:SetFont(Font, 12)
 			Region:SetShadowColor(0, 0, 0)
 			Region:SetShadowOffset(1, -1)
-			--Region.Handled = true
 		end
 	end
 end
@@ -859,13 +857,6 @@ function Gathering:CreateDiscord()
 	EditBox:SetScript("OnEnterPressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnEscapePressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.DiscordOnMouseDown)
-	--EditBox:SetScript("OnChar", self.OnEditChar)
-	
-	--[[EditBox.Tex = EditBox:CreateTexture(nil, "BACKGROUND")
-	EditBox.Tex:SetTexture(BarTexture)
-	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
-	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
-	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)]]
 	
 	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
 	EditBox.BG:SetTexture(BlankTexture)
@@ -979,7 +970,6 @@ local SelectionOnMouseWheel = function(self, delta)
 	end
 	
 	ScrollSelections(self)
-	--self.ScrollBar:SetValue(self.Offset)
 end
 
 local FontListOnMouseUp = function(self)
@@ -1560,7 +1550,6 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
 		end
 	else
@@ -1570,7 +1559,6 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
 		end
 	end
@@ -1595,7 +1583,6 @@ end
 function Gathering:GetPrice(id, link)
 	if self.HasTSM then
 		return TSM_API.GetCustomPriceValue("dbMarket", TSM_API.ToItemString(link))
-		--return TSM_API.GetCustomPriceValue("dbMinBuyout", TSM_API.ToItemString(link))
 	else
 		return self.MarketPrices[id]
 	end

@@ -301,6 +301,11 @@ Gathering.DefaultSettings = {
 	
 	-- Styling
 	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
+	
+	--[[
+	WindowHeight = 28,
+	WindowWidth = 140,
+	--]]
 }
 
 function Gathering:UpdateHerbTracking(value)
@@ -338,22 +343,14 @@ function Gathering:UpdateHerbTracking(value)
 	Gathering.Tracked[19726] = value   -- Bloodvine
 	
 	Gathering.Tracked[22785] = value   -- Felweed
-	--Gathering.Tracked[108344] = value  -- Felweed Stalk
 	Gathering.Tracked[22786] = value   -- Dreaming Glory
-	--Gathering.Tracked[108345] = value  -- Dreaming Glory Petal
 	Gathering.Tracked[22787] = value   -- Ragveil
-	--Gathering.Tracked[108346] = value  -- Ragveil Cap
 	Gathering.Tracked[22788] = value   -- Flame Cap
 	Gathering.Tracked[22789] = value   -- Terocone
-	--Gathering.Tracked[108347] = value  -- Terocone Leaf
 	Gathering.Tracked[22790] = value   -- Ancient Lichen
-	--Gathering.Tracked[108348] = value  -- Ancient Lichen Petal
 	Gathering.Tracked[22791] = value   -- Netherbloom
-	--Gathering.Tracked[108349] = value  -- Netherbloom Leaf
 	Gathering.Tracked[22792] = value   -- Nightmare Vine
-	--Gathering.Tracked[108350] = value  -- Nightmare Vine Stem
 	Gathering.Tracked[22793] = value   -- Mana Thistle
-	--Gathering.Tracked[108351] = value  -- Mana Thistle Leaf
 	Gathering.Tracked[22794] = value   -- Fel Lotus
 end
 
@@ -650,12 +647,10 @@ function Gathering:UpdateTooltipFont()
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
 		
-		--if (Region:GetObjectType() == "FontString" and not Region.Handled) then
 		if (Region:GetObjectType() == "FontString") then
 			Region:SetFont(Font, 12)
 			Region:SetShadowColor(0, 0, 0)
 			Region:SetShadowOffset(1, -1)
-			--Region.Handled = true
 		end
 	end
 end
@@ -950,13 +945,6 @@ function Gathering:CreateDiscord()
 	EditBox:SetScript("OnEnterPressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnEscapePressed", self.DiscordOnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.DiscordOnMouseDown)
-	--EditBox:SetScript("OnChar", self.OnEditChar)
-	
-	--[[EditBox.Tex = EditBox:CreateTexture(nil, "BACKGROUND")
-	EditBox.Tex:SetTexture(BarTexture)
-	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
-	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
-	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)]]
 	
 	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
 	EditBox.BG:SetTexture(BlankTexture)
@@ -1070,7 +1058,6 @@ local SelectionOnMouseWheel = function(self, delta)
 	end
 	
 	ScrollSelections(self)
-	--self.ScrollBar:SetValue(self.Offset)
 end
 
 local FontListOnMouseUp = function(self)
@@ -1567,8 +1554,6 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	end
 	
 	SendAddonMessage("Gathering-Version", AddOnVersion, "YELL")
-	
-	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
@@ -1607,7 +1592,6 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
 		end
 	else
@@ -1617,7 +1601,6 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
 		end
 	end
