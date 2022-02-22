@@ -1,6 +1,6 @@
-## Interface: 90105
+## Interface: 90201
 ## Author: Hydra
-## Version: 1.54
+## Version: 1.55
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore

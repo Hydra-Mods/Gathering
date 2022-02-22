@@ -253,17 +253,26 @@ function Gathering:CreateWindow()
 	self:RegisterForDrag("LeftButton")
 	self:SetScript("OnDragStart", self.StartMoving)
 	self:SetScript("OnDragStop", self.StopMovingOrSizing)
-
+	
 	-- Text
 	self.Text = self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetPoint("CENTER", self, 0, 0)
 	self.Text:SetJustifyH("CENTER")
 	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14)
 	self.Text:SetText("Gathering")
-
+	
 	-- Tooltip
 	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
-
+	self.Tooltip:SetFrameLevel(10)
+	
+	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
+	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
+	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
+	self.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
+	self.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
+	self.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
+	self.Tooltip.Backdrop:SetFrameLevel(1)
+	
 	-- Data
 	self.Gathered = {}
 	self.TotalGathered = 0
@@ -291,6 +300,29 @@ Gathering.DefaultSettings = {
 	
 	-- Styling
 	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
+	
+	--[[ REDOING THESE SETTING NAMES ]]--
+	
+	-- Tracking
+	TrackOre = true,
+	TrackHerbs = true,
+	TrackLeather = true,
+	TrackFish = true,
+	TrackMeat = true,
+	TrackCloth = true,
+	TrackEnchanting = true,
+	TrackReagents = true,
+	TrackQuest = true,
+	
+	-- Functionality
+	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
+	HideIdle = false, -- Hide the tracker frame while not running
+	ShowTooltip = false, -- Show tooltip data about item prices
+	
+	-- Styling
+	WindowFont = SharedMedia.DefaultMedia.font, -- Set the font
+	WindowHeight = 28,
+	WindowWidth = 140,
 }
 
 Gathering.Tracked = {}
@@ -584,6 +616,10 @@ function Gathering:OnUpdate(ela)
 			self.SecondsPerItem[key] = self.SecondsPerItem[key] + 1
 		end
 		
+		if (self.GoldGained > 0) then
+			self.GoldTimer = self.GoldTimer + 1
+		end
+		
 		self.Text:SetText(date("!%X", self.Seconds))
 		
 		if self.MouseIsOver then
@@ -631,6 +667,10 @@ function Gathering:Reset()
 	self.TotalGathered = 0
 	self.Seconds = 0
 	self.Elapsed = 0
+	
+	self.GoldValue = GetMoney() or 0
+	self.GoldGained = 0
+	self.GoldTimer = 0
 	
 	self.Text:SetTextColor(1, 1, 1)
 	self.Text:SetText(date("!%X", self.Seconds))
@@ -1387,7 +1427,11 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self:Hide()
 	end
 	
-		if IsInGuild() then
+	self.GoldValue = GetMoney() or 0
+	self.GoldGained = 0
+	self.GoldTimer = 0
+	
+	if IsInGuild() then
 		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
 	end
 	
@@ -1436,6 +1480,22 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	self:UpdateReagentTracking(self.Settings["track-reagents"])
 	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function Gathering:CHAT_MSG_MONEY()
+	local Current = GetMoney()
+	
+	if (Current > self.GoldValue) then
+		local Diff = Current - self.GoldValue
+		
+		self.GoldGained = self.GoldGained + Diff
+		
+		if (not self:GetScript("OnUpdate")) then
+			self:StartTimer()
+		end
+	end
+	
+	self.GoldValue = Current
 end
 
 function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
@@ -1499,7 +1559,7 @@ function Gathering:GetPrice(link)
 end
 
 function Gathering:OnEnter()
-	if (self.TotalGathered == 0) then
+	if (self.TotalGathered == 0 and self.GoldGained == 0) then
 		return
 	end
 	
@@ -1507,55 +1567,74 @@ function Gathering:OnEnter()
 	
 	local Count = 0
 	local MarketTotal = 0
+	local X, Y = self:GetCenter()
 	
 	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
-	self.Tooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+	
+	if (Y > UIParent:GetHeight() / 2) then
+		self.Tooltip:SetPoint("TOP", self, "BOTTOM", 0, -2)
+	else
+		self.Tooltip:SetPoint("BOTTOM", self, "TOP", 0, 2)
+	end
+	
 	self.Tooltip:ClearLines()
 	
 	self.Tooltip:AddLine(L["Gathering"])
-	self.Tooltip:AddLine(" ")
 	
-	for SubType, Info in pairs(self.Gathered) do
-		self.Tooltip:AddLine(SubType, 1, 1, 0)
-		Count = Count + 1
+	if (self.TotalGathered > 0) then
+		self.Tooltip:AddLine(" ")
 		
-		for ID, Value in pairs(Info) do
-			local Name, Link, Rarity = GetItemInfo(ID)
-			local Hex = "|cffFFFFFF"
+		for SubType, Info in pairs(self.Gathered) do
+			self.Tooltip:AddLine(SubType, 1, 1, 0)
+			Count = Count + 1
 			
-			if Rarity then
-				Hex = ITEM_QUALITY_COLORS[Rarity].hex
+			for ID, Value in pairs(Info) do
+				local Name, Link, Rarity = GetItemInfo(ID)
+				local Hex = "|cffFFFFFF"
+				
+				if Rarity then
+					Hex = ITEM_QUALITY_COLORS[Rarity].hex
+				end
+				
+				local Price = self:GetPrice(Link)
+				
+				if Price then
+					MarketTotal = MarketTotal + (Price * Value)
+				end
+				
+				if (IsShiftKeyDown() and Price) then
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((Price * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+				else
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+				end
 			end
 			
-			local Price = self:GetPrice(Link)
-			
-			if Price then
-				MarketTotal = MarketTotal + (Price * Value)
+			if (Count ~= self.NumTypes) then
+				self.Tooltip:AddLine(" ")
 			end
-			
-			if (IsShiftKeyDown() and Price) then
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((Price * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
-			else
-				self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
-			end
-		end
-		
-		if (Count ~= self.NumTypes) then
-			self.Tooltip:AddLine(" ")
 		end
 	end
 	
-	self.Tooltip:AddLine(" ")
-	self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
-	
-	if (IsShiftKeyDown() and MarketTotal > 0) then
-		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
-	else
-		self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
+	if (self.GoldGained > 0) then
+		self.Tooltip:AddLine(" ")
+		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
+		self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
+		--self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
 	end
 	
-	if (MarketTotal > 0) then
-		self.Tooltip:AddDoubleLine(L["Total Value:"], self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
+	if (self.TotalGathered > 0) then
+		self.Tooltip:AddLine(" ")
+		self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
+		
+		if (IsShiftKeyDown() and MarketTotal > 0) then
+			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
+		else
+			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
+		end
+		
+		if (MarketTotal > 0) then
+			self.Tooltip:AddDoubleLine(L["Total Value:"], self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
+		end
 	end
 	
 	self.Tooltip:AddLine(" ")
@@ -1601,6 +1680,7 @@ Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
+Gathering:RegisterEvent("CHAT_MSG_MONEY")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
