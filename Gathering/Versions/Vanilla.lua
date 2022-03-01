@@ -245,7 +245,7 @@ Gathering:SetMovable(true)
 Gathering:SetUserPlaced(true)
 
 function Gathering:CreateWindow()
-	self:SetSize(140, 28)
+	self:SetSize(self.Settings.WindowWidth, self.Settings.WindowHeight)
 	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1, insets = {top = 0, left = 0, bottom = 0, right = 0}})
 	self:SetBackdropBorderColor(0, 0, 0)
 	self:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
@@ -552,6 +552,18 @@ function Gathering:RemoveIgnoredItem(text)
 		
 		print(format(L["%s is now being unignored."], text))
 	end
+end
+
+function Gathering:SetFrameWidth(text)
+	local Width = tonumber(self:GetText())
+	
+	Gathering:SetWidth(Width)
+end
+
+function Gathering:SetFrameHeight(text)
+	local Height = tonumber(self:GetText())
+	
+	Gathering:SetHeight(Height)
 end
 
 function Gathering:ToggleTimerPanel(value)
@@ -958,6 +970,80 @@ function Gathering:CreateEditBox(text, func)
 	tinsert(self.GUI.Window.Widgets, EditBox)
 end
 
+function Gathering:NumberEditBoxOnEnterPressed()
+	local Text = self:GetText()
+	
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	print(self.Setting, tonumber(Text))
+	Gathering:UpdateSettingValue(self.Setting, tonumber(Text))
+	
+	if self.Hook then
+		self:Hook(tonumber(Text))
+	end
+end
+
+function Gathering:NumberOnEscapePressed()
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+end
+
+function Gathering:NumberEditBoxOnMouseDown()
+	self:SetAutoFocus(true)
+	
+	ClearCursor()
+end
+
+function Gathering:NumberOnEditFocusLost()
+	ClearCursor()
+end
+
+function Gathering:CreateNumberEditBox(key, text, func)
+	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
+	EditBox:SetSize(60, 20)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetShadowColor(0, 0, 0)
+	EditBox:SetShadowOffset(1, -1)
+	EditBox:SetJustifyH("LEFT")
+	EditBox:SetAutoFocus(false)
+	EditBox:EnableKeyboard(true)
+	EditBox:EnableMouse(true)
+	EditBox:SetMaxLetters(3)
+	EditBox:SetNumeric(true)
+	EditBox:SetTextInsets(5, 0, 0, 0)
+	EditBox:SetText(self.Settings[key])
+	EditBox:SetScript("OnEnterPressed", self.NumberEditBoxOnEnterPressed)
+	EditBox:SetScript("OnEscapePressed", self.NumberOnEscapePressed)
+	EditBox:SetScript("OnMouseDown", self.NumberEditBoxOnMouseDown)
+	EditBox.Setting = key
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0, 0, 0)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
+	
+	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
+	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
+	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
+	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	
+	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
+	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
+	EditBox.Text:SetJustifyH("LEFT")
+	EditBox.Text:SetShadowColor(0, 0, 0)
+	EditBox.Text:SetShadowOffset(1, -1)
+	EditBox.Text:SetText(text)
+	
+	if func then
+		EditBox.Hook = func
+	end
+	
+	tinsert(self.GUI.Window.Widgets, EditBox)
+end
+
 local ScrollSelections = function(self)
 	local First = false
 	
@@ -1197,6 +1283,10 @@ function Gathering:SettingsLayout()
 	self:CreateHeader(UNIGNORE_QUEST)
 	
 	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
+	
+	self:CreateHeader(WINDOW_SIZE_LABEL)
+	self:CreateNumberEditBox("WindowWidth", "Set Width", self.SetFrameWidth)
+	self:CreateNumberEditBox("WindowHeight", "Set Height", self.SetFrameHeight)
 	
 	self:CreateDiscord()
 end
