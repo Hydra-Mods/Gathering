@@ -1669,11 +1669,7 @@ function Gathering:OnEnter()
 	
 	self.Tooltip:ClearLines()
 	
-	self.Tooltip:AddLine(L["Gathering"])
-	
 	if (self.TotalGathered > 0) then
-		self.Tooltip:AddLine(" ")
-		
 		for SubType, Info in pairs(self.Gathered) do
 			self.Tooltip:AddLine(SubType, 1, 1, 0)
 			Count = Count + 1
@@ -1694,6 +1690,8 @@ function Gathering:OnEnter()
 				
 				if (IsShiftKeyDown() and Price) then
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((Price * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+				elseif IsControlKeyDown() then
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s%%)", Value, floor((Value / self.TotalGathered * 100 + 0.05) * 10) / 10), 1, 1, 1, 1, 1, 1)
 				else
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				end
@@ -1706,14 +1704,20 @@ function Gathering:OnEnter()
 	end
 	
 	if (self.GoldGained > 0) then
-		self.Tooltip:AddLine(" ")
+		if (self.TotalGathered > 0) then
+			self.Tooltip:AddLine(" ")
+		end
+		
 		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
 		self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
 		--self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
 	end
 	
 	if (self.TotalGathered > 0) then
-		self.Tooltip:AddLine(" ")
+		if (self.GoldGained > 0) then
+			self.Tooltip:AddLine(" ")
+		end
+		
 		self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
 		
 		if (IsShiftKeyDown() and MarketTotal > 0) then
