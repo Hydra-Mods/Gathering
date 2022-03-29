@@ -1598,7 +1598,7 @@ function Gathering:FRIENDLIST_UPDATE()
 			_, CharacterName, Client, RealmName, _, Faction, _, _, _, _, _, _, _, _, IsOnline, _, _, _, _, _, WoWProjectID = BNGetGameAccountInfo((BNetIDGameAccount or PresenceID))
 			
 			if IsOnline and (WoWProjectID == 5) and (RealmName == MyRealm) and (Faction == MyFaction) then
-				SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", CharacterName)
+				SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", CharacterName)
 			end
 		end
 	end
@@ -1607,7 +1607,7 @@ function Gathering:FRIENDLIST_UPDATE()
 		Info = C_FriendList.GetFriendInfoByIndex(i)
 		
 		if Info.connected then
-			SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", Info.name)
+			SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", Info.name)
 		end
 	end
 	
@@ -1662,18 +1662,20 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	end
 	
 	if IsInGuild() then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "GUILD")
+	else
+		self:RegisterEvent("GUILD_ROSTER_UPDATE")
 	end
 	
 	if UnitInBattleground("player") then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "BATTLEGROUND")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
 	elseif (IsInRaid() and UnitExists("raid1")) then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "RAID")
 	elseif (IsInGroup() and UnitExists("party1")) then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "PARTY")
 	end
 	
-	SendAddonMessage("Gathering-Version", AddOnVersion, "YELL")
+	SendAddonMessage("GATHERING_VRSN", AddOnVersion, "YELL")
 end
 
 function Gathering:CHAT_MSG_MONEY()
@@ -1694,30 +1696,36 @@ end
 
 function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
 	if (action == "YOU_CHANGED" and id == 1) then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "YELL")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "YELL")
 	end
 end
 
-function Gathering:GUILD_ROSTER_UPDATE()
-	if IsInGuild() then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "GUILD")
+function Gathering:GUILD_ROSTER_UPDATE(flag)
+	if (not update and not IsInGuild()) then
+		return
 	end
+	
+	SendAddonMessage("GATHERING_VRSN", AddOnVersion, "GUILD")
+	
+	self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 end
 
 function Gathering:GROUP_ROSTER_UPDATE()
 	if UnitInBattleground("player") then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "BATTLEGROUND")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
 	elseif IsInRaid() and UnitExists("raid1") then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "RAID")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "RAID")
 	elseif IsInGroup() and UnitExists("party1") then
-		SendAddonMessage("Gathering-Version", AddOnVersion, "PARTY")
+		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "PARTY")
 	end
 end
 
-function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
-	sender = match(sender, "(%S+)-%S+")
+function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
+	if sender:find("-") then
+		sender = match(sender, "(%S+)-%S+")
+	end
 	
-	if (sender == Me or prefix ~= "Gathering-Version") then
+	if (sender == Me or prefix ~= "GATHERING_VRSN") then
 		return
 	end
 	
@@ -1732,7 +1740,7 @@ function Gathering:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 		end
 	else
 		if (AddOnVersion > message) then -- We have a higher version, share it
-			SendAddonMessage("Gathering-Version", AddOnVersion, "WHISPER", sender)
+			SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
 		elseif (message > AddOnVersion) then -- We're behind!
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
@@ -1761,7 +1769,6 @@ function Gathering:OnEnter()
 	
 	self.MouseIsOver = true
 	
-	local Count = 0
 	local MarketTotal = 0
 	local X, Y = self:GetCenter()
 	
@@ -1778,7 +1785,6 @@ function Gathering:OnEnter()
 	if (self.TotalGathered > 0) then
 		for SubType, Info in next, self.Gathered do
 			self.Tooltip:AddLine(SubType, 1, 1, 0)
-			Count = Count + 1
 			
 			for ID, Value in next, Info do
 				local Name, Link, Rarity = GetItemInfo(ID)
@@ -1803,17 +1809,11 @@ function Gathering:OnEnter()
 				end
 			end
 			
-			if (Count ~= self.NumTypes) then
-				self.Tooltip:AddLine(" ")
-			end
+			self.Tooltip:AddLine(" ")
 		end
 	end
 	
 	if (self.GoldGained > 0) then
-		if (self.TotalGathered > 0) then
-			self.Tooltip:AddLine(" ")
-		end
-		
 		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
 		self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
 		--self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
@@ -1979,7 +1979,6 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
 end
 
 Gathering:RegisterEvent("FRIENDLIST_UPDATE")
-Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
@@ -2009,4 +2008,4 @@ SlashCmdList["GATHERING"] = function(cmd)
 	end
 end
 
-C_ChatInfo.RegisterAddonMessagePrefix("Gathering-Version")
+C_ChatInfo.RegisterAddonMessagePrefix("GATHERING_VRSN")
