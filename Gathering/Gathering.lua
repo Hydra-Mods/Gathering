@@ -298,7 +298,7 @@ Gathering.DefaultSettings = {
 	["track-reagents"] = true,
 	["track-consumable"] = true,
 	["track-holiday"] = true,
-	["track-quest"] = true,
+	["track-quest"] = false,
 	
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
