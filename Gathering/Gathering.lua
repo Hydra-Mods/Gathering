@@ -27,8 +27,6 @@ local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local Textures = SharedMedia:HashTable("statusbar")
 local Fonts = SharedMedia:HashTable("font")
 local Me = UnitName("player")
-local MyRealm = GetRealmName()
-local MyFaction = UnitFactionGroup("player")
 local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
 
 if (GameVersion and GameVersion > 90000) then
@@ -318,7 +316,7 @@ Gathering.DefaultSettings = {
 	TrackCloth = true,
 	TrackEnchanting = true,
 	TrackReagents = true,
-	TrackQuest = true,
+	TrackQuest = false,
 	
 	-- Functionality
 	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
@@ -1480,35 +1478,6 @@ function Gathering:OnTooltipSetItem()
 	end
 end
 
-function Gathering:FRIENDLIST_UPDATE()
-	local Info, PresenceID, AccountName, BattleTag, IsBattleTagPresence, CharacterName, BNetIDGameAccount, Client, IsOnline, RealmName, Faction, WoWProjectID, _
-	local NumFriends = BNGetNumFriends()
-	
-	for i = 1, NumFriends do
-		local PresenceID, AccountName, BattleTag, IsBattleTagPresence, CharacterName, BNetIDGameAccount, Client, IsOnline = BNGetFriendInfo(i)
-		
-		if (Client == "WoW") then
-			_, CharacterName, Client, RealmName, _, Faction, _, _, _, _, _, _, _, _, IsOnline, _, _, _, _, _, WoWProjectID = BNGetGameAccountInfo((BNetIDGameAccount or PresenceID))
-			
-			if IsOnline and (WoWProjectID == 5) and (RealmName == MyRealm) and (Faction == MyFaction) then
-				SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", CharacterName)
-			end
-		end
-	end
-	
-	for i = 1, C_FriendList.GetNumFriends() do
-		Info = C_FriendList.GetFriendInfoByIndex(i)
-		
-		if Info.connected then
-			SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", Info.name)
-		end
-	end
-	
-	Info = nil
-	
-	self:UnregisterEvent("FRIENDLIST_UPDATE")
-end
-
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
 		self.Ignored = GatheringIgnore or {}
@@ -1546,8 +1515,6 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		if self.Settings["hide-idle"] then
 			self:Hide()
 		end
-		
-		C_FriendList.ShowFriends()
 		
 		self.Initial = true
 	end
@@ -1630,6 +1597,8 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			AddOnVersion = message
+			
+			self:PLAYER_ENTERING_WORLD()
 		end
 	else
 		if (AddOnVersion > message) then -- We have a higher version, share it
@@ -1639,6 +1608,8 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			AddOnVersion = message
+			
+			self:PLAYER_ENTERING_WORLD()
 		end
 	end
 end
@@ -1777,7 +1748,7 @@ function Gathering:OnMouseUp(button)
 	end
 end
 
-function Gathering:CheckBagResults()
+function Gathering:BAG_UPDATE_DELAYED()
 	if (not self.BagResults) then
 		return
 	end
@@ -1849,10 +1820,6 @@ function Gathering:CheckBagResults()
 	self.BagResults = nil
 end
 
-function Gathering:BAG_UPDATE_DELAYED()
-	self:CheckBagResults()
-end
-
 function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
 	if (unit ~= "player") then
 		return
@@ -1873,11 +1840,14 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
 		
 		for Slot = 1, GetContainerNumSlots(Bag) do
 			ID = GetContainerItemID(Bag, Slot)
-			Texture, Count = GetContainerItemInfo(Bag, Slot)
-			ClassID, SubClassID = select(12, GetItemInfo(ID))
 			
-			if ID and (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
-				self.BagResults[Bag][Slot] = {ID, Count}
+			if ID then
+				Texture, Count = GetContainerItemInfo(Bag, Slot)
+				ClassID, SubClassID = select(12, GetItemInfo(ID))
+				
+				if (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
+					self.BagResults[Bag][Slot] = {ID, Count}
+				end
 			end
 		end
 	end
@@ -1891,7 +1861,6 @@ elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
 end
 
-Gathering:RegisterEvent("FRIENDLIST_UPDATE")
 Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
