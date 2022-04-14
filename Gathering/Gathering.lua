@@ -1480,26 +1480,6 @@ function Gathering:OnTooltipSetItem()
 	end
 end
 
-local SendVersions = function()
-	if IsInGuild() then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
-	else
-		Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
-	end
-	
-	if UnitInBattleground("player") then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
-	elseif (IsInRaid() and UnitExists("raid1")) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
-	elseif (IsInGroup() and UnitExists("party1")) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
-	end
-	
-	if (GameVersion < 90000) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-	end
-end
-
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
 		self.Ignored = GatheringIgnore or {}
@@ -1541,7 +1521,23 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self.Initial = true
 	end
 	
-	C_Timer.After(5, SendVersions)
+	if IsInGuild() then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
+	else
+		Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
+	end
+	
+	if UnitInBattleground("player") then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
+	elseif (IsInRaid() and UnitExists("raid1")) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
+	elseif (IsInGroup() and UnitExists("party1")) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
+	end
+	
+	if (GameVersion < 90000) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+	end
 end
 
 function Gathering:CHAT_MSG_MONEY()
