@@ -8,4 +8,5 @@
 Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua
 Libraries\LibSharedMedia-3.0.lua
+Libraries\ChatThrottleLib.lua
 Gathering.lua

@@ -22,7 +22,9 @@ local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
 local GameVersion = select(4, GetBuildInfo())
-local AddOnVersion = tonumber(GetAddOnMetadata("Gathering", "Version"))
+local AddOnVersion = GetAddOnMetadata("Gathering", "Version")
+local AddOnNum = tonumber(AddOnVersion)
+local CT = ChatThrottleLib
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local Textures = SharedMedia:HashTable("statusbar")
 local Fonts = SharedMedia:HashTable("font")
@@ -1478,6 +1480,26 @@ function Gathering:OnTooltipSetItem()
 	end
 end
 
+local SendVersions = function()
+	if IsInGuild() then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
+	else
+		Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
+	end
+	
+	if UnitInBattleground("player") then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
+	elseif (IsInRaid() and UnitExists("raid1")) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
+	elseif (IsInGroup() and UnitExists("party1")) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
+	end
+	
+	if (GameVersion < 90000) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+	end
+end
+
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
 		self.Ignored = GatheringIgnore or {}
@@ -1519,23 +1541,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self.Initial = true
 	end
 	
-	if IsInGuild() then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "GUILD")
-	else
-		self:RegisterEvent("GUILD_ROSTER_UPDATE")
-	end
-	
-	if UnitInBattleground("player") then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
-	elseif (IsInRaid() and UnitExists("raid1")) then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "RAID")
-	elseif (IsInGroup() and UnitExists("party1")) then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "PARTY")
-	end
-	
-	if (GameVersion < 90000) then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "YELL")
-	end
+	C_Timer.After(5, SendVersions)
 end
 
 function Gathering:CHAT_MSG_MONEY()
@@ -1556,7 +1562,7 @@ end
 
 function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
 	if (action == "YOU_CHANGED" and id == 1) then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "YELL")
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
 	end
 end
 
@@ -1565,18 +1571,18 @@ function Gathering:GUILD_ROSTER_UPDATE(flag)
 		return
 	end
 	
-	SendAddonMessage("GATHERING_VRSN", AddOnVersion, "GUILD")
+	CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
 	
 	self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 end
 
 function Gathering:GROUP_ROSTER_UPDATE()
 	if UnitInBattleground("player") then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
 	elseif IsInRaid() and UnitExists("raid1") then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "RAID")
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
 	elseif IsInGroup() and UnitExists("party1") then
-		SendAddonMessage("GATHERING_VRSN", AddOnVersion, "PARTY")
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
 	end
 end
 
@@ -1592,22 +1598,22 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	message = tonumber(message)
 	
 	if (channel == "WHISPER") then
-		if (message > AddOnVersion) then
+		if (message > AddOnNum) then
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			AddOnVersion = message
+			AddOnNum = message
 			
 			self:PLAYER_ENTERING_WORLD()
 		end
 	else
-		if (AddOnVersion > message) then -- We have a higher version, share it
-			SendAddonMessage("GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
-		elseif (message > AddOnVersion) then -- We're behind!
+		if (AddOnNum > message) then -- We have a higher version, share it
+			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
+		elseif (message > AddOnNum) then -- We're behind!
 			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
-			AddOnVersion = message
+			AddOnNum = message
 			
 			self:PLAYER_ENTERING_WORLD()
 		end
