@@ -1610,6 +1610,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			AddOnNum = message
+			AddOnVersion = tostring(message)
 			
 			self:PLAYER_ENTERING_WORLD()
 		end
@@ -1780,6 +1781,7 @@ function Gathering:BAG_UPDATE_DELAYED()
 	
 	if (#Results == 0) then
 		self.BagResults = nil
+		self:UnregisterEvent("BAG_UPDATE_DELAYED")
 		
 		return
 	end
@@ -1820,6 +1822,7 @@ function Gathering:BAG_UPDATE_DELAYED()
 	end
 	
 	self.BagResults = nil
+	self:UnregisterEvent("BAG_UPDATE_DELAYED")
 end
 
 function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
@@ -1830,6 +1833,8 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
 	if (not id or id ~= 30427) then -- Extract Gas
 		return
 	end
+	
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
 	
 	self.BagResults = {}
 	
@@ -1857,7 +1862,6 @@ end
 
 if (GameVersion > 20000 and GameVersion < 90000) then
 	Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START") -- Maybe only register for engineers
-	Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 	Gathering:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
