@@ -16,7 +16,6 @@ local MaxWidgets = 11
 local MaxSelections = 8
 local BlankTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUIBlank.tga"
 local BarTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUI4.tga"
-local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local UnitInBattleground = UnitInBattleground
 local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
