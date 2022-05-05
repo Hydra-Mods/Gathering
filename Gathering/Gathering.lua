@@ -794,53 +794,6 @@ function Gathering:DiscordButtonOnMouseDown()
 	Parent:HighlightText()
 end
 
-function Gathering:CreateDiscord()
-	local EditBox = CreateFrame("EditBox", nil, self.GUI.OuterBackdrop)
-	EditBox:SetSize(116, 20)
-	EditBox:SetPoint("BOTTOMLEFT", 4, 3)
-	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
-	EditBox:SetShadowColor(0, 0, 0)
-	EditBox:SetShadowOffset(1, -1)
-	EditBox:SetFrameLevel(10)
-	EditBox:SetFrameStrata("MEDIUM")
-	EditBox:SetJustifyH("LEFT")
-	EditBox:SetAutoFocus(false)
-	EditBox:EnableKeyboard(true)
-	EditBox:EnableMouse(true)
-	EditBox:SetMaxLetters(19)
-	EditBox:SetTextInsets(5, 0, 0, 0)
-	EditBox:SetText("discord.gg/XefDFa6nJR")
-	EditBox:SetScript("OnEnterPressed", self.DiscordOnEscapePressed)
-	EditBox:SetScript("OnEscapePressed", self.DiscordOnEscapePressed)
-	EditBox:SetScript("OnMouseDown", self.DiscordOnMouseDown)
-	
-	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0.3, 0.3, 0.3)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", self.GUI.OuterBackdrop, -4, 4)
-	
-	EditBox.BG = EditBox:CreateTexture(nil, "BACKGROUND")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0.2, 0.2, 0.2)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, -0, 1)
-	
-	EditBox.Button = CreateFrame("Frame", nil, EditBox)
-	EditBox.Button:SetHeight(20)
-	EditBox.Button:SetPoint("LEFT", EditBox, "RIGHT", 0, 0)
-	EditBox.Button:SetPoint("BOTTOMRIGHT", self.GUI.OuterBackdrop, 4, 3)
-	EditBox.Button:SetScript("OnMouseUp", self.DiscordButtonOnMouseDown)
-	
-	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
-	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
-	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 5, 0)
-	EditBox.Text:SetJustifyH("LEFT")
-	EditBox.Text:SetShadowColor(0, 0, 0)
-	EditBox.Text:SetShadowOffset(1, -1)
-	EditBox.Text:SetText("Join Discord")
-end
-
 function Gathering:CreateEditBox(text, func)
 	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
 	EditBox:SetSize(168, 20)
@@ -961,6 +914,56 @@ function Gathering:CreateNumberEditBox(key, text, func)
 	if func then
 		EditBox.Hook = func
 	end
+	
+	tinsert(self.GUI.Window.Widgets, EditBox)
+end
+
+function Gathering:DiscordEditBoxOnMouseDown()
+	self:HighlightText()
+	self:SetAutoFocus(true)
+end
+
+function Gathering:DiscordEditBoxOnEnterPressed()
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	self:SetText("discord.gg/XefDFa6nJR")
+end
+
+function Gathering:CreateDiscordEditBox()
+	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
+	EditBox:SetSize(190, 20)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetShadowColor(0, 0, 0)
+	EditBox:SetShadowOffset(1, -1)
+	EditBox:SetJustifyH("LEFT")
+	EditBox:SetAutoFocus(false)
+	EditBox:EnableKeyboard(true)
+	EditBox:EnableMouse(true)
+	EditBox:SetTextInsets(5, 0, 0, 0)
+	EditBox:SetText("discord.gg/XefDFa6nJR")
+	EditBox:SetScript("OnEnterPressed", self.DiscordEditBoxOnEnterPressed)
+	EditBox:SetScript("OnEscapePressed", self.DiscordEditBoxOnEnterPressed)
+	EditBox:SetScript("OnMouseDown", self.DiscordEditBoxOnMouseDown)
+	
+	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
+	EditBox.BG:SetTexture(BlankTexture)
+	EditBox.BG:SetVertexColor(0, 0, 0)
+	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
+	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
+	
+	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
+	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
+	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
+	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	
+	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
+	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
+	EditBox.Text:SetJustifyH("LEFT")
+	EditBox.Text:SetShadowColor(0, 0, 0)
+	EditBox.Text:SetShadowOffset(1, -1)
+	EditBox.Text:SetText(text)
 	
 	tinsert(self.GUI.Window.Widgets, EditBox)
 end
@@ -1212,7 +1215,8 @@ function Gathering:SettingsLayout()
 	self:CreateNumberEditBox("WindowWidth", "Set Width", self.SetFrameWidth)
 	self:CreateNumberEditBox("WindowHeight", "Set Height", self.SetFrameHeight)
 	
-	self:CreateDiscord()
+	self:CreateHeader(L["Discord"])
+	self:CreateDiscordEditBox()
 end
 
 function Gathering:CreateGUI()
@@ -1259,7 +1263,7 @@ function Gathering:CreateGUI()
 	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
 	
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
-	self.GUI.Window:SetSize(210, 244)
+	self.GUI.Window:SetSize(210, 245)
 	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
 	self.GUI.Window.Offset = 1
 	self.GUI.Window.Widgets = {}
@@ -1268,14 +1272,14 @@ function Gathering:CreateGUI()
 	
 	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
-	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -21) --  -1
+	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -1)
 	self.GUI.Backdrop:SetTexture(BlankTexture)
 	self.GUI.Backdrop:SetVertexColor(0, 0, 0)
 	
 	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Inside:SetAllPoints()
 	self.GUI.Inside:SetTexture(BlankTexture)
-	self.GUI.Inside:SetVertexColor(0.3, 0.3, 0.3)
+	self.GUI.Inside:SetVertexColor(0.2, 0.2, 0.2)
 	
 	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
 	self.GUI.ButtonParent:SetAllPoints()
@@ -1285,7 +1289,7 @@ function Gathering:CreateGUI()
 	
 	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
-	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -24) -- -4
+	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
 	self.GUI.OuterBackdrop:SetBackdrop(Outline)
 	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
@@ -1296,13 +1300,13 @@ function Gathering:CreateGUI()
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent, "BackdropTemplate")
 	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
-	self.GUI.Window.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 2)
+	self.GUI.Window.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 3)
 	self.GUI.Window.ScrollBar:SetWidth(14)
 	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
 	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
 	self.GUI.Window.ScrollBar:SetValueStep(1)
 	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
-	self.GUI.Window.ScrollBar:SetBackdropColor(0.25, 0.25, 0.25)
+	self.GUI.Window.ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
 	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
 	self.GUI.Window.ScrollBar:SetValue(1)
@@ -1328,7 +1332,7 @@ function Gathering:CreateGUI()
 	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.Window.ScrollBar.NewTexture, 1, -1)
 	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.Window.ScrollBar.NewTexture, -1, 1)
 	self.GUI.Window.ScrollBar.NewTexture2:SetTexture(BarTexture)
-	self.GUI.Window.ScrollBar.NewTexture2:SetVertexColor(0.2, 0.2, 0.2)
+	self.GUI.Window.ScrollBar.NewTexture2:SetVertexColor(0.4, 0.4, 0.4)
 	
 	Scroll(self.GUI.Window)
 end
@@ -1598,6 +1602,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 			
 			AddOnNum = message
+			AddOnVersion = tostring(message)
 			
 			self:PLAYER_ENTERING_WORLD()
 		end
