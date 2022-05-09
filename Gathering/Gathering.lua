@@ -632,14 +632,9 @@ function Gathering:CreateHeader(text)
 	Header.BG = Header:CreateTexture(nil, "BORDER")
 	Header.BG:SetTexture(BlankTexture)
 	Header.BG:SetVertexColor(0, 0, 0)
-	Header.BG:SetPoint("TOPLEFT", Header, 0, 0)
+	Header.BG:SetHeight(1)
+	Header.BG:SetPoint("BOTTOMLEFT", Header, 0, 0)
 	Header.BG:SetPoint("BOTTOMRIGHT", Header, 0, 0)
-	
-	Header.Tex = Header:CreateTexture(nil, "OVERLAY")
-	Header.Tex:SetTexture(BarTexture)
-	Header.Tex:SetPoint("TOPLEFT", Header, 1, -1)
-	Header.Tex:SetPoint("BOTTOMRIGHT", Header, -1, 1)
-	Header.Tex:SetVertexColor(0.25, 0.25, 0.25)
 	
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
 	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
@@ -648,6 +643,7 @@ function Gathering:CreateHeader(text)
 	Header.Text:SetShadowColor(0, 0, 0)
 	Header.Text:SetShadowOffset(1, -1)
 	Header.Text:SetText(text)
+	Header.Text:SetTextColor(0, 204/255, 106/255)
 	
 	tinsert(self.GUI.Window.Widgets, Header)
 end
@@ -1279,7 +1275,7 @@ function Gathering:CreateGUI()
 	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Inside:SetAllPoints()
 	self.GUI.Inside:SetTexture(BlankTexture)
-	self.GUI.Inside:SetVertexColor(0.2, 0.2, 0.2)
+	self.GUI.Inside:SetVertexColor(0.168, 0.168, 0.168)
 	
 	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
 	self.GUI.ButtonParent:SetAllPoints()
@@ -1524,23 +1520,11 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self.Initial = true
 	end
 	
-	if IsInGuild() then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
-	else
-		Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
-	end
-	
-	if UnitInBattleground("player") then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
-	elseif (IsInRaid() and UnitExists("raid1")) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
-	elseif (IsInGroup() and UnitExists("party1")) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
-	end
-	
 	if (GameVersion < 90000) then
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
 	end
+	
+	self:GROUP_ROSTER_UPDATE()
 end
 
 function Gathering:CHAT_MSG_MONEY()
@@ -1559,29 +1543,36 @@ function Gathering:CHAT_MSG_MONEY()
 	self.GoldValue = Current
 end
 
-function Gathering:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
-	if (action == "YOU_CHANGED" and id == 1) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+function Gathering:GUILD_ROSTER_UPDATE()
+	if IsInGuild() then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
+		
+		self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 	end
 end
 
-function Gathering:GUILD_ROSTER_UPDATE(flag)
-	if (not update and not IsInGuild()) then
-		return
-	end
-	
-	CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
-	
-	self:UnregisterEvent("GUILD_ROSTER_UPDATE")
-end
+Gathering.SentGroup = false
+Gathering.SentInstance = false
+local GetNumGroupMembers = GetNumGroupMembers
+local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
+local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
 function Gathering:GROUP_ROSTER_UPDATE()
-	if UnitInBattleground("player") then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "BATTLEGROUND")
-	elseif IsInRaid() and UnitExists("raid1") then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "RAID")
-	elseif IsInGroup() and UnitExists("party1") then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "PARTY")
+	local Home = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME)
+	local Instance = GetNumGroupMembers(LE_PARTY_CATEGORY_INSTANCE)
+	
+	if (Home == 0 and self.SentGroup) then
+		self.SentGroup = false
+	elseif (Instance == 0 and self.SentInstance) then
+		self.SentInstance = false
+	end
+	
+	if (Instance > 0 and not self.SentInstance) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "INSTANCE_CHAT")
+		self.SentInstance = true
+	elseif (Home > 0 and not self.SentGroup) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, IsInRaid(LE_PARTY_CATEGORY_HOME) and "RAID" or IsInGroup(LE_PARTY_CATEGORY_HOME) and "PARTY")
+		self.SentGroup = true
 	end
 end
 
@@ -1596,27 +1587,17 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	
 	message = tonumber(message)
 	
-	if (channel == "WHISPER") then
-		if (message > AddOnNum) then
-			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
-			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
-			
-			AddOnNum = message
-			AddOnVersion = tostring(message)
-			
-			self:PLAYER_ENTERING_WORLD()
-		end
-	else
-		if (AddOnNum > message) then -- We have a higher version, share it
-			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
-		elseif (message > AddOnNum) then -- We're behind!
-			print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
-			print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
-			
-			AddOnNum = message
-			AddOnVersion = tostring(message)
-			
-			self:PLAYER_ENTERING_WORLD()
+	if (AddOnNum > message) then -- We have a higher version, share it
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
+	elseif (message > AddOnNum) then -- We're behind!
+		print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
+		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
+		
+		AddOnNum = message
+		AddOnVersion = tostring(message)
+		
+		if (GameVersion < 90000) then
+			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
 		end
 	end
 end
@@ -1866,12 +1847,12 @@ end
 
 if (GameVersion > 20000 and GameVersion < 90000) then
 	Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START") -- Maybe only register for engineers
-	Gathering:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
 end
 
 Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
+Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
