@@ -478,15 +478,11 @@ function Gathering:RemoveIgnoredItem(text)
 end
 
 function Gathering:SetFrameWidth(text)
-	local Width = tonumber(self:GetText())
-	
-	Gathering:SetWidth(Width)
+	Gathering:SetWidth(tonumber(self:GetText()))
 end
 
 function Gathering:SetFrameHeight(text)
-	local Height = tonumber(self:GetText())
-	
-	Gathering:SetHeight(Height)
+	Gathering:SetHeight(tonumber(self:GetText()))
 end
 
 function Gathering:ToggleTimerPanel(value)
@@ -860,7 +856,6 @@ end
 
 function Gathering:NumberEditBoxOnMouseDown()
 	self:SetAutoFocus(true)
-	
 	ClearCursor()
 end
 
@@ -1588,7 +1583,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	message = tonumber(message)
 	
 	if (AddOnNum > message) then -- We have a higher version, share it
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "WHISPER", sender)
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
 	elseif (message > AddOnNum) then -- We're behind!
 		print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
