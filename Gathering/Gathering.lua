@@ -1522,6 +1522,22 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	self:GROUP_ROSTER_UPDATE()
 end
 
+function Gathering:PLAYER_MONEY()
+	local Current = GetMoney()
+	
+	if (Current > self.GoldValue) then
+		local Diff = Current - self.GoldValue
+		
+		self.GoldGained = self.GoldGained + Diff
+		
+		if (not self:GetScript("OnUpdate")) then
+			self:StartTimer()
+		end
+	end
+	
+	self.GoldValue = Current
+end
+
 function Gathering:CHAT_MSG_MONEY()
 	local Current = GetMoney()
 	
@@ -1590,10 +1606,6 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 		
 		AddOnNum = message
 		AddOnVersion = tostring(message)
-		
-		if (GameVersion < 90000) then
-			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-		end
 	end
 end
 
@@ -1848,7 +1860,8 @@ Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
-Gathering:RegisterEvent("CHAT_MSG_MONEY")
+--Gathering:RegisterEvent("CHAT_MSG_MONEY")
+Gathering:RegisterEvent("PLAYER_MONEY")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
