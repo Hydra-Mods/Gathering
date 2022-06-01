@@ -1815,7 +1815,7 @@ function Gathering:BAG_UPDATE_DELAYED()
 	self.BagResults = nil
 end
 
-function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, _, id)
+function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, guid, id)
 	if (unit ~= "player") then
 		return
 	end
