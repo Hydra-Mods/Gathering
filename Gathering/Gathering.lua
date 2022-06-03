@@ -8,7 +8,10 @@ local tonumber = tonumber
 local match = string.match
 local GetItemInfo = GetItemInfo
 local BreakUpLargeNumbers = BreakUpLargeNumbers
+local GetNumGroupMembers = GetNumGroupMembers
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
+local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
+local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 local LootMessage = LOOT_ITEM_SELF:gsub("%%.*", "")
 local LootMatch = "([^|]+)|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r[^%d]*(%d*)"
 local Locale = GetLocale()
@@ -16,7 +19,6 @@ local MaxWidgets = 11
 local MaxSelections = 8
 local BlankTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUIBlank.tga"
 local BarTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUI4.tga"
-local UnitInBattleground = UnitInBattleground
 local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
@@ -1538,22 +1540,6 @@ function Gathering:PLAYER_MONEY()
 	self.GoldValue = Current
 end
 
-function Gathering:CHAT_MSG_MONEY()
-	local Current = GetMoney()
-	
-	if (Current > self.GoldValue) then
-		local Diff = Current - self.GoldValue
-		
-		self.GoldGained = self.GoldGained + Diff
-		
-		if (not self:GetScript("OnUpdate")) then
-			self:StartTimer()
-		end
-	end
-	
-	self.GoldValue = Current
-end
-
 function Gathering:GUILD_ROSTER_UPDATE()
 	if IsInGuild() then
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
@@ -1564,9 +1550,6 @@ end
 
 Gathering.SentGroup = false
 Gathering.SentInstance = false
-local GetNumGroupMembers = GetNumGroupMembers
-local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
-local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
 function Gathering:GROUP_ROSTER_UPDATE()
 	local Home = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME)
@@ -1755,17 +1738,20 @@ function Gathering:BAG_UPDATE_DELAYED()
 		for Slot = 1, GetContainerNumSlots(Bag) do
 			ID = GetContainerItemID(Bag, Slot)
 			Texture, Count = GetContainerItemInfo(Bag, Slot)
-			ClassID, SubClassID = select(12, GetItemInfo(ID))
 			
-			if ID and (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
-				if self.BagResults[Bag][Slot] then
-					if (Count > self.BagResults[Bag][Slot][2]) then
-						local Change = Count - self.BagResults[Bag][Slot][2]
-						
-						tinsert(Results, {ID, Change})
+			if ID then
+				ClassID, SubClassID = select(12, GetItemInfo(ID))
+				
+				if (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
+					if self.BagResults[Bag][Slot] then
+						if (Count > self.BagResults[Bag][Slot][2]) then
+							local Change = Count - self.BagResults[Bag][Slot][2]
+							
+							tinsert(Results, {ID, Change})
+						end
+					else
+						tinsert(Results, {ID, Count}) -- We just started a stack, and Count is the total of the new item
 					end
-				else
-					tinsert(Results, {ID, Count}) -- We just started a stack, and Count is the total of the new item
 				end
 			end
 		end
@@ -1860,8 +1846,7 @@ Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
---Gathering:RegisterEvent("CHAT_MSG_MONEY")
-Gathering:RegisterEvent("PLAYER_MONEY")
+Gathering:RegisterEvent("PLAYER_MONEY") -- CHAT_MSG_MONEY
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
