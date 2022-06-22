@@ -978,6 +978,8 @@ local ScrollSelections = function(self)
 			self[i]:Hide()
 		end
 	end
+	
+	self.ScrollBar:SetValue(self.Offset)
 end
 
 local SelectionOnMouseWheel = function(self, delta)
@@ -996,6 +998,17 @@ local SelectionOnMouseWheel = function(self, delta)
 	end
 	
 	ScrollSelections(self)
+end
+
+local SelectionScrollBarOnValueChanged = function(self)
+	local Parent = self:GetParent()
+	Parent.Offset = self:GetValue()
+	
+	ScrollSelections(Parent)
+end
+
+local SelectionScrollBarOnMouseWheel = function(self, delta)
+	SelectionOnMouseWheel(self:GetParent(), delta)
 end
 
 local FontListOnMouseUp = function(self)
@@ -1018,7 +1031,7 @@ end
 local FontSelectionOnMouseUp = function(self)
 	if (not self.List) then
 		self.List = CreateFrame("Frame", nil, self)
-		self.List:SetSize(128, 20 * MaxSelections)
+		self.List:SetSize(140, 20 * MaxSelections) -- 128
 		self.List:SetPoint("TOP", self, "BOTTOM", 0, -1)
 		self.List.Offset = 1
 		self.List:EnableMouseWheel(true)
@@ -1027,7 +1040,7 @@ local FontSelectionOnMouseUp = function(self)
 		
 		for Key, Path in next, self.Selections do
 			local Selection = CreateFrame("Frame", nil, self.List)
-			Selection:SetSize(128, 20)
+			Selection:SetSize(140, 20)
 			Selection.Key = Key
 			Selection.Path = Path
 			Selection:SetScript("OnMouseUp", FontListOnMouseUp)
@@ -1046,7 +1059,7 @@ local FontSelectionOnMouseUp = function(self)
 			
 			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
 			Selection.Text:SetFont(Path, 12)
-			Selection.Text:SetSize(122, 18)
+			Selection.Text:SetSize(140, 18)
 			Selection.Text:SetPoint("LEFT", Selection, 3, 0)
 			Selection.Text:SetJustifyH("LEFT")
 			Selection.Text:SetShadowColor(0, 0, 0)
@@ -1059,6 +1072,44 @@ local FontSelectionOnMouseUp = function(self)
 		table.sort(self.List, function(a, b)
 			return a.Key < b.Key
 		end)
+		
+		local ScrollBar = CreateFrame("Slider", nil, self.List, "BackdropTemplate")
+		ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", -1, -1)
+		ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", -1, 6)
+		ScrollBar:SetWidth(10)
+		ScrollBar:SetThumbTexture(BarTexture)
+		ScrollBar:SetOrientation("VERTICAL")
+		ScrollBar:SetValueStep(1)
+		ScrollBar:SetBackdrop(Outline)
+		ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
+		ScrollBar:SetBackdropBorderColor(0, 0, 0)
+		ScrollBar:SetMinMaxValues(1, (#self.List - (MaxSelections - 1)))
+		ScrollBar:SetValue(1)
+		ScrollBar:SetObeyStepOnDrag(true)
+		ScrollBar:EnableMouseWheel(true)
+		ScrollBar:SetScript("OnMouseWheel", SelectionScrollBarOnMouseWheel)
+		ScrollBar:SetScript("OnValueChanged", SelectionScrollBarOnValueChanged)
+		
+		local Thumb = ScrollBar:GetThumbTexture() 
+		Thumb:SetSize(10, 20)
+		Thumb:SetTexture(BarTexture)
+		Thumb:SetVertexColor(0, 0, 0)
+		
+		ScrollBar.NewThumb = ScrollBar:CreateTexture(nil, "BORDER")
+		ScrollBar.NewThumb:SetPoint("TOPLEFT", Thumb, 0, 0)
+		ScrollBar.NewThumb:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
+		ScrollBar.NewThumb:SetTexture(BlankTexture)
+		ScrollBar.NewThumb:SetVertexColor(0, 0, 0)
+		
+		ScrollBar.NewThumb2 = ScrollBar:CreateTexture(nil, "OVERLAY")
+		ScrollBar.NewThumb2:SetPoint("TOPLEFT", ScrollBar.NewThumb, 1, -1)
+		ScrollBar.NewThumb2:SetPoint("BOTTOMRIGHT", ScrollBar.NewThumb, -1, 1)
+		ScrollBar.NewThumb2:SetTexture(BarTexture)
+		ScrollBar.NewThumb2:SetVertexColor(0.4, 0.4, 0.4)
+		
+		self.List.ScrollBar = ScrollBar
+		
+		--ScrollBar:Show()
 		
 		ScrollSelections(self.List)
 	end
