@@ -245,6 +245,9 @@ Gathering:SetPoint("TOP", UIParent, 0, -100)
 Gathering:EnableMouse(true)
 Gathering:SetMovable(true)
 Gathering:SetUserPlaced(true)
+Gathering.SentGroup = false
+Gathering.SentInstance = false
+Gathering.LastYell = 0
 
 function Gathering:CreateWindow()
 	self:SetSize(self.Settings.WindowWidth, self.Settings.WindowHeight)
@@ -1109,8 +1112,6 @@ local FontSelectionOnMouseUp = function(self)
 		
 		self.List.ScrollBar = ScrollBar
 		
-		--ScrollBar:Show()
-		
 		ScrollSelections(self.List)
 	end
 	
@@ -1599,9 +1600,6 @@ function Gathering:GUILD_ROSTER_UPDATE()
 	end
 end
 
-Gathering.SentGroup = false
-Gathering.SentInstance = false
-
 function Gathering:GROUP_ROSTER_UPDATE()
 	local Home = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME)
 	local Instance = GetNumGroupMembers(LE_PARTY_CATEGORY_INSTANCE)
@@ -1618,6 +1616,26 @@ function Gathering:GROUP_ROSTER_UPDATE()
 	elseif (Home > 0 and not self.SentGroup) then
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, IsInRaid(LE_PARTY_CATEGORY_HOME) and "RAID" or IsInGroup(LE_PARTY_CATEGORY_HOME) and "PARTY")
 		self.SentGroup = true
+	end
+end
+
+function Gathering:ZONE_CHANGED()
+	local Now = GetTime()
+
+	if (Now - self.LastYell > 15) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+		
+		self.LastYell = Now
+	end
+end
+
+function Gathering:ZONE_CHANGED_NEW_AREA()
+	local Now = GetTime()
+
+	if (Now - self.LastYell > 15) then
+		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+		
+		self.LastYell = Now
 	end
 end
 
@@ -1890,6 +1908,11 @@ if (GameVersion > 20000 and GameVersion < 90000) then
 	Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
+end
+
+if GameVersion < 90000 then
+	Gathering:RegisterEvent("ZONE_CHANGED")
+	Gathering:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 end
 
 Gathering:RegisterEvent("GROUP_ROSTER_UPDATE")
