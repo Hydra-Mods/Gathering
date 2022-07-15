@@ -1620,22 +1620,26 @@ function Gathering:GROUP_ROSTER_UPDATE()
 end
 
 function Gathering:ZONE_CHANGED()
-	local Now = GetTime()
+	if UnitOnTaxi("player") then
+		local Now = GetTime()
 
-	if (Now - self.LastYell > 15) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-		
-		self.LastYell = Now
+		if (Now - self.LastYell > 15) then
+			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+			
+			self.LastYell = Now
+		end
 	end
 end
 
 function Gathering:ZONE_CHANGED_NEW_AREA()
-	local Now = GetTime()
+	if UnitOnTaxi("player") then
+		local Now = GetTime()
 
-	if (Now - self.LastYell > 15) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-		
-		self.LastYell = Now
+		if (Now - self.LastYell > 15) then
+			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+			
+			self.LastYell = Now
+		end
 	end
 end
 
