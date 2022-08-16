@@ -1908,7 +1908,7 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, guid, id)
 end
 
 if (GameVersion > 20000 and GameVersion < 90000) then
-	Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START") -- Maybe only register for engineers
+	Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 	Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
@@ -1924,7 +1924,7 @@ Gathering:RegisterEvent("GUILD_ROSTER_UPDATE")
 Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
-Gathering:RegisterEvent("PLAYER_MONEY") -- CHAT_MSG_MONEY
+Gathering:RegisterEvent("PLAYER_MONEY")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
