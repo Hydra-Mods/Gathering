@@ -336,110 +336,110 @@ Gathering.DefaultSettings = {
 }
 
 Gathering.TrackedItemTypes = {
-	[LE_ITEM_CLASS_CONSUMABLE] = {},
-	[LE_ITEM_CLASS_WEAPON] = {},
-	[LE_ITEM_CLASS_ARMOR] = {},
-	[LE_ITEM_CLASS_TRADEGOODS] = {},
-	[LE_ITEM_CLASS_MISCELLANEOUS] = {},
-	[LE_ITEM_CLASS_QUESTITEM] = {},
+	[Enum.ItemClass.Consumable] = {},
+	[Enum.ItemClass.Weapon] = {},
+	[Enum.ItemClass.Armor] = {},
+	[Enum.ItemClass.Tradegoods] = {},
+	[Enum.ItemClass.Miscellaneous] = {},
+	[Enum.ItemClass.Questitem] = {},
 }
 
 function Gathering:UpdateWeaponTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_AXE2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BOWS] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GUNS] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_MACE2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_POLEARM] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD1H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_SWORD2H] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WARGLAIVE] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_STAFF] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_BEARCLAW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CATCLAW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_UNARMED] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_GENERIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_DAGGER] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_THROWN] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_CROSSBOW] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_WAND] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_WEAPON][LE_ITEM_WEAPON_FISHINGPOLE] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Axe1H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Axe2H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Bows] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Guns] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Mace1H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Mace2H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Polearm] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Sword1H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Sword2H] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Warglaive] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Staff] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Bearclaw] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Catclaw] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Unarmed] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Generic] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Dagger] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Thrown] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Crossbow] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Wand] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Weapon][Enum.ItemWeaponSubclass.Fishingpole] = value
 end
 
 function Gathering:UpdateArmorTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_GENERIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_CLOTH] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LEATHER] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_MAIL] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_PLATE] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_COSMETIC] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SHIELD] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_LIBRAM] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_IDOL] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_TOTEM] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_SIGIL] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_ARMOR][LE_ITEM_ARMOR_RELIC] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Generic] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Cloth] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Leather] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Mail] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Plate] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Cosmetic] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Shield] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Libram] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Idol] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Totem] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Sigil] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Armor][Enum.ItemArmorSubclass.Relic] = value
 end
 
 function Gathering:UpdateJewelcraftingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][4] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][4] = value
 end
 
 function Gathering:UpdateClothTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][5] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][5] = value
 end
 
 function Gathering:UpdateLeatherTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][6] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][6] = value
 end
 
 function Gathering:UpdateOreTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][7] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][7] = value
 end
 
 function Gathering:UpdateCookingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][0] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][8] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][0] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][8] = value
 end
 
 function Gathering:UpdateHerbTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][9] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][9] = value
 end
 
 function Gathering:UpdateEnchantingTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][12] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][12] = value
 end
 
 function Gathering:UpdateHolidayTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_HOLIDAY] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.Holiday] = value
 end
 
 function Gathering:UpdateMountTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_MOUNT] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.Mount] = value
 end
 
 function Gathering:UpdateConsumableTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][1] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][2] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][3] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][4] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][5] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][6] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_CONSUMABLE][7] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][1] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][2] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][3] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][4] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][5] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][6] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Consumable][7] = value
 end
 
 function Gathering:UpdateReagentTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_REAGENT] = value
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_TRADEGOODS][10] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.Reagent] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Tradegoods][10] = value
 end
 
 function Gathering:UpdateOtherTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_MISCELLANEOUS][LE_ITEM_MISCELLANEOUS_OTHER] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.Other] = value
 end
 
 function Gathering:UpdateQuestTracking(value)
-	Gathering.TrackedItemTypes[LE_ITEM_CLASS_QUESTITEM][0] = value
+	Gathering.TrackedItemTypes[Enum.ItemClass.Questitem][0] = value
 end
 
 function Gathering:AddIgnoredItem(text)
