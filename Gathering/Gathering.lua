@@ -41,25 +41,7 @@ end
 SharedMedia:Register("font", "PT Sans", "Interface\\Addons\\Gathering\\Assets\\PTSans.ttf")
 SharedMedia:Register("statusbar", "HydraUI 4", BarTexture)
 
-local Index = function(self, key)
-	return key
-end
-
-local L = setmetatable({}, {__index = Index})
-
---[[
-	L["Herbs"] = "Herbs"
-	L["Cloth"] = "Cloth"
-	L["Leather"] = "Leather"
-	L["Ore"] = "Ore"
-	L["Jewelcrafting"] = "Jewelcrafting"
-	L["Enchanting"] = "Enchanting"
-	L["Cooking"] = "Cooking"
-	L["Reagents"] = "Reagents"
-	L["Consumables"] = "Consumables"
-	L["Holiday"] = "Holiday"
-	L["Quests"] = "Quests"
---]]
+local L = {}
 
 if (Locale == "deDE") then -- German
 	L["Total Gathered:"] = "Gesammelt total:"
@@ -75,9 +57,24 @@ if (Locale == "deDE") then -- German
 	L["Cloth"] = "Stoffe"
 	L["Enchanting"] = "Verzaubern"
 	L["Reagents"] = "Reagenzien"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignoriere Items, welche beim aufheben Seelengebunden werden"
 	L["Show tooltip data"] = "Zeige Tooltip Daten"
 	L["Price per unit: %s"] = "Preis pro Einheit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -92,9 +89,24 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -109,9 +121,24 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total recueilli:"
 	L["Total Average Per Hour:"] = "Moyenne totale par heure:"
@@ -126,9 +153,24 @@ elseif (Locale == "frFR") then -- French
 	L["Cloth"] = "Tissu"
 	L["Enchanting"] = "Enchanteur"
 	L["Reagents"] = "Réactifs"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignorer les objets liés au ramassage"
 	L["Show tooltip data"] = "Afficher les données de l'infobulle"
 	L["Price per unit: %s"] = "Prix par unité: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -143,9 +185,24 @@ elseif (Locale == "itIT") then -- Italian
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -160,9 +217,24 @@ elseif (Locale == "koKR") then -- Korean
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -177,9 +249,24 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -194,9 +281,23 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -211,9 +312,23 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -228,9 +343,54 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Cloth"] = "Cloth"
 	L["Enchanting"] = "Enchanting"
 	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
+else
+	L["Total Gathered:"] = "Total Gathered:"
+	L["Total Average Per Hour:"] = "Total Average Per Hour:"
+	L["Total Value:"] = "Total Value:"
+	L["Left click: Toggle timer"] = "Left click: Toggle timer"
+	L["Right click: Reset data"] = "Right click: Reset data"
+	L["Hr"] = "Hr"
+	
+	L["Ore"] = "Ore"
+	L["Herbs"] = "Herbs"
+	L["Leather"] = "Leather"
+	L["Cloth"] = "Cloth"
+	L["Enchanting"] = "Enchanting"
+	L["Reagents"] = "Reagents"
+	L["Cooking"] = "Cooking"
+	L["Jewelcrafting"] = "Jewelcrafting"
+	L["Consumables"] = "Consumables"
+	L["Holiday"] = "Holiday"
+	L["Quests"] = "Quests"
+	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
+	L["Show tooltip data"] = "Show tooltip data"
+	L["Price per unit: %s"] = "Price per unit: %s"
+	
+	L["Hide while idle"] = "Hide while idle"
+	L["Ignore items"] = "Ignore items"
+	L["Unignore items"] = "Unignore items"
+
+	L["Set Font"] = "Set Font"
+	L["Set Width"] = "Set Width"
+	L["Set Height"] = "Set Height"
+	L["Discord"] = "Discord"
 end
 
 local Outline = {
@@ -1224,7 +1384,7 @@ function Gathering:UpdateFontSetting(value)
 end
 
 function Gathering:SettingsLayout()
-	self:CreateHeader("Set Font")
+	self:CreateHeader(L["Set Font"])
 	
 	self:CreateFontSelection("window-font", "", Fonts, self.UpdateFontSetting)
 	
@@ -1244,7 +1404,7 @@ function Gathering:SettingsLayout()
 	
 	self:CreateHeader(MISCELLANEOUS)
 	
-	self:CreateCheckbox("ignore-bop", L[L["Ignore Bind on Pickup"]])
+	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
 	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
 	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
 	
