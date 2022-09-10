@@ -444,7 +444,6 @@ function Gathering:CreateWindow()
 	self.NumTypes = 0
 	self.Elapsed = 0
 	self.Seconds = 0
-	self.SecondsPerItem = {}
 	self.GoldValue = GetMoney() or 0
 	self.GoldGained = 0
 	self.GoldTimer = 0
@@ -706,10 +705,6 @@ function Gathering:OnUpdate(ela)
 	if (self.Elapsed >= 1) then
 		self.Seconds = self.Seconds + 1
 		
-		for key in next, self.SecondsPerItem do
-			self.SecondsPerItem[key] = self.SecondsPerItem[key] + 1
-		end
-		
 		if (self.GoldGained > 0) then
 			self.GoldTimer = self.GoldTimer + 1
 		end
@@ -755,7 +750,6 @@ function Gathering:Reset()
 	self:SetScript("OnUpdate", nil)
 	
 	wipe(self.Gathered)
-	wipe(self.SecondsPerItem)
 	
 	self.NumTypes = 0
 	self.TotalGathered = 0
@@ -1603,18 +1597,19 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	
 	if (not self.Gathered[SubType]) then
 		self.Gathered[SubType] = {}
-		self.NumTypes = self.NumTypes + 1
 	end
+	
+	local Now = GetTime()
 	
 	if (not self.Gathered[SubType][ID]) then
-		self.Gathered[SubType][ID] = 0
+		self.Gathered[SubType][ID] = {Initial = Now}
 	end
 	
-	if (not self.SecondsPerItem[ID]) then
-		self.SecondsPerItem[ID] = 0
-	end
+	local Info = self.Gathered[SubType][ID]
 	
-	self.Gathered[SubType][ID] = self.Gathered[SubType][ID] + Quantity
+	Info.Collected = (Info.Collected or 0) + Quantity
+	Info.Last = Now
+	
 	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 	
 	if (not self:GetScript("OnUpdate")) then
@@ -1867,6 +1862,8 @@ function Gathering:OnEnter()
 	
 	self.Tooltip:ClearLines()
 	
+	local Now = GetTime()
+	
 	if (self.TotalGathered > 0) then
 		for SubType, Info in next, self.Gathered do
 			self.Tooltip:AddLine(SubType, 1, 1, 0)
@@ -1882,15 +1879,15 @@ function Gathering:OnEnter()
 				local Price = self:GetPrice(Link)
 				
 				if Price then
-					MarketTotal = MarketTotal + (Price * Value)
+					MarketTotal = MarketTotal + (Price * Value.Collected)
 				end
 				
 				if (IsShiftKeyDown() and Price) then
-					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, self:CopperToGold((Price * Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, self:CopperToGold((Price * Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				elseif IsControlKeyDown() then
-					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s%%)", Value, floor((Value / self.TotalGathered * 100 + 0.05) * 10) / 10), 1, 1, 1, 1, 1, 1)
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s%%)", Value.Collected, floor((Value.Collected / self.TotalGathered * 100 + 0.05) * 10) / 10), 1, 1, 1, 1, 1, 1)
 				else
-					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value, floor((Value / max(self.SecondsPerItem[ID], 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, floor((Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				end
 			end
 			
@@ -2007,18 +2004,19 @@ function Gathering:BAG_UPDATE_DELAYED()
 		
 		if (not self.Gathered[SubType]) then
 			self.Gathered[SubType] = {}
-			self.NumTypes = self.NumTypes + 1
 		end
+		
+		local Now = GetTime()
 		
 		if (not self.Gathered[SubType][ID]) then
-			self.Gathered[SubType][ID] = 0
+			self.Gathered[SubType][ID] = {Initial = Now}
 		end
 		
-		if (not self.SecondsPerItem[ID]) then
-			self.SecondsPerItem[ID] = 0
-		end
+		local Info = self.Gathered[SubType][ID]
 		
-		self.Gathered[SubType][ID] = self.Gathered[SubType][ID] + Quantity
+		Info.Collected = (Info.Collected or 0) + Quantity
+		Info.Last = Now
+		
 		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 		
 		if (not self:GetScript("OnUpdate")) then
@@ -2074,7 +2072,7 @@ elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
 end
 
-if GameVersion < 90000 then
+if (GameVersion < 90000) then
 	Gathering:RegisterEvent("ZONE_CHANGED")
 	Gathering:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 end
@@ -2092,6 +2090,7 @@ Gathering:SetScript("OnMouseUp", Gathering.OnMouseUp)
 
 SLASH_GATHERING1 = "/gather"
 SLASH_GATHERING2 = "/gathering"
+SLASH_GATHERING3 = "/gt"
 SlashCmdList["GATHERING"] = function(cmd)
 	if (not Gathering.GUI) then
 		Gathering:CreateGUI()
