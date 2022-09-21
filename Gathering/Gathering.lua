@@ -22,6 +22,7 @@ local BarTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUI4.tga"
 local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
+local GetTime = GetTime
 local GameVersion = select(4, GetBuildInfo())
 local AddOnVersion = GetAddOnMetadata("Gathering", "Version")
 local AddOnNum = tonumber(AddOnVersion)
@@ -441,7 +442,6 @@ function Gathering:CreateWindow()
 	-- Data
 	self.Gathered = {}
 	self.TotalGathered = 0
-	self.NumTypes = 0
 	self.Elapsed = 0
 	self.Seconds = 0
 	self.GoldValue = GetMoney() or 0
@@ -751,11 +751,9 @@ function Gathering:Reset()
 	
 	wipe(self.Gathered)
 	
-	self.NumTypes = 0
 	self.TotalGathered = 0
 	self.Seconds = 0
 	self.Elapsed = 0
-	
 	self.GoldValue = GetMoney() or 0
 	self.GoldGained = 0
 	self.GoldTimer = 0
@@ -1897,8 +1895,12 @@ function Gathering:OnEnter()
 	
 	if (self.GoldGained > 0) then
 		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
-		self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
-		--self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
+		
+		if IsShiftKeyDown() then
+			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
+		else
+			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
+		end
 	end
 	
 	if (self.TotalGathered > 0) then
@@ -2088,9 +2090,9 @@ Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
 Gathering:SetScript("OnMouseUp", Gathering.OnMouseUp)
 
-SLASH_GATHERING1 = "/gather"
-SLASH_GATHERING2 = "/gathering"
-SLASH_GATHERING3 = "/gt"
+SLASH_GATHERING1 = "/gt"
+SLASH_GATHERING2 = "/gather"
+SLASH_GATHERING3 = "/gathering"
 SlashCmdList["GATHERING"] = function(cmd)
 	if (not Gathering.GUI) then
 		Gathering:CreateGUI()
