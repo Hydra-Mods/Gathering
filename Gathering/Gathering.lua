@@ -6,6 +6,10 @@ local floor = floor
 local format = format
 local tonumber = tonumber
 local match = string.match
+local GetTime = GetTime
+local IsInRaid = IsInRaid
+local IsInGroup = IsInGroup
+local IsInGuild = IsInGuild
 local GetItemInfo = GetItemInfo
 local BreakUpLargeNumbers = BreakUpLargeNumbers
 local GetNumGroupMembers = GetNumGroupMembers
@@ -19,10 +23,6 @@ local MaxWidgets = 11
 local MaxSelections = 8
 local BlankTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUIBlank.tga"
 local BarTexture = "Interface\\AddOns\\Gathering\\Assets\\HydraUI4.tga"
-local IsInGuild = IsInGuild
-local IsInGroup = IsInGroup
-local IsInRaid = IsInRaid
-local GetTime = GetTime
 local GameVersion = select(4, GetBuildInfo())
 local AddOnVersion = GetAddOnMetadata("Gathering", "Version")
 local AddOnNum = tonumber(AddOnVersion)
@@ -76,6 +76,7 @@ if (Locale == "deDE") then -- German
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -108,6 +109,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -140,6 +142,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total recueilli:"
 	L["Total Average Per Hour:"] = "Moyenne totale par heure:"
@@ -172,6 +175,7 @@ elseif (Locale == "frFR") then -- French
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -204,6 +208,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -236,6 +241,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -268,6 +274,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -299,6 +306,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -330,6 +338,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -361,6 +370,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 else
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -392,6 +402,7 @@ else
 	L["Set Width"] = "Set Width"
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
+	L["Recently Gathered: "] = "Recently Gathered: "
 end
 
 local Outline = {
@@ -1884,6 +1895,8 @@ function Gathering:OnEnter()
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, self:CopperToGold((Price * Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				elseif IsControlKeyDown() then
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s%%)", Value.Collected, floor((Value.Collected / self.TotalGathered * 100 + 0.05) * 10) / 10), 1, 1, 1, 1, 1, 1)
+				elseif IsAltKeyDown() then
+					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s %s", L["Recently Gathered: "], date("!%X", GetTime() - Value.Last)), 1, 1, 1, 1, 1, 1)
 				else
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, floor((Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				end
@@ -2017,7 +2030,7 @@ function Gathering:BAG_UPDATE_DELAYED()
 		local Info = self.Gathered[SubType][ID]
 		
 		Info.Collected = (Info.Collected or 0) + Quantity
-		Info.Last = Now
+		Info.Last = Now 
 		
 		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 		
