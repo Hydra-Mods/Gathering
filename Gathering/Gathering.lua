@@ -77,6 +77,7 @@ if (Locale == "deDE") then -- German
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -110,6 +111,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -143,6 +145,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total recueilli:"
 	L["Total Average Per Hour:"] = "Moyenne totale par heure:"
@@ -176,6 +179,7 @@ elseif (Locale == "frFR") then -- French
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -209,6 +213,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -242,6 +247,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -275,6 +281,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -307,6 +314,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -339,6 +347,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -371,6 +380,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 else
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -403,6 +413,7 @@ else
 	L["Set Height"] = "Set Height"
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
+	L["Gathering Scan"] = "Gathering Scan"
 end
 
 local Outline = {
@@ -915,6 +926,7 @@ end
 function Gathering:OnEditFocusLost()
 	self:SetText("")
 	self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
+	
 	ClearCursor()
 end
 
@@ -1734,7 +1746,9 @@ function Gathering:PLAYER_ENTERING_WORLD()
 	end
 	
 	if (GameVersion < 90000) then
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+		C_Timer.After(6, function()
+			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
+		end)
 	end
 	
 	self:GROUP_ROSTER_UPDATE()
@@ -1834,7 +1848,7 @@ function Gathering:AUCTION_HOUSE_SHOW()
 		self.ScanButton = CreateFrame("Button", "Gathering Scan Button", AuctionHouseFrame.MoneyFrameBorder, "UIPanelButtonTemplate")
 		self.ScanButton:SetSize(140, 24)
 		self.ScanButton:SetPoint("LEFT", AuctionHouseFrame.MoneyFrameBorder, "RIGHT", 3, 0)
-		self.ScanButton:SetText("Gathering Scan")
+		self.ScanButton:SetText(L["Gathering Scan"])
 		self.ScanButton:SetScript("OnClick", self.ScanButtonOnClick)
 	end
 end
