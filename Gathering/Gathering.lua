@@ -67,6 +67,7 @@ if (Locale == "deDE") then -- German
 	L["Ignore Bind on Pickup"] = "Ignoriere Items, welche beim aufheben Seelengebunden werden"
 	L["Show tooltip data"] = "Zeige Tooltip Daten"
 	L["Price per unit: %s"] = "Preis pro Einheit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -101,6 +102,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -135,6 +137,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -169,6 +172,7 @@ elseif (Locale == "frFR") then -- French
 	L["Ignore Bind on Pickup"] = "Ignorer les objets liés au ramassage"
 	L["Show tooltip data"] = "Afficher les données de l'infobulle"
 	L["Price per unit: %s"] = "Prix par unité: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -203,6 +207,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -237,6 +242,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -271,6 +277,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -308,6 +315,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["Ignore mail gold"] = "Ignore mail gold"
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -334,9 +342,11 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -367,9 +377,11 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -400,9 +412,11 @@ else
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
 	L["Price per unit: %s"] = "Price per unit: %s"
+	L["Ignore mail gold"] = "Ignore mail gold"
 	
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -509,6 +523,7 @@ Gathering.DefaultSettings = {
 	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	HideIdle = false, -- Hide the tracker frame while not running
 	ShowTooltip = false, -- Show tooltip data about item prices
+	IgnoreMailMoney = false, -- Ignore money that arrived through mail
 	
 	-- Styling
 	WindowFont = SharedMedia.DefaultMedia.font, -- Set the font
@@ -1422,6 +1437,7 @@ function Gathering:SettingsLayout()
 	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
 	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
 	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
+	self:CreateCheckbox("IgnoreMailMoney", L["Ignore mail gold"])
 	
 	self:CreateHeader(IGNORE)
 	
@@ -1755,6 +1771,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 end
 
 function Gathering:PLAYER_MONEY()
+	if (InboxFrame:IsVisible() and self.Settings.IgnoreMailMoney) then
+		return
+	end
+
 	local Current = GetMoney()
 	
 	if (Current > self.GoldValue) then
