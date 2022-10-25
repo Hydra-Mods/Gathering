@@ -1728,7 +1728,11 @@ function Gathering:PLAYER_ENTERING_WORLD()
 			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
 		
-		GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+		if TooltipDataProcessor then
+			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.OnTooltipSetItem)
+		else
+			GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+		end
 		
 		if (not GatheringSettings) then
 			GatheringSettings = {}
