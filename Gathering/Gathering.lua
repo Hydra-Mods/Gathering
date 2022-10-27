@@ -470,7 +470,7 @@ function Gathering:CreateWindow()
 	self.Text = self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetPoint("CENTER", self, 0, 0)
 	self.Text:SetJustifyH("CENTER")
-	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14)
+	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
 	self.Text:SetText("Gathering")
 	
 	-- Tooltip
@@ -694,7 +694,7 @@ function Gathering:ToggleTimerPanel(value)
 end
 
 function Gathering:UpdateTooltipFont()
-	local Font = SharedMedia:Fetch("font", self.Settings["window-font"])
+	local Font = SharedMedia:Fetch("font", self.Settings["window-font"], "")
 	
 	if self.Tooltip.NineSlice then
 		self.Tooltip.NineSlice:Hide()
@@ -826,7 +826,7 @@ function Gathering:CreateHeader(text)
 	Header.BG:SetPoint("BOTTOMRIGHT", Header, 0, 0)
 	
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
-	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Header.Text:SetPoint("LEFT", Header, 3, 0)
 	Header.Text:SetJustifyH("LEFT")
 	Header.Text:SetShadowColor(0, 0, 0)
@@ -883,7 +883,7 @@ function Gathering:CreateCheckbox(key, text, func)
 	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
 	
 	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
-	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 3, 0)
 	Checkbox.Text:SetJustifyH("LEFT")
 	Checkbox.Text:SetShadowColor(0, 0, 0)
@@ -983,7 +983,7 @@ end
 function Gathering:CreateEditBox(text, func)
 	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
 	EditBox:SetSize(168, 20)
-	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
 	EditBox:SetJustifyH("LEFT")
@@ -1060,7 +1060,7 @@ end
 function Gathering:CreateNumberEditBox(key, text, func)
 	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
 	EditBox:SetSize(60, 20)
-	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
 	EditBox:SetJustifyH("LEFT")
@@ -1089,7 +1089,7 @@ function Gathering:CreateNumberEditBox(key, text, func)
 	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
 	
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
-	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
 	EditBox.Text:SetJustifyH("LEFT")
 	EditBox.Text:SetShadowColor(0, 0, 0)
@@ -1117,7 +1117,7 @@ end
 function Gathering:CreateDiscordEditBox()
 	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
 	EditBox:SetSize(190, 20)
-	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
 	EditBox:SetJustifyH("LEFT")
@@ -1143,7 +1143,7 @@ function Gathering:CreateDiscordEditBox()
 	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
 	
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
-	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
 	EditBox.Text:SetJustifyH("LEFT")
 	EditBox.Text:SetShadowColor(0, 0, 0)
@@ -1206,7 +1206,7 @@ end
 local FontListOnMouseUp = function(self)
 	local Selection = self:GetParent():GetParent()
 	
-	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Key), 12)
+	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Key), 12, "")
 	Selection.Current:SetText(self.Key)
 	
 	Selection.List:Hide()
@@ -1338,7 +1338,7 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
 	
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
-	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12)
+	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12, "")
 	Selection.Current:SetSize(122, 18)
 	Selection.Current:SetPoint("LEFT", Selection, 3, 0)
 	Selection.Current:SetJustifyH("LEFT")
@@ -1347,7 +1347,7 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection.Current:SetText(self.Settings[key])
 	
 	Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
-	Selection.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	Selection.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Selection.Text:SetPoint("LEFT", Selection, "RIGHT", 3, 0)
 	Selection.Text:SetJustifyH("LEFT")
 	Selection.Text:SetShadowColor(0, 0, 0)
@@ -1408,7 +1408,7 @@ local ScrollBarOnValueChanged = function(self, value)
 end
 
 function Gathering:UpdateFontSetting(value)
-	Gathering.Text:SetFont(SharedMedia:Fetch("font", value), 14)
+	Gathering.Text:SetFont(SharedMedia:Fetch("font", value), 14, "")
 	Gathering:UpdateTooltipFont()
 end
 
@@ -1481,7 +1481,7 @@ function Gathering:CreateGUI()
 	
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
 	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
-	self.GUI.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12)
+	self.GUI.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	self.GUI.Text:SetJustifyH("LEFT")
 	self.GUI.Text:SetShadowColor(0, 0, 0)
 	self.GUI.Text:SetShadowOffset(1, -1)
@@ -1728,11 +1728,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
 		
-		if TooltipDataProcessor then
-			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.OnTooltipSetItem)
-		else
-			GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
-		end
+		GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
 		
 		if (not GatheringSettings) then
 			GatheringSettings = {}
