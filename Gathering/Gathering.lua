@@ -50,7 +50,7 @@ if (Locale == "deDE") then -- German
 	L["Left click: Toggle timer"] = "Linksklick: Timer anhalten/fortsetzen"
 	L["Right click: Reset data"] = "Rechtsklick: Daten zur\195\188cksetzen"
 	L["Hr"] = "Std."
-	
+
 	L["Ore"] = "Erz"
 	L["Herbs"] = "Kr\195\164uter"
 	L["Leather"] = "Leder"
@@ -62,13 +62,14 @@ if (Locale == "deDE") then -- German
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignoriere Items, welche beim aufheben Seelengebunden werden"
 	L["Show tooltip data"] = "Zeige Tooltip Daten"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Preis pro Einheit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -86,7 +87,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -98,13 +99,14 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -122,7 +124,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -134,13 +136,14 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -158,7 +161,7 @@ elseif (Locale == "frFR") then -- French
 	L["Left click: Toggle timer"] = "Clic gauche : Minuterie on/off"
 	L["Right click: Reset data"] = "Clic droit : Réinitialisation des données"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Minerai"
 	L["Herbs"] = "Herbes"
 	L["Leather"] = "Cuir"
@@ -170,13 +173,14 @@ elseif (Locale == "frFR") then -- French
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignorer les objets liés au ramassage"
 	L["Show tooltip data"] = "Afficher les données de l'infobulle"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Prix par unité: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -194,7 +198,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -206,13 +210,14 @@ elseif (Locale == "itIT") then -- Italian
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -230,7 +235,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -242,13 +247,14 @@ elseif (Locale == "koKR") then -- Korean
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -266,7 +272,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -278,13 +284,14 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -302,7 +309,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -314,15 +321,17 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
-	
+	L["Ignore mail items"] = "Ignore mail items"
+	L["Ignore mail gold"] = "Ignore mail gold"
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
-	L["Ignore mail items"] = "Ignore mail items"
-	L["Ignore mail gold"] = "Ignore mail gold"
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -337,7 +346,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -349,13 +358,14 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -373,7 +383,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -385,13 +395,14 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -409,7 +420,7 @@ else
 	L["Left click: Toggle timer"] = "Left click: Toggle timer"
 	L["Right click: Reset data"] = "Right click: Reset data"
 	L["Hr"] = "Hr"
-	
+
 	L["Ore"] = "Ore"
 	L["Herbs"] = "Herbs"
 	L["Leather"] = "Leather"
@@ -421,13 +432,14 @@ else
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
-	
+
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
+	L["Show tooltip help"] = "Show tooltip help"
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
-	
+
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
@@ -465,18 +477,18 @@ function Gathering:CreateWindow()
 	self:RegisterForDrag("LeftButton")
 	self:SetScript("OnDragStart", self.StartMoving)
 	self:SetScript("OnDragStop", self.StopMovingOrSizing)
-	
+
 	-- Text
 	self.Text = self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetPoint("CENTER", self, 0, 0)
 	self.Text:SetJustifyH("CENTER")
 	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
 	self.Text:SetText("Gathering")
-	
+
 	-- Tooltip
 	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
 	self.Tooltip:SetFrameLevel(10)
-	
+
 	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
 	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
 	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
@@ -484,7 +496,7 @@ function Gathering:CreateWindow()
 	self.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
 	self.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
 	self.Tooltip.Backdrop:SetFrameLevel(1)
-	
+
 	-- Data
 	self.Gathered = {}
 	self.TotalGathered = 0
@@ -508,22 +520,23 @@ Gathering.DefaultSettings = {
 	["track-consumable"] = true,
 	["track-holiday"] = true,
 	["track-quest"] = false,
-	
+
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	["hide-idle"] = false, -- Hide the tracker frame while not running
 	["show-tooltip"] = false, -- Show tooltip data about item prices
-	
+
 	-- Styling
 	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
-	
+
 	-- Functionality
 	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	HideIdle = false, -- Hide the tracker frame while not running
 	ShowTooltip = false, -- Show tooltip data about item prices
 	IgnoreMailItems = false, -- Ignore items that arrived through mail
 	IgnoreMailMoney = false, -- Ignore money that arrived through mail
-	
+	ShowTooltipHelp = true, -- Display helpful information in the tooltip (Left click to toggle, right click to reset)
+
 	-- Styling
 	WindowFont = SharedMedia.DefaultMedia.font, -- Set the font
 	WindowHeight = 28,
@@ -641,20 +654,20 @@ function Gathering:AddIgnoredItem(text)
 	if (text == "") then
 		return
 	end
-	
+
 	local ID = tonumber(text)
-	
+
 	if (not GatheringIgnore) then
 		GatheringIgnore = {}
 	end
-	
+
 	if ID then
 		GatheringIgnore[ID] = true
-		
+
 		print(format(ERR_IGNORE_ADDED_S, GetItemInfo(ID)))
 	else
 		GatheringIgnore[text] = true
-		
+
 		print(format(ERR_IGNORE_ADDED_S, text))
 	end
 end
@@ -663,16 +676,16 @@ function Gathering:RemoveIgnoredItem(text)
 	if ((not GatheringIgnore) or (text == "")) then
 		return
 	end
-	
+
 	local ID = tonumber(text)
-	
+
 	if ID then
 		GatheringIgnore[ID] = nil
-		
+
 		print(format(L["%s is now being unignored."], GetItemInfo(ID)))
 	else
 		GatheringIgnore[text] = nil
-		
+
 		print(format(L["%s is now being unignored."], text))
 	end
 end
@@ -695,14 +708,14 @@ end
 
 function Gathering:UpdateTooltipFont()
 	local Font = SharedMedia:Fetch("font", self.Settings["window-font"], "")
-	
+
 	if self.Tooltip.NineSlice then
 		self.Tooltip.NineSlice:Hide()
 	end
-	
+
 	for i = 1, self.Tooltip:GetNumRegions() do
 		local Region = select(i, self.Tooltip:GetRegions())
-		
+
 		if (Region:GetObjectType() == "FontString") then
 			Region:SetFont(Font, 12)
 			Region:SetShadowColor(0, 0, 0)
@@ -717,41 +730,41 @@ function Gathering:CopperToGold(copper)
 	local Copper = floor(copper % 100)
 	local Separator = ""
 	local String = ""
-	
+
 	if (Gold > 0) then
 		String = Gold .. "|cffffe02eg|r"
 		Separator = " "
 	end
-	
+
 	if (Silver > 0) then
 		String = String .. Separator .. Silver .. "|cffd6d6d6s|r"
 		Separator = " "
 	end
-	
+
 	if (Copper > 0 or String == "") then
 		String = String .. Separator .. Copper .. "|cfffc8d2bc|r"
 	end
-	
+
 	return String
 end
 
 function Gathering:OnUpdate(ela)
 	self.Elapsed = self.Elapsed + ela
-	
+
 	if (self.Elapsed >= 1) then
 		self.Seconds = self.Seconds + 1
-		
+
 		if (self.GoldGained > 0) then
 			self.GoldTimer = self.GoldTimer + 1
 		end
-		
+
 		self.Text:SetText(date("!%X", self.Seconds))
-		
+
 		if self.MouseIsOver then
 			self:OnLeave()
 			self:OnEnter()
 		end
-		
+
 		self.Elapsed = 0
 	end
 end
@@ -760,11 +773,11 @@ function Gathering:StartTimer()
 	if (self.Settings["hide-idle"] and not self:IsVisible()) then
 		self:Show()
 	end
-	
+
 	if (not strfind(self.Text:GetText(), "%d")) then
 		self.Text:SetText("0:00:00")
 	end
-	
+
 	self:SetScript("OnUpdate", self.OnUpdate)
 	self.Text:SetTextColor(0.1, 0.9, 0.1)
 end
@@ -784,23 +797,23 @@ end
 
 function Gathering:Reset()
 	self:SetScript("OnUpdate", nil)
-	
+
 	wipe(self.Gathered)
-	
+
 	self.TotalGathered = 0
 	self.Seconds = 0
 	self.Elapsed = 0
 	self.GoldValue = GetMoney() or 0
 	self.GoldGained = 0
 	self.GoldTimer = 0
-	
+
 	self.Text:SetTextColor(1, 1, 1)
 	self.Text:SetText(date("!%X", self.Seconds))
-	
+
 	if self.MouseIsOver then
 		self:OnLeave()
 	end
-	
+
 	if self.Settings["hide-idle"] then
 		self:Hide()
 	end
@@ -817,14 +830,14 @@ end
 function Gathering:CreateHeader(text)
 	local Header = CreateFrame("Frame", nil, self.GUI.ButtonParent)
 	Header:SetSize(190, 20)
-	
+
 	Header.BG = Header:CreateTexture(nil, "BORDER")
 	Header.BG:SetTexture(BlankTexture)
 	Header.BG:SetVertexColor(0, 0, 0)
 	Header.BG:SetHeight(1)
 	Header.BG:SetPoint("BOTTOMLEFT", Header, 0, 0)
 	Header.BG:SetPoint("BOTTOMRIGHT", Header, 0, 0)
-	
+
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
 	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Header.Text:SetPoint("LEFT", Header, 3, 0)
@@ -833,7 +846,7 @@ function Gathering:CreateHeader(text)
 	Header.Text:SetShadowOffset(1, -1)
 	Header.Text:SetText(text)
 	Header.Text:SetTextColor(0, 204/255, 106/255)
-	
+
 	tinsert(self.GUI.Window.Widgets, Header)
 end
 
@@ -843,7 +856,7 @@ function Gathering:UpdateSettingValue(key, value)
 	else
 		GatheringSettings[key] = value
 	end
-	
+
 	self.Settings[key] = value
 end
 
@@ -851,14 +864,14 @@ function Gathering:CheckBoxOnMouseUp()
 	if (Gathering.Settings[self.Setting] == true) then
 		self.Tex:SetVertexColor(0.8, 0, 0)
 		Gathering:UpdateSettingValue(self.Setting, false)
-		
+
 		if self.Hook then
 			self:Hook(false)
 		end
 	else
 		self.Tex:SetVertexColor(0, 0.8, 0)
 		Gathering:UpdateSettingValue(self.Setting, true)
-		
+
 		if self.Hook then
 			self:Hook(true)
 		end
@@ -870,18 +883,18 @@ function Gathering:CreateCheckbox(key, text, func)
 	Checkbox:SetSize(20, 20)
 	Checkbox:SetScript("OnMouseUp", self.CheckBoxOnMouseUp)
 	Checkbox.Setting = key
-	
+
 	Checkbox.BG = Checkbox:CreateTexture(nil, "BORDER")
 	Checkbox.BG:SetTexture(BlankTexture)
 	Checkbox.BG:SetVertexColor(0, 0, 0)
 	Checkbox.BG:SetPoint("TOPLEFT", Checkbox, 0, 0)
 	Checkbox.BG:SetPoint("BOTTOMRIGHT", Checkbox, 0, 0)
-	
+
 	Checkbox.Tex = Checkbox:CreateTexture(nil, "OVERLAY")
 	Checkbox.Tex:SetTexture(BarTexture)
 	Checkbox.Tex:SetPoint("TOPLEFT", Checkbox, 1, -1)
 	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
-	
+
 	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
 	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 3, 0)
@@ -889,30 +902,30 @@ function Gathering:CreateCheckbox(key, text, func)
 	Checkbox.Text:SetShadowColor(0, 0, 0)
 	Checkbox.Text:SetShadowOffset(1, -1)
 	Checkbox.Text:SetText(text)
-	
+
 	if self.Settings[key] then
 		Checkbox.Tex:SetVertexColor(0, 0.8, 0)
 	else
 		Checkbox.Tex:SetVertexColor(0.8, 0, 0)
 	end
-	
+
 	if func then
 		Checkbox.Hook = func
 	end
-	
+
 	tinsert(self.GUI.Window.Widgets, Checkbox)
 end
 
 function Gathering:EditBoxOnEnterPressed()
 	local Text = self:GetText()
-	
+
 	self:SetAutoFocus(false)
 	self:ClearFocus()
-	
+
 	if self.Hook then
 		self:Hook(Text)
 	end
-	
+
 	self:SetText(L["Ignore items"])
 end
 
@@ -924,37 +937,37 @@ end
 
 function Gathering:EditBoxOnMouseDown()
 	local Type, ID, Link = GetCursorInfo()
-	
+
 	self:SetAutoFocus(true)
-	
+
 	if (Type and Type == "item") then
 		self:SetText(ID)
 		self.Icon:SetTexture(C_Item.GetItemIconByID(ID))
 	else
 		self:SetText("")
 	end
-	
+
 	ClearCursor()
 end
 
 function Gathering:OnEditFocusLost()
 	self:SetText("")
 	self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
-	
+
 	ClearCursor()
 end
 
 function Gathering:OnEditChar(text)
 	local ID = tonumber(self:GetText())
-	
+
 	if (not ID) then
 		self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
-		
+
 		return
 	end
-	
+
 	local IconID = C_Item.GetItemIconByID(ID)
-	
+
 	if (IconID and IconID ~= 134400) then
 		self.Icon:SetTexture(IconID)
 	else
@@ -975,7 +988,7 @@ end
 
 function Gathering:DiscordButtonOnMouseDown()
 	local Parent = self:GetParent()
-	
+
 	Parent:SetAutoFocus(true)
 	Parent:HighlightText()
 end
@@ -998,46 +1011,46 @@ function Gathering:CreateEditBox(text, func)
 	EditBox:SetScript("OnMouseDown", self.EditBoxOnMouseDown)
 	EditBox:SetScript("OnEditFocusLost", self.OnEditFocusLost)
 	EditBox:SetScript("OnChar", self.OnEditChar)
-	
+
 	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
 	EditBox.BG:SetTexture(BlankTexture)
 	EditBox.BG:SetVertexColor(0, 0, 0)
 	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
 	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-	
+
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
 	EditBox.Tex:SetTexture(BarTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
 	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
-	
+
 	EditBox.Icon = EditBox:CreateTexture(nil, "ARTWORK")
 	EditBox.Icon:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
 	EditBox.Icon:SetSize(18, 18)
 	EditBox.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
 	EditBox.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	
+
 	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
 	EditBox.BG:SetTexture(BlankTexture)
 	EditBox.BG:SetVertexColor(0, 0, 0)
 	EditBox.BG:SetPoint("TOPLEFT", EditBox.Icon, -1, 1)
 	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox.Icon, 1, -1)
-	
+
 	if func then
 		EditBox.Hook = func
 	end
-	
+
 	tinsert(self.GUI.Window.Widgets, EditBox)
 end
 
 function Gathering:NumberEditBoxOnEnterPressed()
 	local Text = self:GetText()
-	
+
 	self:SetAutoFocus(false)
 	self:ClearFocus()
-	
+
 	Gathering:UpdateSettingValue(self.Setting, tonumber(Text))
-	
+
 	if self.Hook then
 		self:Hook(tonumber(Text))
 	end
@@ -1075,19 +1088,19 @@ function Gathering:CreateNumberEditBox(key, text, func)
 	EditBox:SetScript("OnEscapePressed", self.NumberOnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.NumberEditBoxOnMouseDown)
 	EditBox.Setting = key
-	
+
 	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
 	EditBox.BG:SetTexture(BlankTexture)
 	EditBox.BG:SetVertexColor(0, 0, 0)
 	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
 	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-	
+
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
 	EditBox.Tex:SetTexture(BarTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
 	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
-	
+
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
 	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
@@ -1095,11 +1108,11 @@ function Gathering:CreateNumberEditBox(key, text, func)
 	EditBox.Text:SetShadowColor(0, 0, 0)
 	EditBox.Text:SetShadowOffset(1, -1)
 	EditBox.Text:SetText(text)
-	
+
 	if func then
 		EditBox.Hook = func
 	end
-	
+
 	tinsert(self.GUI.Window.Widgets, EditBox)
 end
 
@@ -1129,19 +1142,19 @@ function Gathering:CreateDiscordEditBox()
 	EditBox:SetScript("OnEnterPressed", self.DiscordEditBoxOnEnterPressed)
 	EditBox:SetScript("OnEscapePressed", self.DiscordEditBoxOnEnterPressed)
 	EditBox:SetScript("OnMouseDown", self.DiscordEditBoxOnMouseDown)
-	
+
 	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
 	EditBox.BG:SetTexture(BlankTexture)
 	EditBox.BG:SetVertexColor(0, 0, 0)
 	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
 	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-	
+
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
 	EditBox.Tex:SetTexture(BarTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
 	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
-	
+
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
 	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
@@ -1149,13 +1162,13 @@ function Gathering:CreateDiscordEditBox()
 	EditBox.Text:SetShadowColor(0, 0, 0)
 	EditBox.Text:SetShadowOffset(1, -1)
 	EditBox.Text:SetText(text)
-	
+
 	tinsert(self.GUI.Window.Widgets, EditBox)
 end
 
 local ScrollSelections = function(self)
 	local First = false
-	
+
 	for i = 1, #self do
 		if (i >= self.Offset) and (i <= self.Offset + MaxSelections - 1) then
 			if (not First) then
@@ -1164,38 +1177,38 @@ local ScrollSelections = function(self)
 			else
 				self[i]:SetPoint("TOPLEFT", self[i-1], "BOTTOMLEFT", 0, 1)
 			end
-			
+
 			self[i]:Show()
 		else
 			self[i]:Hide()
 		end
 	end
-	
+
 	self.ScrollBar:SetValue(self.Offset)
 end
 
 local SelectionOnMouseWheel = function(self, delta)
 	if (delta == 1) then
 		self.Offset = self.Offset - 1
-		
+
 		if (self.Offset <= 1) then
 			self.Offset = 1
 		end
 	else
 		self.Offset = self.Offset + 1
-		
+
 		if (self.Offset > (#self - (MaxSelections - 1))) then
 			self.Offset = self.Offset - 1
 		end
 	end
-	
+
 	ScrollSelections(self)
 end
 
 local SelectionScrollBarOnValueChanged = function(self)
 	local Parent = self:GetParent()
 	Parent.Offset = self:GetValue()
-	
+
 	ScrollSelections(Parent)
 end
 
@@ -1205,18 +1218,18 @@ end
 
 local FontListOnMouseUp = function(self)
 	local Selection = self:GetParent():GetParent()
-	
+
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Key), 12, "")
 	Selection.Current:SetText(self.Key)
-	
+
 	Selection.List:Hide()
-	
+
 	Gathering:UpdateSettingValue(Selection.Setting, self.Key)
-	
+
 	if Selection.Hook then
 		Selection:Hook(self.Key)
 	end
-	
+
 	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
 end
 
@@ -1229,26 +1242,26 @@ local FontSelectionOnMouseUp = function(self)
 		self.List:EnableMouseWheel(true)
 		self.List:SetScript("OnMouseWheel", SelectionOnMouseWheel)
 		self.List:Hide()
-		
+
 		for Key, Path in next, self.Selections do
 			local Selection = CreateFrame("Frame", nil, self.List)
 			Selection:SetSize(140, 20)
 			Selection.Key = Key
 			Selection.Path = Path
 			Selection:SetScript("OnMouseUp", FontListOnMouseUp)
-			
+
 			Selection.BG = Selection:CreateTexture(nil, "BORDER")
 			Selection.BG:SetTexture(BlankTexture)
 			Selection.BG:SetVertexColor(0, 0, 0)
 			Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
 			Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
-			
+
 			Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
 			Selection.Tex:SetTexture(BarTexture)
 			Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 			Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
 			Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
-			
+
 			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
 			Selection.Text:SetFont(Path, 12)
 			Selection.Text:SetSize(140, 18)
@@ -1257,14 +1270,14 @@ local FontSelectionOnMouseUp = function(self)
 			Selection.Text:SetShadowColor(0, 0, 0)
 			Selection.Text:SetShadowOffset(1, -1)
 			Selection.Text:SetText(Key)
-			
+
 			tinsert(self.List, Selection)
 		end
-		
+
 		table.sort(self.List, function(a, b)
 			return a.Key < b.Key
 		end)
-		
+
 		local ScrollBar = CreateFrame("Slider", nil, self.List, "BackdropTemplate")
 		ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", -1, -1)
 		ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", -1, 6)
@@ -1281,29 +1294,29 @@ local FontSelectionOnMouseUp = function(self)
 		ScrollBar:EnableMouseWheel(true)
 		ScrollBar:SetScript("OnMouseWheel", SelectionScrollBarOnMouseWheel)
 		ScrollBar:SetScript("OnValueChanged", SelectionScrollBarOnValueChanged)
-		
-		local Thumb = ScrollBar:GetThumbTexture() 
+
+		local Thumb = ScrollBar:GetThumbTexture()
 		Thumb:SetSize(10, 20)
 		Thumb:SetTexture(BarTexture)
 		Thumb:SetVertexColor(0, 0, 0)
-		
+
 		ScrollBar.NewThumb = ScrollBar:CreateTexture(nil, "BORDER")
 		ScrollBar.NewThumb:SetPoint("TOPLEFT", Thumb, 0, 0)
 		ScrollBar.NewThumb:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
 		ScrollBar.NewThumb:SetTexture(BlankTexture)
 		ScrollBar.NewThumb:SetVertexColor(0, 0, 0)
-		
+
 		ScrollBar.NewThumb2 = ScrollBar:CreateTexture(nil, "OVERLAY")
 		ScrollBar.NewThumb2:SetPoint("TOPLEFT", ScrollBar.NewThumb, 1, -1)
 		ScrollBar.NewThumb2:SetPoint("BOTTOMRIGHT", ScrollBar.NewThumb, -1, 1)
 		ScrollBar.NewThumb2:SetTexture(BarTexture)
 		ScrollBar.NewThumb2:SetVertexColor(0.4, 0.4, 0.4)
-		
+
 		self.List.ScrollBar = ScrollBar
-		
+
 		ScrollSelections(self.List)
 	end
-	
+
 	if self.List:IsShown() then
 		self.List:Hide()
 		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
@@ -1319,24 +1332,24 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection:SetScript("OnMouseUp", FontSelectionOnMouseUp)
 	Selection.Selections = selections
 	Selection.Setting = key
-	
+
 	Selection.BG = Selection:CreateTexture(nil, "BORDER")
 	Selection.BG:SetTexture(BlankTexture)
 	Selection.BG:SetVertexColor(0, 0, 0)
 	Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
 	Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
-	
+
 	Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
 	Selection.Tex:SetTexture(BarTexture)
 	Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 	Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
 	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
-	
+
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
 	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
 	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
-	
+
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12, "")
 	Selection.Current:SetSize(122, 18)
@@ -1345,7 +1358,7 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection.Current:SetShadowColor(0, 0, 0)
 	Selection.Current:SetShadowOffset(1, -1)
 	Selection.Current:SetText(self.Settings[key])
-	
+
 	Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Selection.Text:SetPoint("LEFT", Selection, "RIGHT", 3, 0)
@@ -1353,17 +1366,17 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	Selection.Text:SetShadowColor(0, 0, 0)
 	Selection.Text:SetShadowOffset(1, -1)
 	Selection.Text:SetText(text)
-	
+
 	if func then
 		Selection.Hook = func
 	end
-	
+
 	tinsert(self.GUI.Window.Widgets, Selection)
 end
 
 local Scroll = function(self)
 	local First = false
-	
+
 	for i = 1, #self.Widgets do
 		if (i >= self.Offset) and (i <= self.Offset + MaxWidgets - 1) then
 			if (not First) then
@@ -1372,7 +1385,7 @@ local Scroll = function(self)
 			else
 				self.Widgets[i]:SetPoint("TOPLEFT", self.Widgets[i-1], "BOTTOMLEFT", 0, -2)
 			end
-			
+
 			self.Widgets[i]:Show()
 		else
 			self.Widgets[i]:Hide()
@@ -1383,27 +1396,27 @@ end
 local WindowOnMouseWheel = function(self, delta)
 	if (delta == 1) then
 		self.Offset = self.Offset - 1
-		
+
 		if (self.Offset <= 1) then
 			self.Offset = 1
 		end
 	else
 		self.Offset = self.Offset + 1
-		
+
 		if (self.Offset > (#self.Widgets - (MaxWidgets - 1))) then
 			self.Offset = self.Offset - 1
 		end
 	end
-	
+
 	Scroll(self)
 	self.ScrollBar:SetValue(self.Offset)
 end
 
 local ScrollBarOnValueChanged = function(self, value)
 	local Value = floor(value + 0.5)
-	
+
 	self.Parent.Offset = Value
-	
+
 	Scroll(self.Parent)
 end
 
@@ -1414,11 +1427,11 @@ end
 
 function Gathering:SettingsLayout()
 	self:CreateHeader(L["Set Font"])
-	
+
 	self:CreateFontSelection("window-font", "", Fonts, self.UpdateFontSetting)
-	
+
 	self:CreateHeader(TRACKING)
-	
+
 	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
 	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
 	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
@@ -1430,27 +1443,28 @@ function Gathering:SettingsLayout()
 	self:CreateCheckbox("track-consumable", L["Consumables"], self.UpdateConsumableTracking)
 	self:CreateCheckbox("track-holiday", L["Holiday"], self.UpdateHolidayTracking)
 	self:CreateCheckbox("track-quest", L["Quests"], self.UpdateQuestTracking)
-	
+
 	self:CreateHeader(MISCELLANEOUS)
-	
+
 	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
 	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
-	self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
+	--self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
+	self:CreateCheckbox("ShowTooltipHelp", L["Show tooltip help"])
 	self:CreateCheckbox("IgnoreMailItems", L["Ignore mail items"])
 	self:CreateCheckbox("IgnoreMailMoney", L["Ignore mail gold"])
-	
+
 	self:CreateHeader(IGNORE)
-	
+
 	self:CreateEditBox(L["Ignore items"], self.AddIgnoredItem)
-	
+
 	self:CreateHeader(UNIGNORE_QUEST)
-	
+
 	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
-	
+
 	self:CreateHeader(WINDOW_SIZE_LABEL)
 	self:CreateNumberEditBox("WindowWidth", "Set Width", self.SetFrameWidth)
 	self:CreateNumberEditBox("WindowHeight", "Set Height", self.SetFrameHeight)
-	
+
 	self:CreateHeader(L["Discord"])
 	self:CreateDiscordEditBox()
 end
@@ -1466,19 +1480,19 @@ function Gathering:CreateGUI()
 	self.GUI:RegisterForDrag("LeftButton")
 	self.GUI:SetScript("OnDragStart", self.GUI.StartMoving)
 	self.GUI:SetScript("OnDragStop", self.GUI.StopMovingOrSizing)
-	
+
 	self.GUI.BG = self.GUI:CreateTexture(nil, "BORDER")
 	self.GUI.BG:SetPoint("TOPLEFT", self.GUI, -1, 1)
 	self.GUI.BG:SetPoint("BOTTOMRIGHT", self.GUI, 1, -1)
 	self.GUI.BG:SetTexture(BlankTexture)
 	self.GUI.BG:SetVertexColor(0, 0, 0)
-	
+
 	self.GUI.Texture = self.GUI:CreateTexture(nil, "OVERLAY")
 	self.GUI.Texture:SetPoint("TOPLEFT", self.GUI, 0, 0)
 	self.GUI.Texture:SetPoint("BOTTOMRIGHT", self.GUI, 0, 0)
 	self.GUI.Texture:SetTexture(BarTexture)
 	self.GUI.Texture:SetVertexColor(0.25, 0.25, 0.25)
-	
+
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
 	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
 	self.GUI.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
@@ -1486,18 +1500,18 @@ function Gathering:CreateGUI()
 	self.GUI.Text:SetShadowColor(0, 0, 0)
 	self.GUI.Text:SetShadowOffset(1, -1)
 	self.GUI.Text:SetText("|cff00CC6AGathering|r " .. AddOnVersion)
-	
+
 	self.GUI.CloseButton = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.CloseButton:SetPoint("TOPRIGHT", self.GUI, 0, 0)
 	self.GUI.CloseButton:SetSize(18, 18)
 	self.GUI.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
 	self.GUI.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
 	self.GUI.CloseButton:SetScript("OnMouseUp", function() self.GUI:Hide() end)
-	
+
 	self.GUI.CloseButton.Texture = self.GUI.CloseButton:CreateTexture(nil, "OVERLAY")
 	self.GUI.CloseButton.Texture:SetPoint("CENTER", self.GUI.CloseButton, 0, -0.5)
 	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
-	
+
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.Window:SetSize(210, 245)
 	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
@@ -1505,24 +1519,24 @@ function Gathering:CreateGUI()
 	self.GUI.Window.Widgets = {}
 	self.GUI.Window:EnableMouseWheel(true)
 	self.GUI.Window:SetScript("OnMouseWheel", WindowOnMouseWheel)
-	
+
 	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
 	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -1)
 	self.GUI.Backdrop:SetTexture(BlankTexture)
 	self.GUI.Backdrop:SetVertexColor(0, 0, 0)
-	
+
 	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
 	self.GUI.Inside:SetAllPoints()
 	self.GUI.Inside:SetTexture(BlankTexture)
 	self.GUI.Inside:SetVertexColor(0.168, 0.168, 0.168)
-	
+
 	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
 	self.GUI.ButtonParent:SetAllPoints()
 	self.GUI.ButtonParent:SetFrameLevel(self.GUI.Window:GetFrameLevel() + 4)
 	self.GUI.ButtonParent:SetFrameStrata("HIGH")
 	self.GUI.ButtonParent:EnableMouse(true)
-	
+
 	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
 	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
 	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
@@ -1530,9 +1544,9 @@ function Gathering:CreateGUI()
 	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
 	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
 	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
-	
+
 	self:SettingsLayout()
-	
+
 	-- Scroll bar
 	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent, "BackdropTemplate")
 	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
@@ -1549,38 +1563,38 @@ function Gathering:CreateGUI()
 	self.GUI.Window.ScrollBar:EnableMouse(true)
 	self.GUI.Window.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
 	self.GUI.Window.ScrollBar.Parent = self.GUI.Window
-	
+
 	self.GUI.Window.ScrollBar:SetFrameStrata("HIGH")
 	self.GUI.Window.ScrollBar:SetFrameLevel(22)
-	
-	local Thumb = self.GUI.Window.ScrollBar:GetThumbTexture() 
+
+	local Thumb = self.GUI.Window.ScrollBar:GetThumbTexture()
 	Thumb:SetSize(14, 20)
 	Thumb:SetTexture(BarTexture)
 	Thumb:SetVertexColor(0, 0, 0)
-	
+
 	self.GUI.Window.ScrollBar.NewTexture = self.GUI.Window.ScrollBar:CreateTexture(nil, "BORDER")
 	self.GUI.Window.ScrollBar.NewTexture:SetPoint("TOPLEFT", Thumb, 0, 0)
 	self.GUI.Window.ScrollBar.NewTexture:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
 	self.GUI.Window.ScrollBar.NewTexture:SetTexture(BlankTexture)
 	self.GUI.Window.ScrollBar.NewTexture:SetVertexColor(0, 0, 0)
-	
+
 	self.GUI.Window.ScrollBar.NewTexture2 = self.GUI.Window.ScrollBar:CreateTexture(nil, "OVERLAY")
 	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.Window.ScrollBar.NewTexture, 1, -1)
 	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.Window.ScrollBar.NewTexture, -1, 1)
 	self.GUI.Window.ScrollBar.NewTexture2:SetTexture(BarTexture)
 	self.GUI.Window.ScrollBar.NewTexture2:SetVertexColor(0.4, 0.4, 0.4)
-	
+
 	Scroll(self.GUI.Window)
 end
 
 function Gathering:ScanButtonOnClick()
 	local TimeDiff = (GetTime() - (GatheringLastScan or 0))
-	
+
 	if (TimeDiff > 0) and (900 > TimeDiff) then -- 15 minute throttle
 		print(format(L["You must wait %s until you can scan again."], Gathering:FormatTime(900 - TimeDiff)))
 		return
 	end
-	
+
 	if Gathering:IsEventRegistered("REPLICATE_ITEM_LIST_UPDATE") then -- Awaiting results already
 		if (TimeDiff > 900) then
 			self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
@@ -1588,13 +1602,13 @@ function Gathering:ScanButtonOnClick()
 			return
 		end
 	end
-	
+
 	Gathering:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-	
+
 	ReplicateItems()
-	
+
 	print(L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."])
-	
+
 	GatheringLastScan = GetTime()
 end
 
@@ -1602,53 +1616,53 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	if (not msg) then
 		return
 	end
-	
+
 	if ((self.Settings.IgnoreMailItems and InboxFrame:IsVisible()) or (GuildBankFrame and GuildBankFrame:IsVisible())) then -- Ignore useless info
 		return
 	end
-	
+
 	local PreMessage, Color, ItemString, Name, Quantity = match(msg, LootMatch)
-	
+
 	if (not ItemString) then
 		return
 	end
-	
+
 	local LinkType, ID = match(ItemString, "^(%a+):(%d+)")
-	
+
 	ID = tonumber(ID)
 	Quantity = tonumber(Quantity) or 1
-	
+
 	local _, _, Quality, _, _, Type, SubType, _, _, Texture, _, ClassID, SubClassID, BindType = GetItemInfo(ID)
-	
+
 	if (self.Ignored[ID] or self.Ignored[Name] or ((not self.TrackedItemTypes[ClassID]) or (not self.TrackedItemTypes[ClassID][SubClassID]))) then
 		return
 	end
-	
+
 	if (BindType and ((BindType ~= 0) and self.Settings["ignore-bop"])) then
 		return
 	end
-	
+
 	if (not self.Gathered[SubType]) then
 		self.Gathered[SubType] = {}
 	end
-	
+
 	local Now = GetTime()
-	
+
 	if (not self.Gathered[SubType][ID]) then
 		self.Gathered[SubType][ID] = {Initial = Now}
 	end
-	
+
 	local Info = self.Gathered[SubType][ID]
-	
+
 	Info.Collected = (Info.Collected or 0) + Quantity
 	Info.Last = Now
-	
+
 	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
-	
+
 	if (not self:GetScript("OnUpdate")) then
 		self:StartTimer()
 	end
-	
+
 	if self.MouseIsOver then
 		self:OnLeave()
 		self:OnEnter()
@@ -1659,12 +1673,12 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 	if (not GatheringMarketPrices) then
 		GatheringMarketPrices = {}
 	end
-	
+
 	local Count, Buyout, ID, HasAllInfo, PerUnit, _
-	
+
 	for i = 0, (GetNumReplicateItems() - 1) do
 		_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID, HasAllInfo = GetReplicateItemInfo(i)
-		
+
 		if HasAllInfo then
 			self.MarketPrices[ID] = Buyout / Count
 			GatheringMarketPrices[ID] = self.MarketPrices[ID]
@@ -1672,7 +1686,7 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
 				_, _, Count, _, _, _, _, _, _, Buyout, _, _, _, _, _, _, ID = GetReplicateItemInfo(i)
 				PerUnit = Buyout / Count
-				
+
 				if self.MarketPrices[ID] then
 					if (self.MarketPrices[ID] > PerUnit) then -- Collect lowest prices
 						self.MarketPrices[ID] = PerUnit
@@ -1685,9 +1699,9 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 			end)
 		end
 	end
-	
+
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
-	
+
 	print(L["|cff00CC6AGathering|r updated market prices."])
 end
 
@@ -1702,12 +1716,12 @@ function Gathering:OnTooltipSetItem()
 	if (not Gathering.Settings["show-tooltip"]) then
 		return
 	end
-	
+
 	local Item, Link = self:GetItem()
-	
+
 	if Item then
 		local Price = Gathering:GetPrice(Link)
-		
+
 		if (Price and Price > 0) then
 			self:AddLine(" ")
 			self:AddLine("|cff00CC6AGathering|r")
@@ -1719,25 +1733,25 @@ end
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
 		self.Ignored = GatheringIgnore or {}
-		
+
 		if IsAddOnLoaded("TradeSkillMaster") then
 			self.HasTSM = true
 		end
-		
+
 		if (not IsAddOnLoaded("HydraUI")) then
 			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
-		
-		GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
-		
+
+		--GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+
 		if (not GatheringSettings) then
 			GatheringSettings = {}
 		end
-		
+
 		self.Settings = setmetatable(GatheringSettings, {__index = self.DefaultSettings})
-		
+
 		self:CreateWindow()
-		
+
 		self:UpdateHerbTracking(self.Settings["track-herbs"])
 		self:UpdateClothTracking(self.Settings["track-cloth"])
 		self:UpdateLeatherTracking(self.Settings["track-leather"])
@@ -1749,47 +1763,47 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self:UpdateConsumableTracking(self.Settings["track-consumable"])
 		self:UpdateHolidayTracking(self.Settings["track-holiday"])
 		self:UpdateQuestTracking(self.Settings["track-quest"])
-		
+
 		if self.Settings["hide-idle"] then
 			self:Hide()
 		end
-		
+
 		self.Initial = true
 	end
-	
-	if (GameVersion < 90000) then
+
+	if (GameVersion < 90000) and (not IsInInstance()) then
 		C_Timer.After(6, function()
 			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
 		end)
 	end
-	
+
 	self:GROUP_ROSTER_UPDATE()
 end
 
 function Gathering:PLAYER_MONEY()
-	if (InboxFrame:IsVisible() and self.Settings.IgnoreMailMoney) then -- IgnoreMailItems
+	if (InboxFrame:IsVisible() and self.Settings.IgnoreMailMoney) then
 		return
 	end
 
 	local Current = GetMoney()
-	
+
 	if (Current > self.GoldValue) then
 		local Diff = Current - self.GoldValue
-		
+
 		self.GoldGained = self.GoldGained + Diff
-		
+
 		if (not self:GetScript("OnUpdate")) then
 			self:StartTimer()
 		end
 	end
-	
+
 	self.GoldValue = Current
 end
 
 function Gathering:GUILD_ROSTER_UPDATE()
 	if IsInGuild() then
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "GUILD")
-		
+
 		self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 	end
 end
@@ -1797,13 +1811,13 @@ end
 function Gathering:GROUP_ROSTER_UPDATE()
 	local Home = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME)
 	local Instance = GetNumGroupMembers(LE_PARTY_CATEGORY_INSTANCE)
-	
+
 	if (Home == 0 and self.SentGroup) then
 		self.SentGroup = false
 	elseif (Instance == 0 and self.SentInstance) then
 		self.SentInstance = false
 	end
-	
+
 	if (Instance > 0 and not self.SentInstance) then
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "INSTANCE_CHAT")
 		self.SentInstance = true
@@ -1819,7 +1833,7 @@ function Gathering:ZONE_CHANGED()
 
 		if (Now - self.LastYell > 15) then
 			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-			
+
 			self.LastYell = Now
 		end
 	end
@@ -1831,7 +1845,7 @@ function Gathering:ZONE_CHANGED_NEW_AREA()
 
 		if (Now - self.LastYell > 15) then
 			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
-			
+
 			self.LastYell = Now
 		end
 	end
@@ -1841,19 +1855,19 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if sender:find("-") then
 		sender = match(sender, "(%S+)-%S+")
 	end
-	
+
 	if (sender == Me or prefix ~= "GATHERING_VRSN") then
 		return
 	end
-	
+
 	message = tonumber(message)
-	
+
 	if (AddOnNum > message) then -- We have a higher version, share it
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
 	elseif (message > AddOnNum) then -- We're behind!
 		print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
-		
+
 		AddOnNum = message
 		AddOnVersion = tostring(message)
 	end
@@ -1885,42 +1899,42 @@ function Gathering:OnEnter()
 	if (self.TotalGathered == 0 and self.GoldGained == 0) then
 		return
 	end
-	
+
 	self.MouseIsOver = true
-	
+
 	local MarketTotal = 0
 	local X, Y = self:GetCenter()
-	
+
 	self.Tooltip:SetOwner(self, "ANCHOR_NONE")
-	
+
 	if (Y > UIParent:GetHeight() / 2) then
 		self.Tooltip:SetPoint("TOP", self, "BOTTOM", 0, -2)
 	else
 		self.Tooltip:SetPoint("BOTTOM", self, "TOP", 0, 2)
 	end
-	
+
 	self.Tooltip:ClearLines()
-	
+
 	local Now = GetTime()
-	
+
 	if (self.TotalGathered > 0) then
 		for SubType, Info in next, self.Gathered do
 			self.Tooltip:AddLine(SubType, 1, 1, 0)
-			
+
 			for ID, Value in next, Info do
 				local Name, Link, Rarity = GetItemInfo(ID)
 				local Hex = "|cffFFFFFF"
-				
+
 				if Rarity then
 					Hex = ITEM_QUALITY_COLORS[Rarity].hex
 				end
-				
+
 				local Price = self:GetPrice(Link)
-				
+
 				if Price then
 					MarketTotal = MarketTotal + (Price * Value.Collected)
 				end
-				
+
 				if (IsShiftKeyDown() and Price) then
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, self:CopperToGold((Price * Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				elseif IsControlKeyDown() then
@@ -1931,47 +1945,49 @@ function Gathering:OnEnter()
 					self.Tooltip:AddDoubleLine(format("%s%s|r:", Hex, Name), format("%s (%s/%s)", Value.Collected, floor((Value.Collected / max(Now - Value.Initial, 1)) * 60 * 60), L["Hr"]), 1, 1, 1, 1, 1, 1)
 				end
 			end
-			
+
 			self.Tooltip:AddLine(" ")
 		end
 	end
-	
+
 	if (self.GoldGained > 0) then
 		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
-		
+
 		if IsShiftKeyDown() then
 			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
 		else
 			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
 		end
 	end
-	
+
 	if (self.TotalGathered > 0) then
 		if (self.GoldGained > 0) then
 			self.Tooltip:AddLine(" ")
 		end
-		
+
 		self.Tooltip:AddDoubleLine(L["Total Gathered:"], self.TotalGathered, nil, nil, nil, 1, 1, 1)
-		
+
 		if (IsShiftKeyDown() and MarketTotal > 0) then
 			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
 		else
 			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
 		end
-		
+
 		if (MarketTotal > 0) then
 			self.Tooltip:AddDoubleLine(L["Total Value:"], self:CopperToGold(MarketTotal), nil, nil, nil, 1, 1, 1)
 		end
 	end
-	
-	self.Tooltip:AddLine(" ")
-	self.Tooltip:AddLine(L["Left click: Toggle timer"])
-	self.Tooltip:AddLine(L["Right click: Reset data"])
-	
+
+	if self.Settings.ShowTooltipHelp then
+		self.Tooltip:AddLine(" ")
+		self.Tooltip:AddLine(L["Left click: Toggle timer"])
+		self.Tooltip:AddLine(L["Right click: Reset data"])
+	end
+
 	self:UpdateTooltipFont()
-	
+
 	self:RegisterEvent("MODIFIER_STATE_CHANGED")
-	
+
 	self.Tooltip:Show()
 end
 
@@ -1979,11 +1995,11 @@ function Gathering:OnLeave()
 	if self.Tooltip.Override then
 		return
 	end
-	
+
 	self.MouseIsOver = false
-	
+
 	self:UnregisterEvent("MODIFIER_STATE_CHANGED")
-	
+
 	self.Tooltip:Hide()
 end
 
@@ -2005,23 +2021,23 @@ function Gathering:BAG_UPDATE_DELAYED()
 	if (not self.BagResults) then
 		return
 	end
-	
+
 	local Results = {}
 	local ID, Texture, Count, ClassID, SubClassID
-	
+
 	for Bag = 0, NUM_BAG_SLOTS do
 		for Slot = 1, GetContainerNumSlots(Bag) do
 			ID = GetContainerItemID(Bag, Slot)
 			Texture, Count = GetContainerItemInfo(Bag, Slot)
-			
+
 			if ID then
 				ClassID, SubClassID = select(12, GetItemInfo(ID))
-				
+
 				if (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
 					if self.BagResults[Bag][Slot] then
 						if (Count > self.BagResults[Bag][Slot][2]) then
 							local Change = Count - self.BagResults[Bag][Slot][2]
-							
+
 							tinsert(Results, {ID, Change})
 						end
 					else
@@ -2031,49 +2047,49 @@ function Gathering:BAG_UPDATE_DELAYED()
 			end
 		end
 	end
-	
+
 	if (#Results == 0) then
 		self.BagResults = nil
-		
+
 		return
 	end
-	
+
 	for i = 1, #Results do
 		local ID = Results[i][1]
 		local Quantity = Results[i][2]
 		local Type, SubType, _, _, _, _, ClassID, SubClassID, BindType = select(6, GetItemInfo(ID))
-		
+
 		if (BindType and ((BindType ~= 0) and self.Settings["ignore-bop"])) then
 			return
 		end
-		
+
 		if (not self.Gathered[SubType]) then
 			self.Gathered[SubType] = {}
 		end
-		
+
 		local Now = GetTime()
-		
+
 		if (not self.Gathered[SubType][ID]) then
 			self.Gathered[SubType][ID] = {Initial = Now}
 		end
-		
+
 		local Info = self.Gathered[SubType][ID]
-		
+
 		Info.Collected = (Info.Collected or 0) + Quantity
-		Info.Last = Now 
-		
+		Info.Last = Now
+
 		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
-		
+
 		if (not self:GetScript("OnUpdate")) then
 			self:StartTimer()
 		end
-		
+
 		if self.MouseIsOver then
 			self:OnLeave()
 			self:OnEnter()
 		end
 	end
-	
+
 	self.BagResults = nil
 end
 
@@ -2081,27 +2097,27 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, guid, id)
 	if (unit ~= "player") then
 		return
 	end
-	
+
 	if (not id or id ~= 30427) then -- Extract Gas
 		return
 	end
-	
+
 	self.BagResults = {}
-	
+
 	local ID, Texture, Count, ClassID, SubClassID
-	
+
 	for Bag = 0, NUM_BAG_SLOTS do
 		if (not self.BagResults[Bag]) then
 			self.BagResults[Bag] = {}
 		end
-		
+
 		for Slot = 1, GetContainerNumSlots(Bag) do
 			ID = GetContainerItemID(Bag, Slot)
-			
+
 			if ID then
 				Texture, Count = GetContainerItemInfo(Bag, Slot)
 				ClassID, SubClassID = select(12, GetItemInfo(ID))
-				
+
 				if (self.TrackedItemTypes[ClassID] and self.TrackedItemTypes[ClassID][SubClassID]) then
 					self.BagResults[Bag][Slot] = {ID, Count}
 				end
@@ -2139,10 +2155,10 @@ SLASH_GATHERING3 = "/gathering"
 SlashCmdList["GATHERING"] = function(cmd)
 	if (not Gathering.GUI) then
 		Gathering:CreateGUI()
-		
+
 		return
 	end
-	
+
 	if Gathering.GUI:IsShown() then
 		Gathering.GUI:Hide()
 	else
