@@ -32,6 +32,11 @@ local Fonts = SharedMedia:HashTable("font")
 local Me = UnitName("player")
 local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
 
+local ValidMessages = {
+	[LOOT_ITEM_SELF:gsub("%%.*", "")] = true,
+	[LOOT_ITEM_PUSHED_SELF:gsub("%%.*", "")] = true,
+}
+
 if (GameVersion and GameVersion > 90000) then
 	ReplicateItems = C_AuctionHouse.ReplicateItems
 	GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
@@ -1627,6 +1632,10 @@ function Gathering:CHAT_MSG_LOOT(msg)
 		return
 	end
 
+	if (PreMessage and not ValidMessages[PreMessage]) then
+		return
+	end
+
 	local LinkType, ID = match(ItemString, "^(%a+):(%d+)")
 
 	ID = tonumber(ID)
@@ -1742,7 +1751,11 @@ function Gathering:PLAYER_ENTERING_WORLD()
 			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
 
-		--GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+		--[[if TooltipDataProcessor then
+			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.OnTooltipSetItem)
+		else
+			GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+		end]]
 
 		if (not GatheringSettings) then
 			GatheringSettings = {}
@@ -1771,7 +1784,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self.Initial = true
 	end
 
-	if (GameVersion < 90000) and (not IsInInstance()) then
+	if (GameVersion < 90000 and not IsInInstance()) then
 		C_Timer.After(6, function()
 			CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, "YELL")
 		end)
