@@ -31,13 +31,22 @@ local Textures = SharedMedia:HashTable("statusbar")
 local Fonts = SharedMedia:HashTable("font")
 local Me = UnitName("player")
 local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
+local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID
+local GetContainerItemInfo = GetContainerItemInfo
+
+if C_Container then
+	GetContainerNumSlots = C_Container.GetContainerNumSlots
+	GetContainerItemID = C_Container.GetContainerItemID
+	GetContainerItemInfo = C_Container.GetContainerItemInfo
+end
 
 local ValidMessages = {
 	[LOOT_ITEM_SELF:gsub("%%.*", "")] = true,
 	[LOOT_ITEM_PUSHED_SELF:gsub("%%.*", "")] = true,
 }
 
-if (GameVersion and GameVersion > 90000) then
+if (C_AuctionHouse and C_AuctionHouse.ReplicateItems) then
 	ReplicateItems = C_AuctionHouse.ReplicateItems
 	GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
 	GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
