@@ -29,11 +29,49 @@ local CT = ChatThrottleLib
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local Textures = SharedMedia:HashTable("statusbar")
 local Fonts = SharedMedia:HashTable("font")
+local Gathering = CreateFrame("Frame", "Gathering_Header", UIParent, "BackdropTemplate")
 local Me = UnitName("player")
 local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemInfo = GetContainerItemInfo
+
+Gathering.DefaultSettings = {
+	-- Tracking
+	["track-ore"] = true,
+	["track-herbs"] = true,
+	["track-leather"] = true,
+	["track-cooking"] = true,
+	["track-cloth"] = true,
+	["track-jewelcrafting"] = true,
+	["track-enchanting"] = true,
+	["track-reagents"] = true,
+	["track-consumable"] = true,
+	["track-holiday"] = true,
+	["track-quest"] = false,
+
+	-- Functionality
+	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
+	["hide-idle"] = false, -- Hide the tracker frame while not running
+	["show-tooltip"] = false, -- Show tooltip data about item prices
+
+	-- Styling
+	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
+
+	-- Functionality
+	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
+	HideIdle = false, -- Hide the tracker frame while not running
+	ShowTooltip = false, -- Show tooltip data about item prices
+	IgnoreMailItems = false, -- Ignore items that arrived through mail
+	IgnoreMailMoney = false, -- Ignore money that arrived through mail
+	ShowTooltipHelp = true, -- Display helpful information in the tooltip (Left click to toggle, right click to reset)
+	DisplayMode = "TIME", -- TOTAL; Display total gathered, GPH; display gold per hour, GOLD; display gold collected, TIME; display timer
+
+	-- Styling
+	WindowFont = SharedMedia.DefaultMedia.font, -- Set the font
+	WindowHeight = 24,
+	WindowWidth = 130,
+}
 
 if C_Container then
 	GetContainerNumSlots = C_Container.GetContainerNumSlots
@@ -41,16 +79,16 @@ if C_Container then
 	GetContainerItemInfo = C_Container.GetContainerItemInfo
 end
 
-local ValidMessages = {
-	[LOOT_ITEM_SELF:gsub("%%.*", "")] = true,
-	[LOOT_ITEM_PUSHED_SELF:gsub("%%.*", "")] = true,
-}
-
 if (C_AuctionHouse and C_AuctionHouse.ReplicateItems) then
 	ReplicateItems = C_AuctionHouse.ReplicateItems
 	GetNumReplicateItems = C_AuctionHouse.GetNumReplicateItems
 	GetReplicateItemInfo = C_AuctionHouse.GetReplicateItemInfo
 end
+
+local ValidMessages = {
+	[LOOT_ITEM_SELF:gsub("%%.*", "")] = true,
+	[LOOT_ITEM_PUSHED_SELF:gsub("%%.*", "")] = true,
+}
 
 SharedMedia:Register("font", "PT Sans", "Interface\\Addons\\Gathering\\Assets\\PTSans.ttf")
 SharedMedia:Register("statusbar", "HydraUI 4", BarTexture)
@@ -83,6 +121,7 @@ if (Locale == "deDE") then -- German
 	L["Price per unit: %s"] = "Preis pro Einheit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -120,6 +159,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -157,6 +197,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -194,6 +235,7 @@ elseif (Locale == "frFR") then -- French
 	L["Price per unit: %s"] = "Prix par unité: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -231,6 +273,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -268,6 +311,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -305,6 +349,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -342,6 +387,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -379,6 +425,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -416,6 +463,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -453,6 +501,7 @@ else
 	L["Price per unit: %s"] = "Price per unit: %s"
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
+	L["Display Mode"] = "Display Mode"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -473,7 +522,6 @@ local Outline = {
 }
 
 -- Header
-local Gathering = CreateFrame("Frame", "Gathering_Header", UIParent, "BackdropTemplate")
 Gathering:SetPoint("TOP", UIParent, 0, -100)
 Gathering:EnableMouse(true)
 Gathering:SetMovable(true)
@@ -481,6 +529,7 @@ Gathering:SetUserPlaced(true)
 Gathering.SentGroup = false
 Gathering.SentInstance = false
 Gathering.LastYell = 0
+Gathering.Int = 1
 
 function Gathering:CreateWindow()
 	self:SetSize(self.Settings.WindowWidth, self.Settings.WindowHeight)
@@ -497,7 +546,18 @@ function Gathering:CreateWindow()
 	self.Text:SetPoint("CENTER", self, 0, 0)
 	self.Text:SetJustifyH("CENTER")
 	self.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
-	self.Text:SetText("Gathering")
+	--self.Text:SetText("Gathering")
+
+	if (self.Settings.DisplayMode == "TIME") then
+		self.Text:SetText(date("!%X", 0))
+	elseif (self.Settings.DisplayMode == "GPH") then
+		self.Text:SetFormattedText("GPH: %s", self:CopperToGold(0))
+		self.Int = 2
+	elseif (self.Settings.DisplayMode == "GOLD") then
+		self.Text:SetText(self:CopperToGold(0))
+	elseif (self.Settings.DisplayMode == "TOTAL") then
+		self.Text:SetFormattedText("Total: %s", 0)
+	end
 
 	-- Tooltip
 	self.Tooltip = CreateFrame("GameTooltip", "Gathering Tooltip", UIParent, "GameTooltipTemplate")
@@ -520,42 +580,6 @@ function Gathering:CreateWindow()
 	self.GoldGained = 0
 	self.GoldTimer = 0
 end
-
-Gathering.DefaultSettings = {
-	-- Tracking
-	["track-ore"] = true,
-	["track-herbs"] = true,
-	["track-leather"] = true,
-	["track-cooking"] = true,
-	["track-cloth"] = true,
-	["track-jewelcrafting"] = true,
-	["track-enchanting"] = true,
-	["track-reagents"] = true,
-	["track-consumable"] = true,
-	["track-holiday"] = true,
-	["track-quest"] = false,
-
-	-- Functionality
-	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
-	["hide-idle"] = false, -- Hide the tracker frame while not running
-	["show-tooltip"] = false, -- Show tooltip data about item prices
-
-	-- Styling
-	["window-font"] = SharedMedia.DefaultMedia.font, -- Set the font
-
-	-- Functionality
-	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
-	HideIdle = false, -- Hide the tracker frame while not running
-	ShowTooltip = false, -- Show tooltip data about item prices
-	IgnoreMailItems = false, -- Ignore items that arrived through mail
-	IgnoreMailMoney = false, -- Ignore money that arrived through mail
-	ShowTooltipHelp = true, -- Display helpful information in the tooltip (Left click to toggle, right click to reset)
-
-	-- Styling
-	WindowFont = SharedMedia.DefaultMedia.font, -- Set the font
-	WindowHeight = 28,
-	WindowWidth = 140,
-}
 
 Gathering.TrackedItemTypes = {
 	[Enum.ItemClass.Consumable] = {},
@@ -765,14 +789,16 @@ end
 function Gathering:OnUpdate(ela)
 	self.Elapsed = self.Elapsed + ela
 
-	if (self.Elapsed >= 1) then
-		self.Seconds = self.Seconds + 1
+	if (self.Elapsed >= self.Int) then
+		self.Seconds = self.Seconds + self.Int
 
-		if (self.GoldGained > 0) then
-			self.GoldTimer = self.GoldTimer + 1
+		if (self.Settings.DisplayMode == "TIME") then
+			self.Text:SetText(date("!%X", self.Seconds))
+		elseif (self.Settings.DisplayMode == "GPH") then
+			if (self.GoldGained > 0) then
+				self.Text:SetFormattedText("GPH: %s", self:CopperToGold(floor((self.GoldGained / max(GetTime() - self.GoldTimer, 1)) * 60 * 60)))
+			end
 		end
-
-		self.Text:SetText(date("!%X", self.Seconds))
 
 		if self.MouseIsOver then
 			self:OnLeave()
@@ -788,20 +814,18 @@ function Gathering:StartTimer()
 		self:Show()
 	end
 
-	if (not strfind(self.Text:GetText(), "%d")) then
-		self.Text:SetText("0:00:00")
-	end
-
 	self:SetScript("OnUpdate", self.OnUpdate)
-	self.Text:SetTextColor(0.1, 0.9, 0.1)
 end
 
 function Gathering:PauseTimer()
 	self:SetScript("OnUpdate", nil)
-	self.Text:SetTextColor(0.9, 0.9, 0.1)
 end
 
 function Gathering:ToggleTimer()
+	if (self.Settings.DisplayMode ~= "TIME") then
+		return
+	end
+
 	if (not self:GetScript("OnUpdate")) then
 		self:StartTimer()
 	else
@@ -809,7 +833,7 @@ function Gathering:ToggleTimer()
 	end
 end
 
-function Gathering:Reset()
+function Gathering:Reset() -- Add a dialog popup
 	self:SetScript("OnUpdate", nil)
 
 	wipe(self.Gathered)
@@ -821,7 +845,6 @@ function Gathering:Reset()
 	self.GoldGained = 0
 	self.GoldTimer = 0
 
-	self.Text:SetTextColor(1, 1, 1)
 	self.Text:SetText(date("!%X", self.Seconds))
 
 	if self.MouseIsOver then
@@ -1198,7 +1221,9 @@ local ScrollSelections = function(self)
 		end
 	end
 
-	self.ScrollBar:SetValue(self.Offset)
+	if self.ScrollBar then
+		self.ScrollBar:SetValue(self.Offset)
+	end
 end
 
 local SelectionOnMouseWheel = function(self, delta)
@@ -1388,6 +1413,175 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 	tinsert(self.GUI.Window.Widgets, Selection)
 end
 
+local ListOnMouseUp = function(self)
+	local Selection = self:GetParent():GetParent()
+
+	Selection.Current:SetText(self.Key)
+	Selection.List:Hide()
+
+	Gathering:UpdateSettingValue(Selection.Setting, self.Value)
+	--Gathering:UpdateSettingValue(Selection.Setting, self.Key)
+
+	if Selection.Hook then
+		Selection:Hook(self.Value)
+		--Selection:Hook(self.Key)
+	end
+
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+end
+
+local SelectionOnMouseUp = function(self)
+	if (not self.List) then
+		self.List = CreateFrame("Frame", nil, self)
+		self.List:SetSize(140, 20 * MaxSelections) -- 128
+		self.List:SetPoint("TOP", self, "BOTTOM", 0, -1)
+		self.List.Offset = 1
+		self.List:EnableMouseWheel(true)
+		self.List:SetScript("OnMouseWheel", SelectionOnMouseWheel)
+		self.List:Hide()
+
+		for Key, Value in next, self.Selections do
+			local Selection = CreateFrame("Frame", nil, self.List)
+			Selection:SetSize(140, 20)
+			Selection.Key = Key
+			Selection.Value = Value
+			Selection:SetScript("OnMouseUp", ListOnMouseUp)
+
+			Selection.BG = Selection:CreateTexture(nil, "BORDER")
+			Selection.BG:SetTexture(BlankTexture)
+			Selection.BG:SetVertexColor(0, 0, 0)
+			Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
+			Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+
+			Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
+			Selection.Tex:SetTexture(BarTexture)
+			Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
+			Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
+			Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+
+			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
+			Selection.Text:SetFont(SharedMedia:Fetch("font", Gathering.Settings["window-font"]), 12, "")
+			Selection.Text:SetSize(140, 18)
+			Selection.Text:SetPoint("LEFT", Selection, 3, 0)
+			Selection.Text:SetJustifyH("LEFT")
+			Selection.Text:SetShadowColor(0, 0, 0)
+			Selection.Text:SetShadowOffset(1, -1)
+			Selection.Text:SetText(Key)
+
+			tinsert(self.List, Selection)
+		end
+
+		table.sort(self.List, function(a, b)
+			return a.Key < b.Key
+		end)
+
+		if #self.List > (MaxSelections - 1) then
+			local ScrollBar = CreateFrame("Slider", nil, self.List, "BackdropTemplate")
+			ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", -1, -1)
+			ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", -1, 6)
+			ScrollBar:SetWidth(10)
+			ScrollBar:SetThumbTexture(BarTexture)
+			ScrollBar:SetOrientation("VERTICAL")
+			ScrollBar:SetValueStep(1)
+			ScrollBar:SetBackdrop(Outline)
+			ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
+			ScrollBar:SetBackdropBorderColor(0, 0, 0)
+			ScrollBar:SetMinMaxValues(1, (#self.List - (MaxSelections - 1)))
+			ScrollBar:SetValue(1)
+			ScrollBar:SetObeyStepOnDrag(true)
+			ScrollBar:EnableMouseWheel(true)
+			ScrollBar:SetScript("OnMouseWheel", SelectionScrollBarOnMouseWheel)
+			ScrollBar:SetScript("OnValueChanged", SelectionScrollBarOnValueChanged)
+
+			local Thumb = ScrollBar:GetThumbTexture()
+			Thumb:SetSize(10, 20)
+			Thumb:SetTexture(BarTexture)
+			Thumb:SetVertexColor(0, 0, 0)
+
+			ScrollBar.NewThumb = ScrollBar:CreateTexture(nil, "BORDER")
+			ScrollBar.NewThumb:SetPoint("TOPLEFT", Thumb, 0, 0)
+			ScrollBar.NewThumb:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
+			ScrollBar.NewThumb:SetTexture(BlankTexture)
+			ScrollBar.NewThumb:SetVertexColor(0, 0, 0)
+
+			ScrollBar.NewThumb2 = ScrollBar:CreateTexture(nil, "OVERLAY")
+			ScrollBar.NewThumb2:SetPoint("TOPLEFT", ScrollBar.NewThumb, 1, -1)
+			ScrollBar.NewThumb2:SetPoint("BOTTOMRIGHT", ScrollBar.NewThumb, -1, 1)
+			ScrollBar.NewThumb2:SetTexture(BarTexture)
+			ScrollBar.NewThumb2:SetVertexColor(0.4, 0.4, 0.4)
+
+			self.List.ScrollBar = ScrollBar
+		end
+
+		ScrollSelections(self.List)
+	end
+
+	if self.List:IsShown() then
+		self.List:Hide()
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	else
+		self.List:Show()
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowUp.tga")
+	end
+end
+
+function Gathering:CreateSelection(key, text, selections, func)
+	local Selection = CreateFrame("Frame", nil, self.GUI.ButtonParent)
+	Selection:SetSize(128, 20)
+	Selection:SetScript("OnMouseUp", SelectionOnMouseUp)
+	Selection.Selections = selections
+	Selection.Setting = key
+
+	local Name
+
+	for k, v in next, selections do
+		if (v == self.Settings[key]) then
+			Name = k
+		end
+	end
+
+	Selection.BG = Selection:CreateTexture(nil, "BORDER")
+	Selection.BG:SetTexture(BlankTexture)
+	Selection.BG:SetVertexColor(0, 0, 0)
+	Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
+	Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+
+	Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
+	Selection.Tex:SetTexture(BarTexture)
+	Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
+	Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
+	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+
+	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
+	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
+
+	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
+	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+	Selection.Current:SetSize(122, 18)
+	Selection.Current:SetPoint("LEFT", Selection, 3, 0)
+	Selection.Current:SetJustifyH("LEFT")
+	Selection.Current:SetShadowColor(0, 0, 0)
+	Selection.Current:SetShadowOffset(1, -1)
+	--Selection.Current:SetText(selections[self.Settings[key]])
+	Selection.Current:SetText(Name)
+
+	Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
+	Selection.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+	Selection.Text:SetPoint("LEFT", Selection, "RIGHT", 3, 0)
+	Selection.Text:SetJustifyH("LEFT")
+	Selection.Text:SetShadowColor(0, 0, 0)
+	Selection.Text:SetShadowOffset(1, -1)
+	Selection.Text:SetText(text)
+
+	if func then
+		Selection.Hook = func
+	end
+
+	tinsert(self.GUI.Window.Widgets, Selection)
+end
+
 local Scroll = function(self)
 	local First = false
 
@@ -1439,10 +1633,40 @@ function Gathering:UpdateFontSetting(value)
 	Gathering:UpdateTooltipFont()
 end
 
+local DisplayModes = {
+	["Gold"] = "GOLD",
+	["GPH"] = "GPH",
+	["Time"] = "TIME",
+	["Total"] = "TOTAL",
+}
+
+function Gathering:UpdateDisplayMode(value)
+	if (value == "TIME") then
+		Gathering.Text:SetText(date("!%X", Gathering.Seconds))
+
+		Gathering.Int = 1
+	elseif (value == "GPH") then
+		if (Gathering.GoldGained > 0) then
+			Gathering.Text:SetFormattedText("GPH: %s", Gathering:CopperToGold(floor((Gathering.GoldGained / max(GetTime() - Gathering.GoldTimer, 1)) * 60 * 60)))
+		else
+			Gathering.Text:SetFormattedText("GPH: %s", Gathering:CopperToGold(0))
+		end
+
+		Gathering.Int = 2
+	elseif (value == "GOLD") then
+		Gathering.Text:SetText(Gathering:CopperToGold(Gathering.GoldGained))
+	elseif (value == "TOTAL") then
+		Gathering.Text:SetFormattedText("Total: %s", Gathering.TotalGathered)
+	end
+end
+
 function Gathering:SettingsLayout()
 	self:CreateHeader(L["Set Font"])
 
 	self:CreateFontSelection("window-font", "", Fonts, self.UpdateFontSetting)
+
+	self:CreateHeader(L["Display Mode"])
+	self:CreateSelection("DisplayMode", "", DisplayModes, self.UpdateDisplayMode)
 
 	self:CreateHeader(TRACKING)
 
@@ -1677,6 +1901,10 @@ function Gathering:CHAT_MSG_LOOT(msg)
 
 	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 
+	if (self.Settings.DisplayMode == "TOTAL") then
+		self.Text:SetFormattedText("Total: %s", self.TotalGathered)
+	end
+
 	if (not self:GetScript("OnUpdate")) then
 		self:StartTimer()
 	end
@@ -1811,11 +2039,26 @@ function Gathering:PLAYER_MONEY()
 
 	if (Current > self.GoldValue) then
 		local Diff = Current - self.GoldValue
+		local Now = GetTime()
 
 		self.GoldGained = self.GoldGained + Diff
 
-		if (not self:GetScript("OnUpdate")) then
+		if (self.GoldTimer == 0) then
+			self.GoldTimer = Now
+		end
+
+		if (self.Settings.DisplayMode == "TIME") then
 			self:StartTimer()
+		elseif (self.Settings.DisplayMode == "GPH") then
+			if (self.GoldGained > 0) then
+				self.Text:SetFormattedText("GPH: %s", self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)))
+			end
+
+			if (not self:GetScript("OnUpdate")) then
+				self:SetScript("OnUpdate", self.OnUpdate)
+			end
+		elseif (self.Settings.DisplayMode == "GOLD") then
+			self.Text:SetText(self:CopperToGold(self.GoldGained))
 		end
 	end
 
@@ -1924,6 +2167,7 @@ function Gathering:OnEnter()
 
 	self.MouseIsOver = true
 
+	local Now = GetTime()
 	local MarketTotal = 0
 	local X, Y = self:GetCenter()
 
@@ -1976,9 +2220,9 @@ function Gathering:OnEnter()
 		self.Tooltip:AddLine(MONEY_LOOT, 1, 1, 0)
 
 		if IsShiftKeyDown() then
-			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 0, 1, 1, 1) -- This works, but has to be condensed some way or another
+			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, format("%s (%s %s)", self:CopperToGold(self.GoldGained), self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)), L["Hr"]), 1, 1, 1, 1, 1, 1)
 		else
-			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1) -- BONUS_ROLL_REWARD_MONEY = "Gold", MONEY_LOOT/CHAT_MSG_MONEY = "Money Loot", MONEY = "Money"
+			self.Tooltip:AddDoubleLine(BONUS_ROLL_REWARD_MONEY, self:CopperToGold(self.GoldGained), 1, 1, 1, 1, 1, 1)
 		end
 	end
 
@@ -2101,6 +2345,10 @@ function Gathering:BAG_UPDATE_DELAYED()
 		Info.Last = Now
 
 		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
+
+		if (self.Settings.DisplayMode == "TOTAL") then
+			self.Text:SetFormattedText("Total: %s", self.TotalGathered)
+		end
 
 		if (not self:GetScript("OnUpdate")) then
 			self:StartTimer()
