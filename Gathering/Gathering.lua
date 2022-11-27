@@ -122,6 +122,12 @@ if (Locale == "deDE") then -- German
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -160,6 +166,12 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -198,6 +210,12 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -236,6 +254,12 @@ elseif (Locale == "frFR") then -- French
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -274,6 +298,12 @@ elseif (Locale == "itIT") then -- Italian
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -312,6 +342,12 @@ elseif (Locale == "koKR") then -- Korean
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -350,6 +386,12 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -388,6 +430,12 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -426,6 +474,12 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -464,6 +518,12 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -502,6 +562,12 @@ else
 	L["Ignore mail items"] = "Ignore mail items"
 	L["Ignore mail gold"] = "Ignore mail gold"
 	L["Display Mode"] = "Display Mode"
+	L["Gold"] = "Gold"
+	L["GPH"] = "GPH"
+	L["Time"] = "Time"
+	L["Total"] = "Total"
+	L["GPH: %s"] = "GPH: %s"
+	L["Total: %s"] = "Total: %s"
 
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
@@ -551,12 +617,12 @@ function Gathering:CreateWindow()
 	if (self.Settings.DisplayMode == "TIME") then
 		self.Text:SetText(date("!%X", 0))
 	elseif (self.Settings.DisplayMode == "GPH") then
-		self.Text:SetFormattedText("GPH: %s", self:CopperToGold(0))
+		self.Text:SetFormattedText(L["GPH: %s"], self:CopperToGold(0))
 		self.Int = 2
 	elseif (self.Settings.DisplayMode == "GOLD") then
 		self.Text:SetText(self:CopperToGold(0))
 	elseif (self.Settings.DisplayMode == "TOTAL") then
-		self.Text:SetFormattedText("Total: %s", 0)
+		self.Text:SetFormattedText(L["Total: %s"], 0)
 	end
 
 	-- Tooltip
@@ -796,7 +862,7 @@ function Gathering:OnUpdate(ela)
 			self.Text:SetText(date("!%X", self.Seconds))
 		elseif (self.Settings.DisplayMode == "GPH") then
 			if (self.GoldGained > 0) then
-				self.Text:SetFormattedText("GPH: %s", self:CopperToGold(floor((self.GoldGained / max(GetTime() - self.GoldTimer, 1)) * 60 * 60)))
+				self.Text:SetFormattedText(L["GPH: %s"], self:CopperToGold(floor((self.GoldGained / max(GetTime() - self.GoldTimer, 1)) * 60 * 60)))
 			end
 		end
 
@@ -1634,10 +1700,10 @@ function Gathering:UpdateFontSetting(value)
 end
 
 local DisplayModes = {
-	["Gold"] = "GOLD",
-	["GPH"] = "GPH",
-	["Time"] = "TIME",
-	["Total"] = "TOTAL",
+	[L["Gold"]] = "GOLD",
+	[L["GPH"]] = "GPH",
+	[L["Time"]] = "TIME",
+	[L["Total"]] = "TOTAL",
 }
 
 function Gathering:UpdateDisplayMode(value)
@@ -1902,7 +1968,7 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 
 	if (self.Settings.DisplayMode == "TOTAL") then
-		self.Text:SetFormattedText("Total: %s", self.TotalGathered)
+		self.Text:SetFormattedText(L["Total: %s"], self.TotalGathered)
 	end
 
 	if (not self:GetScript("OnUpdate")) then
@@ -2051,7 +2117,7 @@ function Gathering:PLAYER_MONEY()
 			self:StartTimer()
 		elseif (self.Settings.DisplayMode == "GPH") then
 			if (self.GoldGained > 0) then
-				self.Text:SetFormattedText("GPH: %s", self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)))
+				self.Text:SetFormattedText(L["GPH: %s"], self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)))
 			end
 
 			if (not self:GetScript("OnUpdate")) then
@@ -2347,7 +2413,7 @@ function Gathering:BAG_UPDATE_DELAYED()
 		self.TotalGathered = self.TotalGathered + Quantity -- For gathered/hr stat
 
 		if (self.Settings.DisplayMode == "TOTAL") then
-			self.Text:SetFormattedText("Total: %s", self.TotalGathered)
+			self.Text:SetFormattedText(L["Total: %s"], self.TotalGathered)
 		end
 
 		if (not self:GetScript("OnUpdate")) then
