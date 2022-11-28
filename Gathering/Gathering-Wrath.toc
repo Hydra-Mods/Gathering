@@ -1,6 +1,6 @@
 ## Interface: 30400
 ## Author: Hydra
-## Version: 1.87
+## Version: 1.88
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringSettings, GatheringIgnore
