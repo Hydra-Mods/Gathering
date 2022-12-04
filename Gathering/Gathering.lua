@@ -139,6 +139,7 @@ if (Locale == "deDE") then -- German
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -183,6 +184,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -227,6 +229,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "frFR") then -- French
 	L["Total Gathered:"] = "Total recueilli:"
 	L["Total Average Per Hour:"] = "Moyenne totale par heure:"
@@ -271,6 +274,7 @@ elseif (Locale == "frFR") then -- French
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "itIT") then -- Italian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -315,6 +319,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "koKR") then -- Korean
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -359,6 +364,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -403,6 +409,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "ruRU") then -- Russian
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -447,6 +454,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -491,6 +499,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -535,6 +544,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 else
 	L["Total Gathered:"] = "Total Gathered:"
 	L["Total Average Per Hour:"] = "Total Average Per Hour:"
@@ -579,6 +589,7 @@ else
 	L["Discord"] = "Discord"
 	L["Recently Gathered: "] = "Recently Gathered: "
 	L["Gathering Scan"] = "Gathering Scan"
+	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 end
 
 local Outline = {
@@ -911,7 +922,16 @@ function Gathering:Reset() -- Add a dialog popup
 	self.GoldGained = 0
 	self.GoldTimer = 0
 
-	self.Text:SetText(date("!%X", self.Seconds))
+	if (self.Settings.DisplayMode == "TIME") then
+		self.Text:SetText(date("!%X", 0))
+	elseif (self.Settings.DisplayMode == "GPH") then
+		self.Text:SetFormattedText(L["GPH: %s"], self:CopperToGold(0))
+		self.Int = 2
+	elseif (self.Settings.DisplayMode == "GOLD") then
+		self.Text:SetText(self:CopperToGold(0))
+	elseif (self.Settings.DisplayMode == "TOTAL") then
+		self.Text:SetFormattedText(L["Total: %s"], 0)
+	end
 
 	if self.MouseIsOver then
 		self:OnLeave()
@@ -919,6 +939,97 @@ function Gathering:Reset() -- Add a dialog popup
 
 	if self.Settings["hide-idle"] then
 		self:Hide()
+	end
+end
+
+function Gathering:OnResetAccept()
+	Gathering:ToggleResetPopup()
+	Gathering:Reset()
+
+	self.Text:SetPoint("CENTER", self, 0, -0.5)
+end
+
+function Gathering:OnResetCancel()
+	Gathering:ToggleResetPopup()
+
+	self.Text:SetPoint("CENTER", self, 0, -0.5)
+end
+
+function Gathering:PopupButtonOnEnter()
+	self.Text:SetTextColor(1, 1, 0)
+end
+
+function Gathering:PopupButtonOnLeave()
+	self.Text:SetTextColor(1, 1, 1)
+end
+
+function Gathering:PopupButtonOnMouseDown()
+	self.Text:SetPoint("CENTER", self, 1, -1.5)
+end
+
+function Gathering:ToggleResetPopup()
+	if (not self.Popup) then
+		local Popup = CreateFrame("Frame", nil, self, "BackdropTemplate")
+		Popup:SetSize(240, 80)
+		Popup:SetPoint("CENTER", UIParent, 0, 120)
+		Popup:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
+		Popup:SetBackdropBorderColor(0, 0, 0)
+		Popup:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
+		Popup:SetClampedToScreen(true)
+		Popup:RegisterForDrag("LeftButton")
+		Popup:SetScript("OnDragStart", Popup.StartMoving)
+		Popup:SetScript("OnDragStop", Popup.StopMovingOrSizing)
+
+		Popup.Text = Popup:CreateFontString(nil, "OVERLAY")
+		Popup.Text:SetPoint("TOP", Popup, 0, -4)
+		Popup.Text:SetSize(234, 40)
+		Popup.Text:SetJustifyH("CENTER")
+		Popup.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
+		Popup.Text:SetText(L["Are you sure you would like to reset current data?"])
+
+		Popup.Accept = CreateFrame("Frame", nil, Popup, "BackdropTemplate")
+		Popup.Accept:SetSize(114, 20)
+		Popup.Accept:SetPoint("BOTTOMLEFT", Popup, 4, 4)
+		Popup.Accept:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
+		Popup.Accept:SetBackdropBorderColor(0, 0, 0)
+		Popup.Accept:SetBackdropColor(0.2, 0.2, 0.2, 0.9)
+		Popup.Accept:SetScript("OnMouseUp", self.OnResetAccept)
+		Popup.Accept:SetScript("OnEnter", self.PopupButtonOnEnter)
+		Popup.Accept:SetScript("OnLeave", self.PopupButtonOnLeave)
+		Popup.Accept:SetScript("OnMouseDown", self.PopupButtonOnMouseDown)
+
+		Popup.Accept.Text = Popup.Accept:CreateFontString(nil, "OVERLAY")
+		Popup.Accept.Text:SetPoint("CENTER", Popup.Accept, 0, -0.5)
+		Popup.Accept.Text:SetJustifyH("CENTER")
+		Popup.Accept.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
+		Popup.Accept.Text:SetText(RESET)
+
+		Popup.Cancel = CreateFrame("Frame", nil, Popup, "BackdropTemplate")
+		Popup.Cancel:SetSize(114, 20)
+		Popup.Cancel:SetPoint("LEFT", Popup.Accept, "RIGHT", 4, 0)
+		Popup.Cancel:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
+		Popup.Cancel:SetBackdropBorderColor(0, 0, 0)
+		Popup.Cancel:SetBackdropColor(0.2, 0.2, 0.2, 0.9)
+		Popup.Cancel:SetScript("OnMouseUp", self.OnResetCancel)
+		Popup.Cancel:SetScript("OnEnter", self.PopupButtonOnEnter)
+		Popup.Cancel:SetScript("OnLeave", self.PopupButtonOnLeave)
+		Popup.Cancel:SetScript("OnMouseDown", self.PopupButtonOnMouseDown)
+
+		Popup.Cancel.Text = Popup.Cancel:CreateFontString(nil, "OVERLAY")
+		Popup.Cancel.Text:SetPoint("CENTER", Popup.Cancel, 0, -0.5)
+		Popup.Cancel.Text:SetJustifyH("CENTER")
+		Popup.Cancel.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 14, "")
+		Popup.Cancel.Text:SetText(CANCEL)
+
+		self.Popup = Popup
+
+		return
+	end
+
+	if self.Popup:IsShown() then
+		self.Popup:Hide()
+	else
+		self.Popup:Show()
 	end
 end
 
@@ -2339,7 +2450,7 @@ function Gathering:OnMouseUp(button)
 	if (button == "LeftButton") then
 		self:ToggleTimer()
 	elseif (button == "RightButton") then
-		self:Reset()
+		self:ToggleResetPopup()
 	elseif (button == "MiddleButton") then
 		if (self.Tooltip.Override == true) then
 			self.Tooltip.Override = false
