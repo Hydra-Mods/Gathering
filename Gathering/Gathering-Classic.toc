@@ -1,9 +1,9 @@
 ## Interface: 11403
 ## Author: Hydra
-## Version: 1.90
+## Version: 1.91
 ## Title: Gathering
 ## Notes: Track gathered items.
-## SavedVariables: GatheringSettings, GatheringIgnore
+## SavedVariables: GatheringSettings, GatheringIgnore, GatheringStats, GatheringItemStats
 
 Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua

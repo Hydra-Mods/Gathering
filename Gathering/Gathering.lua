@@ -11,7 +11,6 @@ local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
 local IsInGuild = IsInGuild
 local GetItemInfo = GetItemInfo
-local BreakUpLargeNumbers = BreakUpLargeNumbers
 local GetNumGroupMembers = GetNumGroupMembers
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
@@ -49,6 +48,7 @@ Gathering.DefaultSettings = {
 	["track-consumable"] = true,
 	["track-holiday"] = true,
 	["track-quest"] = false,
+	["track-xp"] = true,
 
 	-- Functionality
 	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
@@ -114,6 +114,7 @@ if (Locale == "deDE") then -- German
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignoriere Items, welche beim aufheben Seelengebunden werden"
 	L["Show tooltip data"] = "Zeige Tooltip Daten"
@@ -159,6 +160,7 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -204,6 +206,7 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -249,6 +252,7 @@ elseif (Locale == "frFR") then -- French
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignorer les objets liés au ramassage"
 	L["Show tooltip data"] = "Afficher les données de l'infobulle"
@@ -294,6 +298,7 @@ elseif (Locale == "itIT") then -- Italian
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -339,6 +344,7 @@ elseif (Locale == "koKR") then -- Korean
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -384,6 +390,7 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -429,6 +436,7 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -474,6 +482,7 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -519,6 +528,7 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -564,6 +574,7 @@ else
 	L["Consumables"] = "Consumables"
 	L["Holiday"] = "Holiday"
 	L["Quests"] = "Quests"
+	L["XP"] = "Experience"
 
 	L["Ignore Bind on Pickup"] = "Ignore Bind on Pickup"
 	L["Show tooltip data"] = "Show tooltip data"
@@ -612,7 +623,7 @@ function Gathering:CreateWindow()
 	self:SetSize(self.Settings.WindowWidth, self.Settings.WindowHeight)
 	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
 	self:SetBackdropBorderColor(0, 0, 0)
-	self:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
+	self:SetBackdropColor(0.2, 0.2, 0.2, 0.85)
 	self:SetClampedToScreen(true)
 	self:RegisterForDrag("LeftButton")
 	self:SetScript("OnDragStart", self.StartMoving)
@@ -656,6 +667,65 @@ function Gathering:CreateWindow()
 	self.GoldValue = GetMoney() or 0
 	self.GoldGained = 0
 	self.GoldTimer = 0
+	self.LastXP = UnitXP("player")
+	self.LastMax = UnitXPMax("player")
+	self.XPGained = 0
+end
+
+function Gathering:FormatFullTime(seconds)
+	local Days = floor(seconds / 86400)
+	local Hours = floor((seconds % 86400) / 3600)
+	local Mins = floor((seconds % 3600) / 60)
+
+	if (Days > 0) then
+		return format("%dd", Days)
+	elseif (Hours > 0) then
+		return format("%dh %sm", Hours, Mins)
+	elseif (Mins > 0) then
+		return format("%sm", Mins)
+	else
+		return format("%ss", floor(seconds))
+	end
+end
+
+function Gathering:Comma(number)
+	if (not number) then
+		return
+	end
+
+   	local Left, Number = match(floor(number + 0.5), "^([^%d]*%d)(%d+)(.-)$")
+
+	return Left and Left .. string.reverse(gsub(string.reverse(Number), "(%d%d%d)", "%1,")) or number
+end
+
+-- Generic counting of basic numbers
+function Gathering:AddStat(stat, value)
+	if (not GatheringStats) then
+		GatheringStats = {}
+	end
+
+	if (not GatheringStats[stat]) then
+		GatheringStats[stat] = 0
+	end
+
+	GatheringStats[stat] = GatheringStats[stat] + value
+end
+
+-- Generic counting of item types
+function Gathering:AddItemStat(class, subclass, value)
+	if (not GatheringItemStats) then
+		GatheringItemStats = {}
+	end
+
+	if (not GatheringItemStats[class]) then
+		GatheringItemStats[class] = {}
+	end
+
+	if (not GatheringItemStats[class][subclass]) then
+		GatheringItemStats[class][subclass] = 0
+	end
+
+	GatheringItemStats[class][subclass] = GatheringItemStats[class][subclass] + value
 end
 
 Gathering.TrackedItemTypes = {
@@ -910,7 +980,7 @@ function Gathering:ToggleTimer()
 	end
 end
 
-function Gathering:Reset() -- Add a dialog popup
+function Gathering:Reset()
 	self:SetScript("OnUpdate", nil)
 
 	wipe(self.Gathered)
@@ -921,6 +991,10 @@ function Gathering:Reset() -- Add a dialog popup
 	self.GoldValue = GetMoney() or 0
 	self.GoldGained = 0
 	self.GoldTimer = 0
+	self.LastXP = UnitXP("player")
+	self.LastMax = UnitXPMax("player")
+	self.XPGained = 0
+	self.XPStartTime = GetTime()
 
 	if (self.Settings.DisplayMode == "TIME") then
 		self.Text:SetText(date("!%X", 0))
@@ -974,7 +1048,7 @@ function Gathering:ToggleResetPopup()
 		Popup:SetPoint("CENTER", UIParent, 0, 120)
 		Popup:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
 		Popup:SetBackdropBorderColor(0, 0, 0)
-		Popup:SetBackdropColor(0.2, 0.2, 0.2, 0.7)
+		Popup:SetBackdropColor(0.2, 0.2, 0.2, 0.85)
 		Popup:SetClampedToScreen(true)
 		Popup:RegisterForDrag("LeftButton")
 		Popup:SetScript("OnDragStart", Popup.StartMoving)
@@ -1858,6 +1932,7 @@ function Gathering:SettingsLayout()
 	self:CreateCheckbox("track-consumable", L["Consumables"], self.UpdateConsumableTracking)
 	self:CreateCheckbox("track-holiday", L["Holiday"], self.UpdateHolidayTracking)
 	self:CreateCheckbox("track-quest", L["Quests"], self.UpdateQuestTracking)
+	self:CreateCheckbox("track-xp", L["XP"])
 
 	self:CreateHeader(MISCELLANEOUS)
 
@@ -2086,6 +2161,8 @@ function Gathering:CHAT_MSG_LOOT(msg)
 		self:StartTimer()
 	end
 
+	--self:AddItemStat(ClassID, SubClassID, Quantity)
+
 	if self.MouseIsOver then
 		self:OnLeave()
 		self:OnEnter()
@@ -2195,6 +2272,8 @@ function Gathering:PLAYER_ENTERING_WORLD()
 			self:Hide()
 		end
 
+		self.XPStartTime = GetTime()
+
 		self.Initial = true
 	end
 
@@ -2237,6 +2316,8 @@ function Gathering:PLAYER_MONEY()
 		elseif (self.Settings.DisplayMode == "GOLD") then
 			self.Text:SetText(self:CopperToGold(self.GoldGained))
 		end
+
+		self:AddStat("gold", Diff)
 	end
 
 	self.GoldValue = Current
@@ -2325,6 +2406,26 @@ function Gathering:AUCTION_HOUSE_SHOW()
 	end
 end
 
+function Gathering:PLAYER_XP_UPDATE()
+	local XP = UnitXP("player")
+	local MaxXP = UnitXPMax("player")
+
+	if (MaxXP ~= self.LastMax) then
+		self.XPGained = self.LastMax - self.LastXP + XP + self.XPGained
+		self:AddStat("xp", (self.LastMax - self.LastXP + XP))
+	else
+		self.XPGained = (XP - self.LastXP) + self.XPGained
+		self:AddStat("xp", (XP - self.LastXP))
+	end
+
+	if (not self.XPStartTime) then
+		self.XPStartTime = GetTime()
+	end
+
+	self.LastXP = XP
+	self.LastMax = MaxXP
+end
+
 function Gathering:OnEvent(event, ...)
 	if self[event] then
 		self[event](self, ...)
@@ -2338,7 +2439,7 @@ function Gathering:GetPrice(link)
 end
 
 function Gathering:OnEnter()
-	if (self.TotalGathered == 0 and self.GoldGained == 0) then
+	if (self.TotalGathered == 0 and self.GoldGained == 0 and self.XPGained == 0) then
 		return
 	end
 
@@ -2403,8 +2504,21 @@ function Gathering:OnEnter()
 		end
 	end
 
-	if (self.TotalGathered > 0) then
+	if (self.Settings["track-xp"] and self.XPGained > 0) then
 		if (self.GoldGained > 0) then
+			self.Tooltip:AddLine(" ")
+		end
+
+		local PerSec = self.XPGained / (Now - self.XPStartTime)
+
+		self.Tooltip:AddLine(COMBAT_XP_GAIN, 1, 1, 0)
+		self.Tooltip:AddDoubleLine("XP Gained", self:Comma(self.XPGained), 1, 1, 1, 1, 1, 1)
+		self.Tooltip:AddDoubleLine("XP / hr", self:Comma((PerSec * 60) * 60), 1, 1, 1, 1, 1, 1)
+		self.Tooltip:AddDoubleLine("Time to level", self:FormatFullTime((UnitXPMax("player") - UnitXP("player")) / PerSec), 1, 1, 1, 1, 1, 1)
+	end
+
+	if (self.TotalGathered > 0) then
+		if (self.XPGained > 0) then
 			self.Tooltip:AddLine(" ")
 		end
 
@@ -2413,7 +2527,7 @@ function Gathering:OnEnter()
 		if (IsShiftKeyDown() and MarketTotal > 0) then
 			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:CopperToGold((MarketTotal / max(self.Seconds, 1)) * 60 * 60), nil, nil, nil, 1, 1, 1)
 		else
-			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], BreakUpLargeNumbers(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
+			self.Tooltip:AddDoubleLine(L["Total Average Per Hour:"], self:Comma(floor(((self.TotalGathered / max(self.Seconds, 1)) * 60 * 60))), nil, nil, nil, 1, 1, 1)
 		end
 
 		if (MarketTotal > 0) then
@@ -2591,6 +2705,7 @@ Gathering:RegisterEvent("CHAT_MSG_ADDON")
 Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
 Gathering:RegisterEvent("PLAYER_MONEY")
+Gathering:RegisterEvent("PLAYER_XP_UPDATE")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
