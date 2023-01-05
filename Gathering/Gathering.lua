@@ -605,8 +605,6 @@ end
 
 local Outline = {
 	bgFile = BlankTexture,
-	edgeFile = BlankTexture,
-	edgeSize = 1,
 }
 
 -- Header
@@ -622,8 +620,8 @@ Gathering.Int = 1
 function Gathering:CreateWindow()
 	self:SetSize(self.Settings.WindowWidth, self.Settings.WindowHeight)
 	self:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-	self:SetBackdropBorderColor(0, 0, 0)
 	self:SetBackdropColor(0.2, 0.2, 0.2, 0.85)
+	self:SetBackdropBorderColor(0, 0, 0)
 	self:SetClampedToScreen(true)
 	self:RegisterForDrag("LeftButton")
 	self:SetScript("OnDragStart", self.StartMoving)
@@ -653,8 +651,7 @@ function Gathering:CreateWindow()
 
 	self.Tooltip.Backdrop = CreateFrame("Frame", nil, self.Tooltip, "BackdropTemplate")
 	self.Tooltip.Backdrop:SetAllPoints(Gathering.Tooltip)
-	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-	self.Tooltip.Backdrop:SetBackdropBorderColor(0, 0, 0)
+	self.Tooltip.Backdrop:SetBackdrop({bgFile = BlankTexture})
 	self.Tooltip.Backdrop:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
 	self.Tooltip.Backdrop:SetFrameStrata("TOOLTIP")
 	self.Tooltip.Backdrop:SetFrameLevel(1)
@@ -712,20 +709,16 @@ function Gathering:AddStat(stat, value)
 end
 
 -- Generic counting of item types
-function Gathering:AddItemStat(class, subclass, value)
+function Gathering:AddItemStat(id, value)
 	if (not GatheringItemStats) then
 		GatheringItemStats = {}
 	end
 
-	if (not GatheringItemStats[class]) then
-		GatheringItemStats[class] = {}
+	if (not GatheringItemStats[id]) then
+		GatheringItemStats[id] = 0
 	end
 
-	if (not GatheringItemStats[class][subclass]) then
-		GatheringItemStats[class][subclass] = 0
-	end
-
-	GatheringItemStats[class][subclass] = GatheringItemStats[class][subclass] + value
+	GatheringItemStats[id] = GatheringItemStats[id] + value
 end
 
 Gathering.TrackedItemTypes = {
@@ -1046,8 +1039,7 @@ function Gathering:ToggleResetPopup()
 		local Popup = CreateFrame("Frame", nil, self, "BackdropTemplate")
 		Popup:SetSize(240, 80)
 		Popup:SetPoint("CENTER", UIParent, 0, 120)
-		Popup:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-		Popup:SetBackdropBorderColor(0, 0, 0)
+		Popup:SetBackdrop({bgFile = BlankTexture})
 		Popup:SetBackdropColor(0.2, 0.2, 0.2, 0.85)
 		Popup:SetClampedToScreen(true)
 		Popup:RegisterForDrag("LeftButton")
@@ -1064,8 +1056,7 @@ function Gathering:ToggleResetPopup()
 		Popup.Accept = CreateFrame("Frame", nil, Popup, "BackdropTemplate")
 		Popup.Accept:SetSize(114, 20)
 		Popup.Accept:SetPoint("BOTTOMLEFT", Popup, 4, 4)
-		Popup.Accept:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-		Popup.Accept:SetBackdropBorderColor(0, 0, 0)
+		Popup.Accept:SetBackdrop({bgFile = BlankTexture})
 		Popup.Accept:SetBackdropColor(0.2, 0.2, 0.2, 0.9)
 		Popup.Accept:SetScript("OnMouseUp", self.OnResetAccept)
 		Popup.Accept:SetScript("OnEnter", self.PopupButtonOnEnter)
@@ -1081,8 +1072,7 @@ function Gathering:ToggleResetPopup()
 		Popup.Cancel = CreateFrame("Frame", nil, Popup, "BackdropTemplate")
 		Popup.Cancel:SetSize(114, 20)
 		Popup.Cancel:SetPoint("LEFT", Popup.Accept, "RIGHT", 4, 0)
-		Popup.Cancel:SetBackdrop({bgFile = BlankTexture, edgeFile = BlankTexture, edgeSize = 1})
-		Popup.Cancel:SetBackdropBorderColor(0, 0, 0)
+		Popup.Cancel:SetBackdrop({bgFile = BlankTexture})
 		Popup.Cancel:SetBackdropColor(0.2, 0.2, 0.2, 0.9)
 		Popup.Cancel:SetScript("OnMouseUp", self.OnResetCancel)
 		Popup.Cancel:SetScript("OnEnter", self.PopupButtonOnEnter)
@@ -1115,27 +1105,21 @@ function Gathering:FormatTime(seconds)
 	end
 end
 
-function Gathering:CreateHeader(text)
-	local Header = CreateFrame("Frame", nil, self.GUI.ButtonParent)
-	Header:SetSize(190, 20)
-
-	Header.BG = Header:CreateTexture(nil, "BORDER")
-	Header.BG:SetTexture(BlankTexture)
-	Header.BG:SetVertexColor(0, 0, 0)
-	Header.BG:SetHeight(1)
-	Header.BG:SetPoint("BOTTOMLEFT", Header, 0, 0)
-	Header.BG:SetPoint("BOTTOMRIGHT", Header, 0, 0)
+function Gathering:CreateHeader(page, text)
+	local Header = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	Header:SetSize(page:GetWidth() - 8, 22)
+	Header:SetBackdrop(Outline)
+	Header:SetBackdropColor(0.25, 0.258, 0.333)
 
 	Header.Text = Header:CreateFontString(nil, "OVERLAY")
 	Header.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
-	Header.Text:SetPoint("LEFT", Header, 3, 0)
+	Header.Text:SetPoint("LEFT", Header, 5, 0)
 	Header.Text:SetJustifyH("LEFT")
 	Header.Text:SetShadowColor(0, 0, 0)
 	Header.Text:SetShadowOffset(1, -1)
-	Header.Text:SetText(text)
-	Header.Text:SetTextColor(0, 204/255, 106/255)
+	Header.Text:SetText(format("|cffFCCA03%s|r", text))
 
-	tinsert(self.GUI.Window.Widgets, Header)
+	tinsert(page, Header)
 end
 
 function Gathering:UpdateSettingValue(key, value)
@@ -1150,14 +1134,14 @@ end
 
 function Gathering:CheckBoxOnMouseUp()
 	if (Gathering.Settings[self.Setting] == true) then
-		self.Tex:SetVertexColor(0.8, 0, 0)
+		self.Tex:SetVertexColor(28/255, 29/255, 39/255)
 		Gathering:UpdateSettingValue(self.Setting, false)
 
 		if self.Hook then
 			self:Hook(false)
 		end
 	else
-		self.Tex:SetVertexColor(0, 0.8, 0)
+		self.Tex:SetVertexColor(0.866, 0.694, 0.023)
 		Gathering:UpdateSettingValue(self.Setting, true)
 
 		if self.Hook then
@@ -1166,42 +1150,48 @@ function Gathering:CheckBoxOnMouseUp()
 	end
 end
 
-function Gathering:CreateCheckbox(key, text, func)
-	local Checkbox = CreateFrame("Frame", nil, self.GUI.ButtonParent)
-	Checkbox:SetSize(20, 20)
+function Gathering:CreateCheckbox(page, key, text, func)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(129, 22)
+
+	local Checkbox = CreateFrame("Frame", nil, Line)
+	Checkbox:SetSize(18, 18)
+	Checkbox:SetPoint("LEFT", Line, 4, 0)
 	Checkbox:SetScript("OnMouseUp", self.CheckBoxOnMouseUp)
 	Checkbox.Setting = key
 
-	Checkbox.BG = Checkbox:CreateTexture(nil, "BORDER")
-	Checkbox.BG:SetTexture(BlankTexture)
-	Checkbox.BG:SetVertexColor(0, 0, 0)
-	Checkbox.BG:SetPoint("TOPLEFT", Checkbox, 0, 0)
-	Checkbox.BG:SetPoint("BOTTOMRIGHT", Checkbox, 0, 0)
-
 	Checkbox.Tex = Checkbox:CreateTexture(nil, "OVERLAY")
-	Checkbox.Tex:SetTexture(BarTexture)
+	Checkbox.Tex:SetTexture(BlankTexture)
 	Checkbox.Tex:SetPoint("TOPLEFT", Checkbox, 1, -1)
 	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
 
 	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
 	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
-	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 3, 0)
+	Checkbox.Text:SetPoint("LEFT", Checkbox, "RIGHT", 6, 0)
 	Checkbox.Text:SetJustifyH("LEFT")
 	Checkbox.Text:SetShadowColor(0, 0, 0)
 	Checkbox.Text:SetShadowOffset(1, -1)
 	Checkbox.Text:SetText(text)
 
 	if self.Settings[key] then
-		Checkbox.Tex:SetVertexColor(0, 0.8, 0)
+		Checkbox.Tex:SetVertexColor(0.866, 0.694, 0.023)
 	else
-		Checkbox.Tex:SetVertexColor(0.8, 0, 0)
+		Checkbox.Tex:SetVertexColor(28/255, 29/255, 39/255)
 	end
 
 	if func then
 		Checkbox.Hook = func
 	end
 
-	tinsert(self.GUI.Window.Widgets, Checkbox)
+	tinsert(page, Line)
+end
+
+local ListOnEnter = function(self)
+	self.Tex:SetVertexColor(0.3, 0.3, 0.4)
+end
+
+local ListOnLeave = function(self)
+	self.Tex:SetVertexColor(28/255, 29/255, 39/255)
 end
 
 function Gathering:EditBoxOnEnterPressed()
@@ -1281,9 +1271,13 @@ function Gathering:DiscordButtonOnMouseDown()
 	Parent:HighlightText()
 end
 
-function Gathering:CreateEditBox(text, func)
-	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
-	EditBox:SetSize(168, 20)
+function Gathering:CreateEditBox(page, text, func)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	local EditBox = CreateFrame("EditBox", nil, Line)
+	EditBox:SetSize(170, 22)
+	EditBox:SetPoint("LEFT", Line, -1, 0)
 	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
@@ -1298,37 +1292,27 @@ function Gathering:CreateEditBox(text, func)
 	EditBox:SetScript("OnEscapePressed", self.OnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.EditBoxOnMouseDown)
 	EditBox:SetScript("OnEditFocusLost", self.OnEditFocusLost)
+	EditBox:SetScript("OnEnter", ListOnEnter)
+	EditBox:SetScript("OnLeave", ListOnLeave)
 	EditBox:SetScript("OnChar", self.OnEditChar)
 
-	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0, 0, 0)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
-	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetTexture(BlankTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
-	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	EditBox.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 	EditBox.Icon = EditBox:CreateTexture(nil, "ARTWORK")
-	EditBox.Icon:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
-	EditBox.Icon:SetSize(18, 18)
+	EditBox.Icon:SetPoint("LEFT", EditBox, "RIGHT", 1, 0)
+	EditBox.Icon:SetSize(20, 20)
 	EditBox.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
 	EditBox.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-
-	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0, 0, 0)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox.Icon, -1, 1)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox.Icon, 1, -1)
 
 	if func then
 		EditBox.Hook = func
 	end
 
-	tinsert(self.GUI.Window.Widgets, EditBox)
+	tinsert(page, Line)
 end
 
 function Gathering:NumberEditBoxOnEnterPressed()
@@ -1358,9 +1342,13 @@ function Gathering:NumberOnEditFocusLost()
 	ClearCursor()
 end
 
-function Gathering:CreateNumberEditBox(key, text, func)
-	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
-	EditBox:SetSize(60, 20)
+function Gathering:CreateNumberEditBox(page, key, text, func)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	local EditBox = CreateFrame("EditBox", nil, Line)
+	EditBox:SetSize(60, 22)
+	EditBox:SetPoint("LEFT", Line, 0, 0)
 	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
@@ -1375,23 +1363,19 @@ function Gathering:CreateNumberEditBox(key, text, func)
 	EditBox:SetScript("OnEnterPressed", self.NumberEditBoxOnEnterPressed)
 	EditBox:SetScript("OnEscapePressed", self.NumberOnEscapePressed)
 	EditBox:SetScript("OnMouseDown", self.NumberEditBoxOnMouseDown)
+	EditBox:SetScript("OnEnter", ListOnEnter)
+	EditBox:SetScript("OnLeave", ListOnLeave)
 	EditBox.Setting = key
 
-	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0, 0, 0)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
-	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetTexture(BlankTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
-	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	EditBox.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
 	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
-	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 3, 0)
+	EditBox.Text:SetPoint("LEFT", EditBox, "RIGHT", 6, 0)
 	EditBox.Text:SetJustifyH("LEFT")
 	EditBox.Text:SetShadowColor(0, 0, 0)
 	EditBox.Text:SetShadowOffset(1, -1)
@@ -1401,7 +1385,7 @@ function Gathering:CreateNumberEditBox(key, text, func)
 		EditBox.Hook = func
 	end
 
-	tinsert(self.GUI.Window.Widgets, EditBox)
+	tinsert(page, Line)
 end
 
 function Gathering:DiscordEditBoxOnMouseDown()
@@ -1415,9 +1399,13 @@ function Gathering:DiscordEditBoxOnEnterPressed()
 	self:SetText("discord.gg/XefDFa6nJR")
 end
 
-function Gathering:CreateDiscordEditBox()
-	local EditBox = CreateFrame("EditBox", nil, self.GUI.ButtonParent)
-	EditBox:SetSize(190, 20)
+function Gathering:CreateDiscordEditBox(page)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	local EditBox = CreateFrame("EditBox", nil, Line)
+	EditBox:SetSize(190, 22)
+	EditBox:SetPoint("LEFT", Line, 0, 0)
 	EditBox:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	EditBox:SetShadowColor(0, 0, 0)
 	EditBox:SetShadowOffset(1, -1)
@@ -1431,17 +1419,11 @@ function Gathering:CreateDiscordEditBox()
 	EditBox:SetScript("OnEscapePressed", self.DiscordEditBoxOnEnterPressed)
 	EditBox:SetScript("OnMouseDown", self.DiscordEditBoxOnMouseDown)
 
-	EditBox.BG = EditBox:CreateTexture(nil, "BORDER")
-	EditBox.BG:SetTexture(BlankTexture)
-	EditBox.BG:SetVertexColor(0, 0, 0)
-	EditBox.BG:SetPoint("TOPLEFT", EditBox, 0, 0)
-	EditBox.BG:SetPoint("BOTTOMRIGHT", EditBox, 0, 0)
-
 	EditBox.Tex = EditBox:CreateTexture(nil, "ARTWORK")
-	EditBox.Tex:SetTexture(BarTexture)
+	EditBox.Tex:SetTexture(BlankTexture)
 	EditBox.Tex:SetPoint("TOPLEFT", EditBox, 1, -1)
 	EditBox.Tex:SetPoint("BOTTOMRIGHT", EditBox, -1, 1)
-	EditBox.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	EditBox.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 	EditBox.Text = EditBox:CreateFontString(nil, "OVERLAY")
 	EditBox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
@@ -1451,7 +1433,7 @@ function Gathering:CreateDiscordEditBox()
 	EditBox.Text:SetShadowOffset(1, -1)
 	EditBox.Text:SetText(text)
 
-	tinsert(self.GUI.Window.Widgets, EditBox)
+	tinsert(page, Line)
 end
 
 local ScrollSelections = function(self)
@@ -1460,10 +1442,10 @@ local ScrollSelections = function(self)
 	for i = 1, #self do
 		if (i >= self.Offset) and (i <= self.Offset + MaxSelections - 1) then
 			if (not First) then
-				self[i]:SetPoint("TOPLEFT", self, 0, -1)
+				self[i]:SetPoint("TOPLEFT", self, -1, 1)
 				First = true
 			else
-				self[i]:SetPoint("TOPLEFT", self[i-1], "BOTTOMLEFT", 0, 1)
+				self[i]:SetPoint("TOPLEFT", self[i-1], "BOTTOMLEFT", 0, 0)
 			end
 
 			self[i]:Show()
@@ -1502,6 +1484,26 @@ local SelectionScrollBarOnValueChanged = function(self)
 	ScrollSelections(Parent)
 end
 
+local ScrollBarOnEnter = function(self)
+	self:GetThumbTexture():SetVertexColor(0.4, 0.4, 0.4)
+end
+
+local ScrollBarOnLeave = function(self)
+	if (not self.OverrideThumb) then
+		self:GetThumbTexture():SetVertexColor(0.25, 0.258, 0.333)
+	end
+end
+
+local ScrollBarOnMouseDown = function(self)
+	self.OverrideThumb = true
+	self:GetThumbTexture():SetVertexColor(0.4, 0.4, 0.4)
+end
+
+local ScrollBarOnMouseUp = function(self)
+	self.OverrideThumb = false
+	self:GetThumbTexture():SetVertexColor(0.25, 0.258, 0.333)
+end
+
 local SelectionScrollBarOnMouseWheel = function(self, delta)
 	SelectionOnMouseWheel(self:GetParent(), delta)
 end
@@ -1520,18 +1522,26 @@ local FontListOnMouseUp = function(self)
 		Selection:Hook(self.Key)
 	end
 
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 end
 
 local FontSelectionOnMouseUp = function(self)
 	if (not self.List) then
 		self.List = CreateFrame("Frame", nil, self)
-		self.List:SetSize(140, 20 * MaxSelections) -- 128
+		self.List:SetSize(150, (20 * MaxSelections) - 2) -- 128
 		self.List:SetPoint("TOP", self, "BOTTOM", 0, -1)
 		self.List.Offset = 1
 		self.List:EnableMouseWheel(true)
 		self.List:SetScript("OnMouseWheel", SelectionOnMouseWheel)
+		self.List:SetFrameStrata("HIGH")
+		self.List:SetFrameLevel(20)
 		self.List:Hide()
+
+		self.List.Tex = self.List:CreateTexture(nil, "ARTWORK")
+		self.List.Tex:SetTexture(BlankTexture)
+		self.List.Tex:SetPoint("TOPLEFT", self.List, -2, 2)
+		self.List.Tex:SetPoint("BOTTOMRIGHT", self.List, 2, -2)
+		self.List.Tex:SetVertexColor(0.09, 0.09, 0.12)
 
 		for Key, Path in next, self.Selections do
 			local Selection = CreateFrame("Frame", nil, self.List)
@@ -1539,23 +1549,19 @@ local FontSelectionOnMouseUp = function(self)
 			Selection.Key = Key
 			Selection.Path = Path
 			Selection:SetScript("OnMouseUp", FontListOnMouseUp)
-
-			Selection.BG = Selection:CreateTexture(nil, "BORDER")
-			Selection.BG:SetTexture(BlankTexture)
-			Selection.BG:SetVertexColor(0, 0, 0)
-			Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
-			Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+			Selection:SetScript("OnEnter", ListOnEnter)
+			Selection:SetScript("OnLeave", ListOnLeave)
 
 			Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
-			Selection.Tex:SetTexture(BarTexture)
+			Selection.Tex:SetTexture(BlankTexture)
 			Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 			Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
-			Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+			Selection.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
 			Selection.Text:SetFont(Path, 12)
-			Selection.Text:SetSize(140, 18)
-			Selection.Text:SetPoint("LEFT", Selection, 3, 0)
+			Selection.Text:SetSize(134, 18)
+			Selection.Text:SetPoint("LEFT", Selection, 5, 0)
 			Selection.Text:SetJustifyH("LEFT")
 			Selection.Text:SetShadowColor(0, 0, 0)
 			Selection.Text:SetShadowOffset(1, -1)
@@ -1568,39 +1574,27 @@ local FontSelectionOnMouseUp = function(self)
 			return a.Key < b.Key
 		end)
 
-		local ScrollBar = CreateFrame("Slider", nil, self.List, "BackdropTemplate")
-		ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", -1, -1)
-		ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", -1, 6)
+		local ScrollBar = CreateFrame("Slider", nil, self.List)
+		ScrollBar:SetPoint("TOPRIGHT", self.List, 0, 0)
+		ScrollBar:SetPoint("BOTTOMRIGHT", self.List, 0, 0)
 		ScrollBar:SetWidth(10)
-		ScrollBar:SetThumbTexture(BarTexture)
+		ScrollBar:SetThumbTexture(BlankTexture)
 		ScrollBar:SetOrientation("VERTICAL")
 		ScrollBar:SetValueStep(1)
-		ScrollBar:SetBackdrop(Outline)
-		ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
-		ScrollBar:SetBackdropBorderColor(0, 0, 0)
 		ScrollBar:SetMinMaxValues(1, (#self.List - (MaxSelections - 1)))
 		ScrollBar:SetValue(1)
 		ScrollBar:SetObeyStepOnDrag(true)
 		ScrollBar:EnableMouseWheel(true)
 		ScrollBar:SetScript("OnMouseWheel", SelectionScrollBarOnMouseWheel)
 		ScrollBar:SetScript("OnValueChanged", SelectionScrollBarOnValueChanged)
+		ScrollBar:SetScript("OnEnter", ScrollBarOnEnter)
+		ScrollBar:SetScript("OnLeave", ScrollBarOnLeave)
+		ScrollBar:SetScript("OnMouseDown", ScrollBarOnMouseDown)
+		ScrollBar:SetScript("OnMouseUp", ScrollBarOnMouseUp)
 
 		local Thumb = ScrollBar:GetThumbTexture()
-		Thumb:SetSize(10, 20)
-		Thumb:SetTexture(BarTexture)
-		Thumb:SetVertexColor(0, 0, 0)
-
-		ScrollBar.NewThumb = ScrollBar:CreateTexture(nil, "BORDER")
-		ScrollBar.NewThumb:SetPoint("TOPLEFT", Thumb, 0, 0)
-		ScrollBar.NewThumb:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
-		ScrollBar.NewThumb:SetTexture(BlankTexture)
-		ScrollBar.NewThumb:SetVertexColor(0, 0, 0)
-
-		ScrollBar.NewThumb2 = ScrollBar:CreateTexture(nil, "OVERLAY")
-		ScrollBar.NewThumb2:SetPoint("TOPLEFT", ScrollBar.NewThumb, 1, -1)
-		ScrollBar.NewThumb2:SetPoint("BOTTOMRIGHT", ScrollBar.NewThumb, -1, 1)
-		ScrollBar.NewThumb2:SetTexture(BarTexture)
-		ScrollBar.NewThumb2:SetVertexColor(0.4, 0.4, 0.4)
+		Thumb:SetSize(10, 18)
+		Thumb:SetVertexColor(0.25, 0.258, 0.333)
 
 		self.List.ScrollBar = ScrollBar
 
@@ -1609,41 +1603,41 @@ local FontSelectionOnMouseUp = function(self)
 
 	if self.List:IsShown() then
 		self.List:Hide()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	else
 		self.List:Show()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowUp.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowUp.tga")
 	end
 end
 
-function Gathering:CreateFontSelection(key, text, selections, func)
-	local Selection = CreateFrame("Frame", nil, self.GUI.ButtonParent)
-	Selection:SetSize(128, 20)
+function Gathering:CreateFontSelection(page, key, text, selections, func)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	local Selection = CreateFrame("Frame", nil, Line)
+	Selection:SetSize(Line:GetWidth(), 22)
+	Selection:SetPoint("LEFT", Line, 0, 0)
 	Selection:SetScript("OnMouseUp", FontSelectionOnMouseUp)
+	Selection:SetScript("OnEnter", ListOnEnter)
+	Selection:SetScript("OnLeave", ListOnLeave)
 	Selection.Selections = selections
 	Selection.Setting = key
 
-	Selection.BG = Selection:CreateTexture(nil, "BORDER")
-	Selection.BG:SetTexture(BlankTexture)
-	Selection.BG:SetVertexColor(0, 0, 0)
-	Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
-	Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
-
 	Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
-	Selection.Tex:SetTexture(BarTexture)
+	Selection.Tex:SetTexture(BlankTexture)
 	Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 	Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
-	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	Selection.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
-	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
+	Selection.Arrow:SetVertexColor(0.866, 0.694, 0.023)
 
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12, "")
 	Selection.Current:SetSize(122, 18)
-	Selection.Current:SetPoint("LEFT", Selection, 3, 0)
+	Selection.Current:SetPoint("LEFT", Selection, 5, -0.5)
 	Selection.Current:SetJustifyH("LEFT")
 	Selection.Current:SetShadowColor(0, 0, 0)
 	Selection.Current:SetShadowOffset(1, -1)
@@ -1661,7 +1655,7 @@ function Gathering:CreateFontSelection(key, text, selections, func)
 		Selection.Hook = func
 	end
 
-	tinsert(self.GUI.Window.Widgets, Selection)
+	tinsert(page, Line)
 end
 
 local ListOnMouseUp = function(self)
@@ -1678,42 +1672,46 @@ local ListOnMouseUp = function(self)
 		--Selection:Hook(self.Key)
 	end
 
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 end
 
 local SelectionOnMouseUp = function(self)
 	if (not self.List) then
 		self.List = CreateFrame("Frame", nil, self)
-		self.List:SetSize(140, 20 * MaxSelections) -- 128
+		self.List:SetSize(150, 22 * MaxSelections) -- 128
 		self.List:SetPoint("TOP", self, "BOTTOM", 0, -1)
 		self.List.Offset = 1
 		self.List:EnableMouseWheel(true)
 		self.List:SetScript("OnMouseWheel", SelectionOnMouseWheel)
+		self.List:SetFrameStrata("HIGH")
+		self.List:SetFrameLevel(20)
 		self.List:Hide()
+
+		self.List.Tex = self.List:CreateTexture(nil, "ARTWORK")
+		self.List.Tex:SetTexture(BlankTexture)
+		self.List.Tex:SetPoint("TOPLEFT", self.List, -2, 2)
+		self.List.Tex:SetPoint("BOTTOMRIGHT", self.List, 2, -2)
+		self.List.Tex:SetVertexColor(0.09, 0.09, 0.12)
 
 		for Key, Value in next, self.Selections do
 			local Selection = CreateFrame("Frame", nil, self.List)
-			Selection:SetSize(140, 20)
+			Selection:SetSize(140, 22)
 			Selection.Key = Key
 			Selection.Value = Value
 			Selection:SetScript("OnMouseUp", ListOnMouseUp)
-
-			Selection.BG = Selection:CreateTexture(nil, "BORDER")
-			Selection.BG:SetTexture(BlankTexture)
-			Selection.BG:SetVertexColor(0, 0, 0)
-			Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
-			Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
+			Selection:SetScript("OnEnter", ListOnEnter)
+			Selection:SetScript("OnLeave", ListOnLeave)
 
 			Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
-			Selection.Tex:SetTexture(BarTexture)
+			Selection.Tex:SetTexture(BlankTexture)
 			Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 			Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
-			Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+			Selection.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 			Selection.Text = Selection:CreateFontString(nil, "OVERLAY")
 			Selection.Text:SetFont(SharedMedia:Fetch("font", Gathering.Settings["window-font"]), 12, "")
-			Selection.Text:SetSize(140, 18)
-			Selection.Text:SetPoint("LEFT", Selection, 3, 0)
+			Selection.Text:SetSize(134, 18)
+			Selection.Text:SetPoint("LEFT", Selection, 5, 0)
 			Selection.Text:SetJustifyH("LEFT")
 			Selection.Text:SetShadowColor(0, 0, 0)
 			Selection.Text:SetShadowOffset(1, -1)
@@ -1727,41 +1725,32 @@ local SelectionOnMouseUp = function(self)
 		end)
 
 		if #self.List > (MaxSelections - 1) then
-			local ScrollBar = CreateFrame("Slider", nil, self.List, "BackdropTemplate")
-			ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", -1, -1)
-			ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", -1, 6)
+			local ScrollBar = CreateFrame("Slider", nil, self.List)
+			ScrollBar:SetPoint("TOPLEFT", self.List, "TOPRIGHT", 0, 0)
+			ScrollBar:SetPoint("BOTTOMLEFT", self.List, "BOTTOMRIGHT", 0, 0)
 			ScrollBar:SetWidth(10)
-			ScrollBar:SetThumbTexture(BarTexture)
+			ScrollBar:SetThumbTexture(BlankTexture)
 			ScrollBar:SetOrientation("VERTICAL")
 			ScrollBar:SetValueStep(1)
-			ScrollBar:SetBackdrop(Outline)
-			ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
-			ScrollBar:SetBackdropBorderColor(0, 0, 0)
 			ScrollBar:SetMinMaxValues(1, (#self.List - (MaxSelections - 1)))
 			ScrollBar:SetValue(1)
 			ScrollBar:SetObeyStepOnDrag(true)
 			ScrollBar:EnableMouseWheel(true)
 			ScrollBar:SetScript("OnMouseWheel", SelectionScrollBarOnMouseWheel)
 			ScrollBar:SetScript("OnValueChanged", SelectionScrollBarOnValueChanged)
+			ScrollBar:SetScript("OnEnter", ScrollBarOnEnter)
+			ScrollBar:SetScript("OnLeave", ScrollBarOnLeave)
+			ScrollBar:SetScript("OnMouseDown", ScrollBarOnMouseDown)
+			ScrollBar:SetScript("OnMouseUp", ScrollBarOnMouseUp)
 
 			local Thumb = ScrollBar:GetThumbTexture()
-			Thumb:SetSize(10, 20)
-			Thumb:SetTexture(BarTexture)
-			Thumb:SetVertexColor(0, 0, 0)
-
-			ScrollBar.NewThumb = ScrollBar:CreateTexture(nil, "BORDER")
-			ScrollBar.NewThumb:SetPoint("TOPLEFT", Thumb, 0, 0)
-			ScrollBar.NewThumb:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
-			ScrollBar.NewThumb:SetTexture(BlankTexture)
-			ScrollBar.NewThumb:SetVertexColor(0, 0, 0)
-
-			ScrollBar.NewThumb2 = ScrollBar:CreateTexture(nil, "OVERLAY")
-			ScrollBar.NewThumb2:SetPoint("TOPLEFT", ScrollBar.NewThumb, 1, -1)
-			ScrollBar.NewThumb2:SetPoint("BOTTOMRIGHT", ScrollBar.NewThumb, -1, 1)
-			ScrollBar.NewThumb2:SetTexture(BarTexture)
-			ScrollBar.NewThumb2:SetVertexColor(0.4, 0.4, 0.4)
+			Thumb:SetSize(10, 18)
+			Thumb:SetVertexColor(0.25, 0.258, 0.333)
 
 			self.List.ScrollBar = ScrollBar
+		else
+			self.List:SetHeight((22 * #self.List) - 2)
+			self.List:SetWidth(139)
 		end
 
 		ScrollSelections(self.List)
@@ -1769,17 +1758,23 @@ local SelectionOnMouseUp = function(self)
 
 	if self.List:IsShown() then
 		self.List:Hide()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	else
 		self.List:Show()
-		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowUp.tga")
+		self.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowUp.tga")
 	end
 end
 
-function Gathering:CreateSelection(key, text, selections, func)
-	local Selection = CreateFrame("Frame", nil, self.GUI.ButtonParent)
-	Selection:SetSize(128, 20)
+function Gathering:CreateSelection(page, key, text, selections, func)
+	local Line = CreateFrame("Frame", nil, page)
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	local Selection = CreateFrame("Frame", nil, Line)
+	Selection:SetSize(Line:GetWidth(), 22)
+	Selection:SetPoint("LEFT", Line, 0, 0)
 	Selection:SetScript("OnMouseUp", SelectionOnMouseUp)
+	Selection:SetScript("OnEnter", ListOnEnter)
+	Selection:SetScript("OnLeave", ListOnLeave)
 	Selection.Selections = selections
 	Selection.Setting = key
 
@@ -1791,27 +1786,21 @@ function Gathering:CreateSelection(key, text, selections, func)
 		end
 	end
 
-	Selection.BG = Selection:CreateTexture(nil, "BORDER")
-	Selection.BG:SetTexture(BlankTexture)
-	Selection.BG:SetVertexColor(0, 0, 0)
-	Selection.BG:SetPoint("TOPLEFT", Selection, 0, 0)
-	Selection.BG:SetPoint("BOTTOMRIGHT", Selection, 0, 0)
-
 	Selection.Tex = Selection:CreateTexture(nil, "ARTWORK")
-	Selection.Tex:SetTexture(BarTexture)
+	Selection.Tex:SetTexture(BlankTexture)
 	Selection.Tex:SetPoint("TOPLEFT", Selection, 1, -1)
 	Selection.Tex:SetPoint("BOTTOMRIGHT", Selection, -1, 1)
-	Selection.Tex:SetVertexColor(0.4, 0.4, 0.4)
+	Selection.Tex:SetVertexColor(28/255, 29/255, 39/255)
 
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
-	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIArrowDown.tga")
+	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
-	Selection.Arrow:SetVertexColor(0, 204/255, 106/255)
+	Selection.Arrow:SetVertexColor(0.866, 0.694, 0.023)
 
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	Selection.Current:SetSize(122, 18)
-	Selection.Current:SetPoint("LEFT", Selection, 3, 0)
+	Selection.Current:SetPoint("LEFT", Selection, 5, -0.5)
 	Selection.Current:SetJustifyH("LEFT")
 	Selection.Current:SetShadowColor(0, 0, 0)
 	Selection.Current:SetShadowOffset(1, -1)
@@ -1830,24 +1819,41 @@ function Gathering:CreateSelection(key, text, selections, func)
 		Selection.Hook = func
 	end
 
-	tinsert(self.GUI.Window.Widgets, Selection)
+	tinsert(page, Line)
 end
 
 local Scroll = function(self)
 	local First = false
 
-	for i = 1, #self.Widgets do
+	for i = 1, #Gathering.GUI.LeftWidgets do
 		if (i >= self.Offset) and (i <= self.Offset + MaxWidgets - 1) then
 			if (not First) then
-				self.Widgets[i]:SetPoint("TOPLEFT", Gathering.GUI.ButtonParent, 2, -2)
+				Gathering.GUI.LeftWidgets[i]:SetPoint("TOPLEFT", Gathering.GUI.LeftWidgets, 4, -4)
 				First = true
 			else
-				self.Widgets[i]:SetPoint("TOPLEFT", self.Widgets[i-1], "BOTTOMLEFT", 0, -2)
+				Gathering.GUI.LeftWidgets[i]:SetPoint("TOPLEFT", Gathering.GUI.LeftWidgets[i-1], "BOTTOMLEFT", 0, -2)
 			end
 
-			self.Widgets[i]:Show()
+			Gathering.GUI.LeftWidgets[i]:Show()
 		else
-			self.Widgets[i]:Hide()
+			Gathering.GUI.LeftWidgets[i]:Hide()
+		end
+	end
+
+	First = false
+
+	for i = 1, #Gathering.GUI.RightWidgets do
+		if (i >= self.Offset) and (i <= self.Offset + MaxWidgets - 1) then
+			if (not First) then
+				Gathering.GUI.RightWidgets[i]:SetPoint("TOPLEFT", Gathering.GUI.RightWidgets, 4, -4)
+				First = true
+			else
+				Gathering.GUI.RightWidgets[i]:SetPoint("TOPLEFT", Gathering.GUI.RightWidgets[i-1], "BOTTOMLEFT", 0, -2)
+			end
+
+			Gathering.GUI.RightWidgets[i]:Show()
+		else
+			Gathering.GUI.RightWidgets[i]:Hide()
 		end
 	end
 end
@@ -1862,7 +1868,7 @@ local WindowOnMouseWheel = function(self, delta)
 	else
 		self.Offset = self.Offset + 1
 
-		if (self.Offset > (#self.Widgets - (MaxWidgets - 1))) then
+		if (self.Offset > (Gathering.GUI.MaxScroll - (MaxWidgets - 1))) then
 			self.Offset = self.Offset - 1
 		end
 	end
@@ -1911,58 +1917,195 @@ function Gathering:UpdateDisplayMode(value)
 	end
 end
 
-function Gathering:SettingsLayout()
-	self:CreateHeader(L["Set Font"])
+function Gathering:ShowPage(name)
+	for i = 1, #self.Windows do
+		if (self.Windows[i].Name == name) then
+			self.Windows[i]:Show()
+		else
+			self.Windows[i]:Hide()
+		end
+	end
+end
 
-	self:CreateFontSelection("window-font", "", Fonts, self.UpdateFontSetting)
+function Gathering:PageTabOnEnter()
+	self:SetBackdropColor(0.25, 0.258, 0.333)
+end
 
-	self:CreateHeader(L["Display Mode"])
-	self:CreateSelection("DisplayMode", "", DisplayModes, self.UpdateDisplayMode)
+function Gathering:PageTabOnLeave()
+	self:SetBackdropColor(0.16, 0.164, 0.196)
+end
 
-	self:CreateHeader(TRACKING)
+function Gathering:PageTabOnMouseUp()
+	Gathering:ShowPage(self.Name)
+end
 
-	self:CreateCheckbox("track-herbs", L["Herbs"], self.UpdateHerbTracking)
-	self:CreateCheckbox("track-cloth", L["Cloth"], self.UpdateClothTracking)
-	self:CreateCheckbox("track-leather", L["Leather"], self.UpdateLeatherTracking)
-	self:CreateCheckbox("track-ore", L["Ore"], self.UpdateOreTracking)
-	self:CreateCheckbox("track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
-	self:CreateCheckbox("track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
-	self:CreateCheckbox("track-cooking", L["Cooking"], self.UpdateCookingTracking)
-	self:CreateCheckbox("track-reagents", L["Reagents"], self.UpdateReagentTracking)
-	self:CreateCheckbox("track-consumable", L["Consumables"], self.UpdateConsumableTracking)
-	self:CreateCheckbox("track-holiday", L["Holiday"], self.UpdateHolidayTracking)
-	self:CreateCheckbox("track-quest", L["Quests"], self.UpdateQuestTracking)
-	self:CreateCheckbox("track-xp", L["XP"])
+function Gathering:AddPage(name)
+	local Tab = CreateFrame("Frame", nil, self.GUI.TabParent, "BackdropTemplate")
+	Tab:SetSize(72, 22)
+	Tab:SetBackdrop(Outline)
+	Tab:SetBackdropColor(0.16, 0.164, 0.196)
+	Tab:SetScript("OnEnter", self.PageTabOnEnter)
+	Tab:SetScript("OnLeave", self.PageTabOnLeave)
+	Tab:SetScript("OnMouseUp", self.PageTabOnMouseUp)
+	Tab.Name = name
 
-	self:CreateHeader(MISCELLANEOUS)
+	Tab.Text = Tab:CreateFontString(nil, "OVERLAY")
+	Tab.Text:SetPoint("LEFT", Tab, 5, -0.5)
+	Tab.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+	Tab.Text:SetJustifyH("LEFT")
+	Tab.Text:SetShadowColor(0, 0, 0)
+	Tab.Text:SetShadowOffset(1, -1)
+	Tab.Text:SetText(name)
 
-	self:CreateCheckbox("ignore-bop", L["Ignore Bind on Pickup"])
-	self:CreateCheckbox("hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
-	--self:CreateCheckbox("show-tooltip", L["Show tooltip data"])
-	self:CreateCheckbox("ShowTooltipHelp", L["Show tooltip help"])
-	self:CreateCheckbox("IgnoreMailItems", L["Ignore mail items"])
-	self:CreateCheckbox("IgnoreMailMoney", L["Ignore mail gold"])
+	local Page = CreateFrame("Frame", nil, self.GUI.Window)
+	Page:SetAllPoints()
+	Page.Name = name
 
-	self:CreateHeader(IGNORE)
+	table.insert(self.Tabs, Tab)
+	table.insert(self.Windows, Page)
 
-	self:CreateEditBox(L["Ignore items"], self.AddIgnoredItem)
+	return Page
+end
 
-	self:CreateHeader(UNIGNORE_QUEST)
+function Gathering:SortWidgets(widgets)
+	for i = 1, #widgets do
+		if (i == 1) then
+			widgets[i]:SetPoint("TOPLEFT", widgets, 4, -4)
+		else
+			widgets[i]:SetPoint("TOPLEFT", widgets[i-1], "BOTTOMLEFT", 0, -4)
+		end
+	end
+end
 
-	self:CreateEditBox(L["Unignore items"], self.RemoveIgnoredItem)
+function Gathering:SortWidgetsWide(widgets)
+	for i = 1, #widgets do
+		if (i == 1) then
+			widgets[i]:SetPoint("TOPLEFT", widgets, 4, -30)
+		elseif ((i - 1) % 3 == 0) then
+			widgets[i]:SetPoint("TOPLEFT", widgets[i-3], "BOTTOMLEFT", 0, -4)
+		else
+			widgets[i]:SetPoint("LEFT", widgets[i-1], "RIGHT", 4, 0)
+		end
+	end
+end
 
-	self:CreateHeader(WINDOW_SIZE_LABEL)
-	self:CreateNumberEditBox("WindowWidth", "Set Width", self.SetFrameWidth)
-	self:CreateNumberEditBox("WindowHeight", "Set Height", self.SetFrameHeight)
+function Gathering:SetupTrackingPage(page)
+	page.TopWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.TopWidgets:SetSize(page:GetWidth(), 133)
+	page.TopWidgets:SetPoint("TOPLEFT", page, 0, 0)
+	page.TopWidgets:EnableMouse(true)
+	page.TopWidgets:SetBackdrop(Outline)
+	page.TopWidgets:SetBackdropColor(0.16, 0.164, 0.196)
 
-	self:CreateHeader(L["Discord"])
-	self:CreateDiscordEditBox()
+	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.LeftWidgets:SetSize(199, 107)
+	page.LeftWidgets:SetPoint("TOPLEFT", page.TopWidgets, "BOTTOMLEFT", 0, -6)
+	page.LeftWidgets:EnableMouse(true)
+	page.LeftWidgets:SetBackdrop(Outline)
+	page.LeftWidgets:SetBackdropColor(0.16, 0.164, 0.196)
+
+	self:CreateHeader(page.TopWidgets, TRACKING)
+
+	self:SortWidgets(page.TopWidgets)
+
+	table.remove(page.TopWidgets, 1)
+
+	self:CreateCheckbox(page.TopWidgets, "track-herbs", L["Herbs"], self.UpdateHerbTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-cloth", L["Cloth"], self.UpdateClothTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-leather", L["Leather"], self.UpdateLeatherTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-ore", L["Ore"], self.UpdateOreTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-jewelcrafting", L["Jewelcrafting"], self.UpdateJewelcraftingTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-enchanting", L["Enchanting"], self.UpdateEnchantingTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-cooking", L["Cooking"], self.UpdateCookingTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-reagents", L["Reagents"], self.UpdateReagentTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-consumable", L["Consumables"], self.UpdateConsumableTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-holiday", L["Holiday"], self.UpdateHolidayTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-quest", L["Quests"], self.UpdateQuestTracking)
+	self:CreateCheckbox(page.TopWidgets, "track-xp", L["XP"])
+
+	self:CreateHeader(page.LeftWidgets, MISCELLANEOUS)
+
+	self:CreateCheckbox(page.LeftWidgets, "ignore-bop", L["Ignore Bind on Pickup"])
+	self:CreateCheckbox(page.LeftWidgets, "IgnoreMailItems", L["Ignore mail items"])
+	self:CreateCheckbox(page.LeftWidgets, "IgnoreMailMoney", L["Ignore mail gold"])
+
+	self:SortWidgetsWide(page.TopWidgets)
+	self:SortWidgets(page.LeftWidgets)
+end
+
+function Gathering:SetupSettingsPage(page)
+	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.LeftWidgets:SetSize(199, 246)
+	page.LeftWidgets:SetPoint("LEFT", page, 0, 0)
+	page.LeftWidgets:EnableMouse(true)
+	page.LeftWidgets:SetBackdrop(Outline)
+	page.LeftWidgets:SetBackdropColor(0.16, 0.164, 0.196)
+
+	page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.RightWidgets:SetSize(198, 246)
+	page.RightWidgets:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
+	page.RightWidgets:EnableMouse(true)
+	page.RightWidgets:SetBackdrop(Outline)
+	page.RightWidgets:SetBackdropColor(0.16, 0.164, 0.196)
+
+	self:CreateHeader(page.LeftWidgets, L["Display Mode"])
+	self:CreateSelection(page.LeftWidgets, "DisplayMode", "", DisplayModes, self.UpdateDisplayMode)
+
+	self:CreateHeader(page.LeftWidgets, L["Set Font"])
+
+	self:CreateFontSelection(page.LeftWidgets, "window-font", "", Fonts, self.UpdateFontSetting)
+
+	self:CreateHeader(page.LeftWidgets, WINDOW_SIZE_LABEL)
+
+	self:CreateNumberEditBox(page.LeftWidgets, "WindowWidth", "Set Width", self.SetFrameWidth)
+	self:CreateNumberEditBox(page.LeftWidgets, "WindowHeight", "Set Height", self.SetFrameHeight)
+
+	self:CreateHeader(page.RightWidgets, MISCELLANEOUS)
+
+	self:CreateCheckbox(page.RightWidgets, "hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
+	self:CreateCheckbox(page.RightWidgets, "ShowTooltipHelp", L["Show tooltip help"])
+
+	self:SortWidgets(page.LeftWidgets)
+	self:SortWidgets(page.RightWidgets)
+end
+
+function Gathering:SetupIgnorePage(page)
+	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.LeftWidgets:SetSize(199, 246)
+	page.LeftWidgets:SetPoint("LEFT", page, 0, 0)
+	page.LeftWidgets:EnableMouse(true)
+	page.LeftWidgets:SetBackdrop(Outline)
+	page.LeftWidgets:SetBackdropColor(0.16, 0.164, 0.196)
+
+	page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.RightWidgets:SetSize(198, 246)
+	page.RightWidgets:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
+	page.RightWidgets:EnableMouse(true)
+	page.RightWidgets:SetBackdrop(Outline)
+	page.RightWidgets:SetBackdropColor(0.16, 0.164, 0.196)
+
+	self:CreateHeader(page.LeftWidgets, IGNORE)
+
+	self:CreateEditBox(page.LeftWidgets, L["Ignore items"], self.AddIgnoredItem)
+
+	self:CreateHeader(page.LeftWidgets, UNIGNORE_QUEST)
+
+	self:CreateEditBox(page.LeftWidgets, L["Unignore items"], self.RemoveIgnoredItem)
+
+	self:CreateHeader(page.RightWidgets, L["Discord"])
+	self:CreateDiscordEditBox(page.RightWidgets)
+
+	self:SortWidgets(page.LeftWidgets)
+	--self:SortWidgets(page.RightWidgets)
 end
 
 function Gathering:CreateGUI()
+	self.Windows = {}
+	self.Tabs = {}
+
 	-- Window
-	self.GUI = CreateFrame("Frame", "Gathering Settings", UIParent)
-	self.GUI:SetSize(210, 18)
+	self.GUI = CreateFrame("Frame", "Gathering Settings", UIParent, "BackdropTemplate")
+	self.GUI:SetSize(490, 24)
 	self.GUI:SetPoint("CENTER", UIParent, 0, 160)
 	self.GUI:SetMovable(true)
 	self.GUI:EnableMouse(true)
@@ -1970,30 +2113,20 @@ function Gathering:CreateGUI()
 	self.GUI:RegisterForDrag("LeftButton")
 	self.GUI:SetScript("OnDragStart", self.GUI.StartMoving)
 	self.GUI:SetScript("OnDragStop", self.GUI.StopMovingOrSizing)
-
-	self.GUI.BG = self.GUI:CreateTexture(nil, "BORDER")
-	self.GUI.BG:SetPoint("TOPLEFT", self.GUI, -1, 1)
-	self.GUI.BG:SetPoint("BOTTOMRIGHT", self.GUI, 1, -1)
-	self.GUI.BG:SetTexture(BlankTexture)
-	self.GUI.BG:SetVertexColor(0, 0, 0)
-
-	self.GUI.Texture = self.GUI:CreateTexture(nil, "OVERLAY")
-	self.GUI.Texture:SetPoint("TOPLEFT", self.GUI, 0, 0)
-	self.GUI.Texture:SetPoint("BOTTOMRIGHT", self.GUI, 0, 0)
-	self.GUI.Texture:SetTexture(BarTexture)
-	self.GUI.Texture:SetVertexColor(0.25, 0.25, 0.25)
+	self.GUI:SetBackdrop(Outline)
+	self.GUI:SetBackdropColor(0.16, 0.164, 0.196)
 
 	self.GUI.Text = self.GUI:CreateFontString(nil, "OVERLAY")
-	self.GUI.Text:SetPoint("LEFT", self.GUI, 3, -0.5)
+	self.GUI.Text:SetPoint("LEFT", self.GUI, 6, -0.5)
 	self.GUI.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
 	self.GUI.Text:SetJustifyH("LEFT")
 	self.GUI.Text:SetShadowColor(0, 0, 0)
 	self.GUI.Text:SetShadowOffset(1, -1)
-	self.GUI.Text:SetText("|cff00CC6AGathering|r " .. AddOnVersion)
+	self.GUI.Text:SetText("|cffFCCA03Gathering|r " .. AddOnVersion)
 
 	self.GUI.CloseButton = CreateFrame("Frame", nil, self.GUI)
-	self.GUI.CloseButton:SetPoint("TOPRIGHT", self.GUI, 0, 0)
-	self.GUI.CloseButton:SetSize(18, 18)
+	self.GUI.CloseButton:SetPoint("RIGHT", self.GUI, 0, 0)
+	self.GUI.CloseButton:SetSize(24, 24)
 	self.GUI.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
 	self.GUI.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
 	self.GUI.CloseButton:SetScript("OnMouseUp", function() self.GUI:Hide() end)
@@ -2002,79 +2135,73 @@ function Gathering:CreateGUI()
 	self.GUI.CloseButton.Texture:SetPoint("CENTER", self.GUI.CloseButton, 0, -0.5)
 	self.GUI.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
 
+	self.GUI.TabParent = CreateFrame("Frame", nil, self.GUI, "BackdropTemplate")
+	self.GUI.TabParent:SetSize(80, 246)
+	self.GUI.TabParent:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -6)
+	self.GUI.TabParent:SetBackdrop(Outline)
+	self.GUI.TabParent:SetBackdropColor(0.16, 0.164, 0.196)
+
 	self.GUI.Window = CreateFrame("Frame", nil, self.GUI)
-	self.GUI.Window:SetSize(210, 245)
-	self.GUI.Window:SetPoint("TOPLEFT", self.GUI, "BOTTOMLEFT", 0, -4)
-	self.GUI.Window.Offset = 1
-	self.GUI.Window.Widgets = {}
-	self.GUI.Window:EnableMouseWheel(true)
-	self.GUI.Window:SetScript("OnMouseWheel", WindowOnMouseWheel)
-
-	self.GUI.Backdrop = self.GUI.Window:CreateTexture(nil, "BORDER")
-	self.GUI.Backdrop:SetPoint("TOPLEFT", self.GUI.Window, -1, 1)
-	self.GUI.Backdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 1, -1)
-	self.GUI.Backdrop:SetTexture(BlankTexture)
-	self.GUI.Backdrop:SetVertexColor(0, 0, 0)
-
-	self.GUI.Inside = self.GUI.Window:CreateTexture(nil, "BORDER")
-	self.GUI.Inside:SetAllPoints()
-	self.GUI.Inside:SetTexture(BlankTexture)
-	self.GUI.Inside:SetVertexColor(0.168, 0.168, 0.168)
-
-	self.GUI.ButtonParent = CreateFrame("Frame", nil, self.GUI.Window)
-	self.GUI.ButtonParent:SetAllPoints()
-	self.GUI.ButtonParent:SetFrameLevel(self.GUI.Window:GetFrameLevel() + 4)
-	self.GUI.ButtonParent:SetFrameStrata("HIGH")
-	self.GUI.ButtonParent:EnableMouse(true)
+	self.GUI.Window:SetSize(403, 246)
+	self.GUI.Window:SetPoint("LEFT", self.GUI.TabParent, "RIGHT", 7, 0)
 
 	self.GUI.OuterBackdrop = CreateFrame("Frame", nil, self.GUI.Window, "BackdropTemplate")
-	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -4, 4)
-	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 4, -4)
+	self.GUI.OuterBackdrop:SetPoint("TOPLEFT", self.GUI, -6, 6)
+	self.GUI.OuterBackdrop:SetPoint("BOTTOMRIGHT", self.GUI.Window, 6, -6)
 	self.GUI.OuterBackdrop:SetBackdrop(Outline)
-	self.GUI.OuterBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
-	self.GUI.OuterBackdrop:SetBackdropBorderColor(0, 0, 0)
-	self.GUI.OuterBackdrop:SetFrameStrata("LOW")
+	self.GUI.OuterBackdrop:SetBackdropColor(0.09, 0.09, 0.12)
+	self.GUI.OuterBackdrop:SetFrameStrata("BACKGROUND")
+	self.GUI.OuterBackdrop:SetFrameLevel(0)
 
-	self:SettingsLayout()
+	local TrackingPage = self:AddPage("Tracking")
+	self:SetupTrackingPage(TrackingPage)
+
+	local SettingsPage = self:AddPage("Settings")
+	self:SetupSettingsPage(SettingsPage)
+
+	local IgnorePage = self:AddPage("Ignore")
+	self:SetupIgnorePage(IgnorePage)
+
+	--self:AddPage("Stats")
+
+	for i = 1, #self.Tabs do
+		if (i == 1) then
+			self.Tabs[i]:SetPoint("TOPLEFT", self.GUI.TabParent, 4, -4)
+		else
+			self.Tabs[i]:SetPoint("TOPLEFT", self.Tabs[i-1], "BOTTOMLEFT", 0, -4)
+		end
+	end
+
+	self:ShowPage("Tracking")
+
+	--[[self.GUI.MaxScroll = math.max(#self.GUI.LeftWidgets, #self.GUI.RightWidgets)
 
 	-- Scroll bar
-	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.ButtonParent, "BackdropTemplate")
-	self.GUI.Window.ScrollBar:SetPoint("TOPRIGHT", self.GUI.Window, -2, -2)
-	self.GUI.Window.ScrollBar:SetPoint("BOTTOMRIGHT", self.GUI.Window, -2, 3)
-	self.GUI.Window.ScrollBar:SetWidth(14)
+	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.RightWidgets)
+	self.GUI.Window.ScrollBar:SetWidth(12)
+	self.GUI.Window.ScrollBar:SetPoint("TOPLEFT", self.GUI.RightWidgets, "TOPRIGHT", 4, 0)
+	self.GUI.Window.ScrollBar:SetPoint("BOTTOMLEFT", self.GUI.RightWidgets, "BOTTOMRIGHT", 4, 0)
 	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
 	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
 	self.GUI.Window.ScrollBar:SetValueStep(1)
-	self.GUI.Window.ScrollBar:SetBackdrop(Outline)
-	self.GUI.Window.ScrollBar:SetBackdropColor(0.2, 0.2, 0.2)
-	self.GUI.Window.ScrollBar:SetBackdropBorderColor(0, 0, 0)
-	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (#self.GUI.Window.Widgets - (MaxWidgets - 1)))
+	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (self.GUI.MaxScroll - (MaxWidgets - 1)))
 	self.GUI.Window.ScrollBar:SetValue(1)
 	self.GUI.Window.ScrollBar:EnableMouse(true)
 	self.GUI.Window.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
+	self.GUI.Window.ScrollBar:SetScript("OnEnter", ScrollBarOnEnter)
+	self.GUI.Window.ScrollBar:SetScript("OnLeave", ScrollBarOnLeave)
+	self.GUI.Window.ScrollBar:SetScript("OnMouseDown", ScrollBarOnMouseDown)
+	self.GUI.Window.ScrollBar:SetScript("OnMouseUp", ScrollBarOnMouseUp)
 	self.GUI.Window.ScrollBar.Parent = self.GUI.Window
 
 	self.GUI.Window.ScrollBar:SetFrameStrata("HIGH")
-	self.GUI.Window.ScrollBar:SetFrameLevel(22)
+	self.GUI.Window.ScrollBar:SetFrameLevel(20)
 
 	local Thumb = self.GUI.Window.ScrollBar:GetThumbTexture()
-	Thumb:SetSize(14, 20)
-	Thumb:SetTexture(BarTexture)
-	Thumb:SetVertexColor(0, 0, 0)
+	Thumb:SetSize(12, 22)
+	Thumb:SetVertexColor(28/255, 29/255, 39/255)
 
-	self.GUI.Window.ScrollBar.NewTexture = self.GUI.Window.ScrollBar:CreateTexture(nil, "BORDER")
-	self.GUI.Window.ScrollBar.NewTexture:SetPoint("TOPLEFT", Thumb, 0, 0)
-	self.GUI.Window.ScrollBar.NewTexture:SetPoint("BOTTOMRIGHT", Thumb, 0, 0)
-	self.GUI.Window.ScrollBar.NewTexture:SetTexture(BlankTexture)
-	self.GUI.Window.ScrollBar.NewTexture:SetVertexColor(0, 0, 0)
-
-	self.GUI.Window.ScrollBar.NewTexture2 = self.GUI.Window.ScrollBar:CreateTexture(nil, "OVERLAY")
-	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("TOPLEFT", self.GUI.Window.ScrollBar.NewTexture, 1, -1)
-	self.GUI.Window.ScrollBar.NewTexture2:SetPoint("BOTTOMRIGHT", self.GUI.Window.ScrollBar.NewTexture, -1, 1)
-	self.GUI.Window.ScrollBar.NewTexture2:SetTexture(BarTexture)
-	self.GUI.Window.ScrollBar.NewTexture2:SetVertexColor(0.4, 0.4, 0.4)
-
-	Scroll(self.GUI.Window)
+	--Scroll(self.GUI.Window)]]
 end
 
 function Gathering:ScanButtonOnClick()
@@ -2097,7 +2224,7 @@ function Gathering:ScanButtonOnClick()
 
 	ReplicateItems()
 
-	print(L["|cff00CC6AGathering|r is scanning market prices. This should take less than 10 seconds."])
+	print(L["|cffFCCA03Gathering|r is scanning market prices. This should take less than 10 seconds."])
 
 	GatheringLastScan = GetTime()
 end
@@ -2161,7 +2288,8 @@ function Gathering:CHAT_MSG_LOOT(msg)
 		self:StartTimer()
 	end
 
-	--self:AddItemStat(ClassID, SubClassID, Quantity)
+	self:AddStat("total", Quantity)
+	self:AddItemStat(ID, Quantity)
 
 	if self.MouseIsOver then
 		self:OnLeave()
@@ -2202,7 +2330,7 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 
-	print(L["|cff00CC6AGathering|r updated market prices."])
+	print(L["|cffFCCA03Gathering|r updated market prices."])
 end
 
 function Gathering:MODIFIER_STATE_CHANGED()
@@ -2224,7 +2352,7 @@ function Gathering:OnTooltipSetItem()
 
 		if (Price and Price > 0) then
 			self:AddLine(" ")
-			self:AddLine("|cff00CC6AGathering|r")
+			self:AddLine("|cffFCCA03Gathering|r")
 			self:AddLine(format(L["Price per unit: %s"], Gathering:CopperToGold(Price)), 1, 1, 1)
 		end
 	end
@@ -2239,7 +2367,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		end
 
 		if (not IsAddOnLoaded("HydraUI")) then
-			print("|cff00CC6AGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
+			print("|cffFCCA03Gathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
 
 		--[[if TooltipDataProcessor then
@@ -2388,7 +2516,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (AddOnNum > message) then -- We have a higher version, share it
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
 	elseif (message > AddOnNum) then -- We're behind!
-		print(format("Update |cff00CC6AGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
+		print(format("Update |cffFCCA03Gathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 
 		AddOnNum = message
@@ -2685,6 +2813,8 @@ function Gathering:UNIT_SPELLCAST_CHANNEL_START(unit, guid, id)
 			end
 		end
 	end
+
+	self:AddStat("clouds", 1)
 end
 
 if (GameVersion > 20000 and GameVersion < 90000) then
