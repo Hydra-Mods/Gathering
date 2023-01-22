@@ -1119,7 +1119,7 @@ function Gathering:CreateHeader(page, text)
 	Header.Text:SetJustifyH("LEFT")
 	Header.Text:SetShadowColor(0, 0, 0)
 	Header.Text:SetShadowOffset(1, -1)
-	Header.Text:SetText(format("|cffFCCA03%s|r", text))
+	Header.Text:SetText(format("|cffFFC44D%s|r", text))
 
 	tinsert(page, Header)
 end
@@ -1143,7 +1143,7 @@ function Gathering:CheckBoxOnMouseUp()
 			self:Hook(false)
 		end
 	else
-		self.Tex:SetVertexColor(0.866, 0.694, 0.023)
+		self.Tex:SetVertexColor(1, 0.7686, 0.3019)
 		Gathering:UpdateSettingValue(self.Setting, true)
 
 		if self.Hook then
@@ -1176,7 +1176,7 @@ function Gathering:CreateCheckbox(page, key, text, func)
 	Checkbox.Text:SetText(text)
 
 	if self.Settings[key] then
-		Checkbox.Tex:SetVertexColor(0.866, 0.694, 0.023)
+		Checkbox.Tex:SetVertexColor(1, 0.7686, 0.3019)
 	else
 		Checkbox.Tex:SetVertexColor(0.125, 0.133, 0.145)
 	end
@@ -1638,7 +1638,7 @@ function Gathering:CreateFontSelection(page, key, text, selections, func)
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
 	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
-	Selection.Arrow:SetVertexColor(0.866, 0.694, 0.023)
+	Selection.Arrow:SetVertexColor(1, 0.7686, 0.3019)
 
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings[key]), 12, "")
@@ -1801,7 +1801,7 @@ function Gathering:CreateSelection(page, key, text, selections, func)
 	Selection.Arrow = Selection:CreateTexture(nil, "OVERLAY")
 	Selection.Arrow:SetTexture("Interface\\AddOns\\Gathering\\Assets\\GatheringArrowDown.tga")
 	Selection.Arrow:SetPoint("RIGHT", Selection, -3, 0)
-	Selection.Arrow:SetVertexColor(0.866, 0.694, 0.023)
+	Selection.Arrow:SetVertexColor(1, 0.7686, 0.3019)
 
 	Selection.Current = Selection:CreateFontString(nil, "OVERLAY")
 	Selection.Current:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
@@ -1929,6 +1929,14 @@ function Gathering:ShowPage(name)
 			self.Windows[i]:Show()
 		else
 			self.Windows[i]:Hide()
+		end
+	end
+end
+
+function Gathering:GetPage(name)
+	for i = 1, #self.Windows do
+		if (self.Windows[i].Name == name) then
+			return self.Windows[i]
 		end
 	end
 end
@@ -2105,6 +2113,67 @@ function Gathering:SetupIgnorePage(page)
 	--self:SortWidgets(page.RightWidgets)
 end
 
+function Gathering:CreateStatLine(page, text)
+	local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	Line:SetSize(page:GetWidth() - 8, 22)
+
+	Line.Text = Line:CreateFontString(nil, "OVERLAY")
+	Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+	Line.Text:SetPoint("LEFT", Line, 5, 0)
+	Line.Text:SetJustifyH("LEFT")
+	Line.Text:SetShadowColor(0, 0, 0)
+	Line.Text:SetShadowOffset(1, -1)
+	Line.Text:SetText(text)
+
+	tinsert(page, Line)
+	
+	return Line
+end
+
+function Gathering:SetupStatsPage(page)
+	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.LeftWidgets:SetSize(199, 246)
+	page.LeftWidgets:SetPoint("LEFT", page, 0, 0)
+	page.LeftWidgets:EnableMouse(true)
+	page.LeftWidgets:SetBackdrop(Outline)
+	page.LeftWidgets:SetBackdropColor(0.184, 0.192, 0.211)
+
+	page.XPStats = {}
+
+	--[[page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.RightWidgets:SetSize(198, 246)
+	page.RightWidgets:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
+	page.RightWidgets:EnableMouse(true)
+	page.RightWidgets:SetBackdrop(Outline)
+	page.RightWidgets:SetBackdropColor(0.184, 0.192, 0.211)]]
+
+	self:CreateHeader(page.LeftWidgets, "Experience")
+	
+	if (not GatheringStats) then
+		GatheringStats = {}
+	end
+	
+	page.XPStats.xp = self:CreateStatLine(page.LeftWidgets, format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
+	--page.XPStats.PerHour = self:CreateStatLine(page.LeftWidgets, "XP: 0")
+	--page.XPStats.TTL = self:CreateStatLine(page.LeftWidgets, "XP: 0")
+
+	--[[self:CreateHeader(page.RightWidgets, MISCELLANEOUS)
+
+	self:CreateCheckbox(page.RightWidgets, "hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
+	self:CreateCheckbox(page.RightWidgets, "ShowTooltipHelp", L["Show tooltip help"])]]
+
+	self:SortWidgets(page.LeftWidgets)
+	--self:SortWidgets(page.RightWidgets)
+end
+
+function Gathering:UpdateXPStat()
+	local page = self:GetPage("Stats")
+	
+	if page and page.XPStats.xp then
+		page.XPStats.xp.Text:SetText(format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
+	end
+end
+
 function Gathering:CreateGUI()
 	self.Windows = {}
 	self.Tabs = {}
@@ -2116,6 +2185,7 @@ function Gathering:CreateGUI()
 	self.GUI:SetMovable(true)
 	self.GUI:EnableMouse(true)
 	self.GUI:SetUserPlaced(true)
+	self.GUI:SetClampedToScreen(true)
 	self.GUI:RegisterForDrag("LeftButton")
 	self.GUI:SetScript("OnDragStart", self.GUI.StartMoving)
 	self.GUI:SetScript("OnDragStop", self.GUI.StopMovingOrSizing)
@@ -2128,7 +2198,7 @@ function Gathering:CreateGUI()
 	self.GUI.Text:SetJustifyH("LEFT")
 	self.GUI.Text:SetShadowColor(0, 0, 0)
 	self.GUI.Text:SetShadowOffset(1, -1)
-	self.GUI.Text:SetText("|cffFCCA03Gathering|r " .. AddOnVersion)
+	self.GUI.Text:SetText("|cffFFC44DGathering|r " .. AddOnVersion)
 
 	self.GUI.CloseButton = CreateFrame("Frame", nil, self.GUI)
 	self.GUI.CloseButton:SetPoint("RIGHT", self.GUI, 0, 0)
@@ -2162,13 +2232,14 @@ function Gathering:CreateGUI()
 	local TrackingPage = self:AddPage("Tracking")
 	self:SetupTrackingPage(TrackingPage)
 
+	--local StatsPage = self:AddPage("Stats")
+	--self:SetupStatsPage(StatsPage)
+
 	local SettingsPage = self:AddPage("Settings")
 	self:SetupSettingsPage(SettingsPage)
 
 	local IgnorePage = self:AddPage("Ignore")
 	self:SetupIgnorePage(IgnorePage)
-
-	--self:AddPage("Stats")
 
 	for i = 1, #self.Tabs do
 		if (i == 1) then
@@ -2230,7 +2301,7 @@ function Gathering:ScanButtonOnClick()
 
 	ReplicateItems()
 
-	print(L["|cffFCCA03Gathering|r is scanning market prices. This should take less than 10 seconds."])
+	print(L["|cffFFC44DGathering|r is scanning market prices. This should take less than 10 seconds."])
 
 	GatheringLastScan = GetTime()
 end
@@ -2336,7 +2407,7 @@ function Gathering:REPLICATE_ITEM_LIST_UPDATE()
 
 	self:UnregisterEvent("REPLICATE_ITEM_LIST_UPDATE")
 
-	print(L["|cffFCCA03Gathering|r updated market prices."])
+	print(L["|cffFFC44DGathering|r updated market prices."])
 end
 
 function Gathering:MODIFIER_STATE_CHANGED()
@@ -2358,7 +2429,7 @@ function Gathering:OnTooltipSetItem()
 
 		if (Price and Price > 0) then
 			self:AddLine(" ")
-			self:AddLine("|cffFCCA03Gathering|r")
+			self:AddLine("|cffFFC44DGathering|r")
 			self:AddLine(format(L["Price per unit: %s"], Gathering:CopperToGold(Price)), 1, 1, 1)
 		end
 	end
@@ -2373,7 +2444,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		end
 
 		if (not IsAddOnLoaded("HydraUI")) then
-			print("|cffFCCA03Gathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
+			print("|cffFFC44DGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
 		end
 
 		--[[if TooltipDataProcessor then
@@ -2522,7 +2593,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (AddOnNum > message) then -- We have a higher version, share it
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
 	elseif (message > AddOnNum) then -- We're behind!
-		print(format("Update |cffFCCA03Gathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
+		print(format("Update |cffFFC44DGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
 
 		AddOnNum = message
@@ -2555,6 +2626,8 @@ function Gathering:PLAYER_XP_UPDATE()
 	if (not self.XPStartTime) then
 		self.XPStartTime = GetTime()
 	end
+	
+	--self:UpdateXPStat()
 
 	self.LastXP = XP
 	self.LastMax = MaxXP
