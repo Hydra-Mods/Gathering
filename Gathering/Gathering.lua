@@ -34,6 +34,7 @@ local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemInfo = GetContainerItemInfo
+local ChannelCD = {}
 
 Gathering.DefaultSettings = {
 	-- Tracking
@@ -1951,6 +1952,14 @@ end
 
 function Gathering:PageTabOnMouseUp()
 	Gathering:ShowPage(self.Name)
+	
+	self.Text:ClearAllPoints()
+	self.Text:SetPoint("LEFT", self, 5, -0.5)
+end
+
+function Gathering:PageTabOnMouseDown()
+	self.Text:ClearAllPoints()
+	self.Text:SetPoint("LEFT", self, 6, -1.5)
 end
 
 function Gathering:AddPage(name)
@@ -1961,6 +1970,7 @@ function Gathering:AddPage(name)
 	Tab:SetScript("OnEnter", self.PageTabOnEnter)
 	Tab:SetScript("OnLeave", self.PageTabOnLeave)
 	Tab:SetScript("OnMouseUp", self.PageTabOnMouseUp)
+	Tab:SetScript("OnMouseDown", self.PageTabOnMouseDown)
 	Tab.Name = name
 
 	Tab.Text = Tab:CreateFontString(nil, "OVERLAY")
@@ -2590,8 +2600,20 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 
 	message = tonumber(message)
 
+	if (message >= AddOnNum) then
+		ChannelCD[channel] = true
+	else
+		ChannelCD[channel] = false
+	end
+
 	if (AddOnNum > message) then -- We have a higher version, share it
 		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
+		
+		C_Timer.After(random(1, 10), function()
+			if (not ChannelCD[channel]) then
+				CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
+			end
+		end)
 	elseif (message > AddOnNum) then -- We're behind!
 		print(format("Update |cffFFC44DGathering|r to version %s! www.curseforge.com/wow/addons/gathering", message))
 		print("Join the Discord community for support and feedback discord.gg/XefDFa6nJR")
