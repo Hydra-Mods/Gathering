@@ -134,6 +134,8 @@ if (Locale == "deDE") then -- German
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -180,6 +182,8 @@ elseif (Locale == "esES") then -- Spanish (Spain)
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -226,6 +230,8 @@ elseif (Locale == "esMX") then -- Spanish (Mexico)
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -272,6 +278,8 @@ elseif (Locale == "frFR") then -- French
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -318,6 +326,8 @@ elseif (Locale == "itIT") then -- Italian
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -364,6 +374,8 @@ elseif (Locale == "koKR") then -- Korean
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -410,6 +422,8 @@ elseif (Locale == "ptBR") then -- Portuguese (Brazil)
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -456,6 +470,8 @@ elseif (Locale == "ruRU") then -- Russian
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -502,6 +518,8 @@ elseif (Locale == "zhCN") then -- Chinese (Simplified)
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -548,6 +566,8 @@ elseif (Locale == "zhTW") then -- Chinese (Traditional/Taiwan)
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -594,6 +614,8 @@ else
 	L["Hide while idle"] = "Hide while idle"
 	L["Ignore items"] = "Ignore items"
 	L["Unignore items"] = "Unignore items"
+	L["%s is now being ignored."] = "%s is now being ignored."
+	L["%s is now being unignored."] = "%s is now being unignored."
 
 	L["Set Font"] = "Set Font"
 	L["Set Width"] = "Set Width"
@@ -603,6 +625,13 @@ else
 	L["Gathering Scan"] = "Gathering Scan"
 	L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
 end
+
+local DisplayModes = {
+	[L["Time"]] = "TIME",
+	[L["GPH"]] = "GPH",
+	[L["Gold"]] = "GOLD",
+	[L["Total"]] = "TOTAL",
+}
 
 local Outline = {
 	bgFile = BlankTexture,
@@ -828,25 +857,85 @@ function Gathering:UpdateQuestTracking(value)
 	Gathering.TrackedItemTypes[Enum.ItemClass.Questitem][0] = value
 end
 
+local ScrollIgnoredItems = function(self)
+	local First = false
+
+	for i = 1, #self.IgnoredItems do
+		if (i >= self.Offset) and (i < self.Offset + 10) then
+			if (not First) then
+				self.IgnoredItems[i]:SetPoint("TOPLEFT", self.IgnoredList, 4, -4)
+				First = true
+			else
+				self.IgnoredItems[i]:SetPoint("TOPLEFT", self.IgnoredItems[i-1], "BOTTOMLEFT", 0, -2)
+			end
+
+			self.IgnoredItems[i]:Show()
+		else
+			self.IgnoredItems[i]:Hide()
+		end
+	end
+end
+
 function Gathering:AddIgnoredItem(text)
 	if (text == "") then
 		return
 	end
 
 	local ID = tonumber(text)
-
-	if (not GatheringIgnore) then
-		GatheringIgnore = {}
-	end
+	local Page = Gathering:GetPage("Ignore")
+	local Name, Link = GetItemInfo(ID or text)
 
 	if ID then
+		if GatheringIgnore[ID] then
+			print(Link .. " is already ignored")
+
+			return
+		end
+
 		GatheringIgnore[ID] = true
 
-		print(format(ERR_IGNORE_ADDED_S, GetItemInfo(ID)))
+		print(format(ERR_IGNORE_ADDED_S, Link or Name))
 	else
+		if GatheringIgnore[text] then
+			print(text .. " is already ignored")
+
+			return
+		end
+
 		GatheringIgnore[text] = true
 
-		print(format(ERR_IGNORE_ADDED_S, text))
+		print(format(ERR_IGNORE_ADDED_S, Link or text))
+	end
+
+	if (Name and Link) then
+		local Line = CreateFrame("Frame", nil, Page, "BackdropTemplate")
+		Line:SetSize(Page.IgnoredList:GetWidth() - 24, 22)
+		Line.Item = ID
+
+		Line.Text = Line:CreateFontString(nil, "OVERLAY")
+		Line.Text:SetFont(SharedMedia:Fetch("font", Gathering.Settings["window-font"]), 12, "")
+		Line.Text:SetPoint("LEFT", Line, 5, 0)
+		Line.Text:SetJustifyH("LEFT")
+		Line.Text:SetShadowColor(0, 0, 0)
+		Line.Text:SetShadowOffset(1, -1)
+		Line.Text:SetText(Link)
+
+		Line.CloseButton = CreateFrame("Frame", nil, Line)
+		Line.CloseButton:SetPoint("RIGHT", Line, 0, 0)
+		Line.CloseButton:SetSize(24, 24)
+		Line.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
+		Line.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
+		Line.CloseButton:SetScript("OnMouseUp", function(self) Gathering:RemoveIgnoredItem(self:GetParent().Item) end)
+
+		Line.CloseButton.Texture = Line.CloseButton:CreateTexture(nil, "OVERLAY")
+		Line.CloseButton.Texture:SetPoint("CENTER", Line.CloseButton, 0, -0.5)
+		Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
+
+		tinsert(Page.IgnoredItems, Line)
+
+		Page.ScrollBar:SetMinMaxValues(1, math.max(1, #Page.IgnoredItems - 9))
+
+		ScrollIgnoredItems(Page)
 	end
 end
 
@@ -859,12 +948,32 @@ function Gathering:RemoveIgnoredItem(text)
 
 	if ID then
 		GatheringIgnore[ID] = nil
-
-		print(format(L["%s is now being unignored."], GetItemInfo(ID)))
 	else
 		GatheringIgnore[text] = nil
+	end
 
+	local Name, Link = GetItemInfo(ID)
+
+	if Link then
+		print(format(L["%s is now being unignored."], Link))
+	else
 		print(format(L["%s is now being unignored."], text))
+	end
+
+	local Page = Gathering:GetPage("Ignore")
+
+	for i = 1, #Page.IgnoredItems do
+		if (Page.IgnoredItems[i].Item == ID) then
+			Page.IgnoredItems[i]:Hide()
+
+			table.remove(Page.IgnoredItems, i)
+
+			Page.ScrollBar:SetMinMaxValues(1, math.max(1, #Page.IgnoredItems - 9))
+
+			ScrollIgnoredItems(Page)
+
+			return
+		end
 	end
 end
 
@@ -1897,13 +2006,6 @@ function Gathering:UpdateFontSetting(value)
 	Gathering:UpdateTooltipFont()
 end
 
-local DisplayModes = {
-	[L["Gold"]] = "GOLD",
-	[L["GPH"]] = "GPH",
-	[L["Time"]] = "TIME",
-	[L["Total"]] = "TOTAL",
-}
-
 function Gathering:UpdateDisplayMode(value)
 	if (value == "TIME") then
 		Gathering.Text:SetText(date("!%X", Gathering.Seconds))
@@ -1952,7 +2054,7 @@ end
 
 function Gathering:PageTabOnMouseUp()
 	Gathering:ShowPage(self.Name)
-	
+
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint("LEFT", self, 5, -0.5)
 end
@@ -2093,6 +2195,33 @@ function Gathering:SetupSettingsPage(page)
 	self:SortWidgets(page.RightWidgets)
 end
 
+local IgnoreWindowOnMouseWheel = function(self, delta)
+	if (delta == 1) then
+		self.Offset = self.Offset - 1
+
+		if (self.Offset <= 1) then
+			self.Offset = 1
+		end
+	else
+		self.Offset = self.Offset + 1
+
+		if (self.Offset > (#page.IgnoredItems - 11)) then
+			self.Offset = self.Offset - 1
+		end
+	end
+
+	ScrollIgnoredItems(self)
+	self.ScrollBar:SetValue(self.Offset)
+end
+
+local IgnoreScrollBarOnValueChanged = function(self, value)
+	local Value = floor(value + 0.5)
+
+	self.Parent.Offset = Value
+
+	ScrollIgnoredItems(self.Parent)
+end
+
 function Gathering:SetupIgnorePage(page)
 	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	page.LeftWidgets:SetSize(199, 246)
@@ -2101,26 +2230,115 @@ function Gathering:SetupIgnorePage(page)
 	page.LeftWidgets:SetBackdrop(Outline)
 	page.LeftWidgets:SetBackdropColor(0.184, 0.192, 0.211)
 
-	page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
-	page.RightWidgets:SetSize(198, 246)
-	page.RightWidgets:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
-	page.RightWidgets:EnableMouse(true)
-	page.RightWidgets:SetBackdrop(Outline)
-	page.RightWidgets:SetBackdropColor(0.184, 0.192, 0.211)
+	page.IgnoredList = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.IgnoredList:SetSize(198, 246)
+	page.IgnoredList:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
+	page.IgnoredList:EnableMouse(true)
+	page.IgnoredList:SetBackdrop(Outline)
+	page.IgnoredList:SetBackdropColor(0.184, 0.192, 0.211)
+
+	page.IgnoredItems = {}
 
 	self:CreateHeader(page.LeftWidgets, IGNORE)
 
 	self:CreateEditBox(page.LeftWidgets, L["Ignore items"], self.AddIgnoredItem)
 
-	self:CreateHeader(page.LeftWidgets, UNIGNORE_QUEST)
-
-	self:CreateEditBox(page.LeftWidgets, L["Unignore items"], self.RemoveIgnoredItem)
-
-	self:CreateHeader(page.RightWidgets, L["Discord"])
-	self:CreateDiscordEditBox(page.RightWidgets)
-
 	self:SortWidgets(page.LeftWidgets)
-	--self:SortWidgets(page.RightWidgets)
+
+	-- Add ignored items
+	local Name, Link
+
+	for ID in next, GatheringIgnore do
+		Name, Link = GetItemInfo(ID)
+
+		if (Name and Link) then
+			local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
+			Line:SetSize(page.IgnoredList:GetWidth() - 24, 22)
+			Line.Item = ID
+
+			Line.Text = Line:CreateFontString(nil, "OVERLAY")
+			Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+			Line.Text:SetPoint("LEFT", Line, 5, 0)
+			Line.Text:SetJustifyH("LEFT")
+			Line.Text:SetShadowColor(0, 0, 0)
+			Line.Text:SetShadowOffset(1, -1)
+			Line.Text:SetText(Link or Name)
+
+			Line.CloseButton = CreateFrame("Frame", nil, Line)
+			Line.CloseButton:SetPoint("RIGHT", Line, 0, 0)
+			Line.CloseButton:SetSize(24, 24)
+			Line.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
+			Line.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
+			Line.CloseButton:SetScript("OnMouseUp", function(self) Gathering:RemoveIgnoredItem(self:GetParent().Item) end)
+
+			Line.CloseButton.Texture = Line.CloseButton:CreateTexture(nil, "OVERLAY")
+			Line.CloseButton.Texture:SetPoint("CENTER", Line.CloseButton, 0, -0.5)
+			Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
+
+			tinsert(page.IgnoredItems, Line)
+		else
+			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
+				Name, Link = GetItemInfo(ID)
+
+				local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
+				Line:SetSize(page.IgnoredList:GetWidth() - 24, 22)
+				Line.Item = ID
+
+				Line.Text = Line:CreateFontString(nil, "OVERLAY")
+				Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+				Line.Text:SetPoint("LEFT", Line, 5, 0)
+				Line.Text:SetJustifyH("LEFT")
+				Line.Text:SetShadowColor(0, 0, 0)
+				Line.Text:SetShadowOffset(1, -1)
+				Line.Text:SetText(Link or Name)
+
+				Line.CloseButton = CreateFrame("Frame", nil, Line)
+				Line.CloseButton:SetPoint("RIGHT", Line, 0, 0)
+				Line.CloseButton:SetSize(24, 24)
+				Line.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
+				Line.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
+				Line.CloseButton:SetScript("OnMouseUp", function(self) Gathering:RemoveIgnoredItem(self:GetParent().Item) end)
+
+				Line.CloseButton.Texture = Line.CloseButton:CreateTexture(nil, "OVERLAY")
+				Line.CloseButton.Texture:SetPoint("CENTER", Line.CloseButton, 0, -0.5)
+				Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
+
+				tinsert(page.IgnoredItems, Line)
+
+				ScrollIgnoredItems(page)
+			end)
+		end
+	end
+
+	page.Offset = 1
+
+	-- Scroll bar
+	page.ScrollBar = CreateFrame("Slider", nil, page.IgnoredList)
+	page.ScrollBar:SetWidth(12)
+	page.ScrollBar:SetPoint("TOPRIGHT", page.IgnoredList, -4, -4)
+	page.ScrollBar:SetPoint("BOTTOMRIGHT", page.IgnoredList, -4, 4)
+	page.ScrollBar:SetThumbTexture(BlankTexture)
+	page.ScrollBar:SetOrientation("VERTICAL")
+	page.ScrollBar:SetValueStep(1)
+	page.ScrollBar:SetMinMaxValues(1, math.max(1, #page.IgnoredItems - 9))
+	page.ScrollBar:SetValue(1)
+	page.ScrollBar:EnableMouse(true)
+	page.ScrollBar:SetScript("OnValueChanged", IgnoreScrollBarOnValueChanged)
+	page.ScrollBar:SetScript("OnMouseWheel", IgnoreWindowOnMouseWheel)
+	page.ScrollBar:SetScript("OnEnter", ScrollBarOnEnter)
+	page.ScrollBar:SetScript("OnLeave", ScrollBarOnLeave)
+	page.ScrollBar:SetScript("OnMouseDown", ScrollBarOnMouseDown)
+	page.ScrollBar:SetScript("OnMouseUp", ScrollBarOnMouseUp)
+	page.ScrollBar.Parent = page
+
+	page.ScrollBar:SetFrameStrata("HIGH")
+	page.ScrollBar:SetFrameLevel(20)
+
+	local Thumb = page.ScrollBar:GetThumbTexture()
+	Thumb:SetSize(12, 22)
+	Thumb:SetVertexColor(0.25, 0.266, 0.294)
+
+	ScrollIgnoredItems(page)
 end
 
 function Gathering:CreateStatLine(page, text)
@@ -2136,7 +2354,7 @@ function Gathering:CreateStatLine(page, text)
 	Line.Text:SetText(text)
 
 	tinsert(page, Line)
-	
+
 	return Line
 end
 
@@ -2158,11 +2376,11 @@ function Gathering:SetupStatsPage(page)
 	page.RightWidgets:SetBackdropColor(0.184, 0.192, 0.211)]]
 
 	self:CreateHeader(page.LeftWidgets, "Experience")
-	
+
 	if (not GatheringStats) then
 		GatheringStats = {}
 	end
-	
+
 	page.XPStats.xp = self:CreateStatLine(page.LeftWidgets, format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
 	--page.XPStats.PerHour = self:CreateStatLine(page.LeftWidgets, "XP: 0")
 	--page.XPStats.TTL = self:CreateStatLine(page.LeftWidgets, "XP: 0")
@@ -2178,7 +2396,7 @@ end
 
 function Gathering:UpdateXPStat()
 	local page = self:GetPage("Stats")
-	
+
 	if page and page.XPStats.xp then
 		page.XPStats.xp.Text:SetText(format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
 	end
@@ -2447,6 +2665,7 @@ end
 
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
+
 		self.Ignored = GatheringIgnore or {}
 
 		if IsAddOnLoaded("TradeSkillMaster") then
@@ -2607,9 +2826,7 @@ function Gathering:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	end
 
 	if (AddOnNum > message) then -- We have a higher version, share it
-		CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
-		
-		C_Timer.After(random(1, 10), function()
+		C_Timer.After(random(1, 8), function()
 			if (not ChannelCD[channel]) then
 				CT:SendAddonMessage("NORMAL", "GATHERING_VRSN", AddOnVersion, channel)
 			end
@@ -2648,7 +2865,7 @@ function Gathering:PLAYER_XP_UPDATE()
 	if (not self.XPStartTime) then
 		self.XPStartTime = GetTime()
 	end
-	
+
 	--self:UpdateXPStat()
 
 	self.LastXP = XP
