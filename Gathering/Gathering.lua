@@ -2368,37 +2368,95 @@ function Gathering:SetupStatsPage(page)
 
 	page.XPStats = {}
 
-	--[[page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	page.RightWidgets:SetSize(198, 246)
 	page.RightWidgets:SetPoint("LEFT", page.LeftWidgets, "RIGHT", 6, 0)
 	page.RightWidgets:EnableMouse(true)
 	page.RightWidgets:SetBackdrop(Outline)
-	page.RightWidgets:SetBackdropColor(0.184, 0.192, 0.211)]]
-
-	self:CreateHeader(page.LeftWidgets, "Experience")
+	page.RightWidgets:SetBackdropColor(0.184, 0.192, 0.211)
 
 	if (not GatheringStats) then
 		GatheringStats = {}
 	end
 
-	page.XPStats.xp = self:CreateStatLine(page.LeftWidgets, format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
-	--page.XPStats.PerHour = self:CreateStatLine(page.LeftWidgets, "XP: 0")
-	--page.XPStats.TTL = self:CreateStatLine(page.LeftWidgets, "XP: 0")
+	self:CreateHeader(page.RightWidgets, "Experience")
+	page.XPStats.xp = self:CreateStatLine(page.RightWidgets, format("Total: %s", self:Comma(GatheringStats.xp) or 0))
+	page.XPStats.sessionxp = self:CreateStatLine(page.RightWidgets, format("Session: %s", Gathering.XPGained or 0))
+	page.XPStats.levels = self:CreateStatLine(page.RightWidgets, format("Levels: %s", GatheringStats.levels or 0))
+	--page.XPStats.PerHour = self:CreateStatLine(page.RightWidgets, "XP: 0")
+	--page.XPStats.TTL = self:CreateStatLine(page.RightWidgets, "XP: 0")
 
-	--[[self:CreateHeader(page.RightWidgets, MISCELLANEOUS)
+	self:CreateHeader(page.LeftWidgets, "Gold")
+	page.XPStats.totalgold = self:CreateStatLine(page.LeftWidgets, format("Gold: %s", self:CopperToGold(GatheringStats.gold) or 0))
+	page.XPStats.sessiongold = self:CreateStatLine(page.LeftWidgets, format("Session: %s", self:CopperToGold(Gathering.GoldGained) or 0))
 
-	self:CreateCheckbox(page.RightWidgets, "hide-idle", L["Hide while idle"], self.ToggleTimerPanel)
-	self:CreateCheckbox(page.RightWidgets, "ShowTooltipHelp", L["Show tooltip help"])]]
+	self:CreateHeader(page.LeftWidgets, "Items")
+	page.XPStats.items = self:CreateStatLine(page.LeftWidgets, format("Total: %s", self:Comma(GatheringStats.total) or 0))
+
+	--self:CreateHeader(page.LeftWidgets, "Misc")
+	--page.XPStats.clouds = self:CreateStatLine(page.LeftWidgets, format("Clouds: %s", self:Comma(GatheringStats.clouds) or 0))
 
 	self:SortWidgets(page.LeftWidgets)
-	--self:SortWidgets(page.RightWidgets)
+	self:SortWidgets(page.RightWidgets)
+end
+
+function Gathering:UpdateItemsStat()
+	if (not self.Windows) then
+		return
+	end
+
+	local page = self:GetPage("Stats")
+
+	if (not page) then
+		return
+	end
+
+	if page.XPStats.items then
+		page.XPStats.items.Text:SetText(format("Total: %s", self:Comma(GatheringStats.items) or 0))
+	end
 end
 
 function Gathering:UpdateXPStat()
+	if (not self.Windows) then
+		return
+	end
+
 	local page = self:GetPage("Stats")
 
-	if page and page.XPStats.xp then
-		page.XPStats.xp.Text:SetText(format("Gained: %s", self:Comma(GatheringStats.xp) or 0))
+	if (not page) then
+		return
+	end
+
+	if page.XPStats.xp then
+		page.XPStats.xp.Text:SetText(format("Total: %s", self:Comma(GatheringStats.xp) or 0))
+	end
+
+	if page.XPStats.sessionxp then
+		page.XPStats.sessionxp.Text:SetText(format("Session: %s", self:Comma(Gathering.XPGained) or 0))
+	end
+
+	if page.XPStats.levels then
+		page.XPStats.levels.Text:SetText(format("Levels: %s", GatheringStats.levels or 0))
+	end
+end
+
+function Gathering:UpdateMoneyStat()
+	if (not self.Windows) then
+		return
+	end
+
+	local page = self:GetPage("Stats")
+
+	if (not page) then
+		return
+	end
+
+	if page.XPStats.totalgold then
+		page.XPStats.totalgold.Text:SetText(format("Total: %s", self:CopperToGold(GatheringStats.gold) or 0))
+	end
+
+	if page.XPStats.sessiongold then
+		page.XPStats.sessiongold.Text:SetText(format("Session: %s", self:CopperToGold(Gathering.GoldGained) or 0))
 	end
 end
 
@@ -2460,8 +2518,8 @@ function Gathering:CreateGUI()
 	local TrackingPage = self:AddPage("Tracking")
 	self:SetupTrackingPage(TrackingPage)
 
-	--local StatsPage = self:AddPage("Stats")
-	--self:SetupStatsPage(StatsPage)
+	local StatsPage = self:AddPage("Stats")
+	self:SetupStatsPage(StatsPage)
 
 	local SettingsPage = self:AddPage("Settings")
 	self:SetupSettingsPage(SettingsPage)
@@ -2595,6 +2653,8 @@ function Gathering:CHAT_MSG_LOOT(msg)
 
 	self:AddStat("total", Quantity)
 	self:AddItemStat(ID, Quantity)
+
+	self:UpdateItemsStat()
 
 	if self.MouseIsOver then
 		self:OnLeave()
@@ -2752,6 +2812,8 @@ function Gathering:PLAYER_MONEY()
 		end
 
 		self:AddStat("gold", Diff)
+
+		self:UpdateMoneyStat()
 	end
 
 	self.GoldValue = Current
@@ -2857,6 +2919,7 @@ function Gathering:PLAYER_XP_UPDATE()
 	if (MaxXP ~= self.LastMax) then
 		self.XPGained = self.LastMax - self.LastXP + XP + self.XPGained
 		self:AddStat("xp", (self.LastMax - self.LastXP + XP))
+		self:AddStat("levels", 1)
 	else
 		self.XPGained = (XP - self.LastXP) + self.XPGained
 		self:AddStat("xp", (XP - self.LastXP))
@@ -2866,7 +2929,7 @@ function Gathering:PLAYER_XP_UPDATE()
 		self.XPStartTime = GetTime()
 	end
 
-	--self:UpdateXPStat()
+	self:UpdateXPStat()
 
 	self.LastXP = XP
 	self.LastMax = MaxXP
