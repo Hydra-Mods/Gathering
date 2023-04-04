@@ -63,8 +63,8 @@ Gathering.DefaultSettings = {
 	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	HideIdle = false, -- Hide the tracker frame while not running
 	ShowTooltip = false, -- Show tooltip data about item prices
-	IgnoreMailItems = false, -- Ignore items that arrived through mail
-	IgnoreMailMoney = false, -- Ignore money that arrived through mail
+	IgnoreMailItems = true, -- Ignore items that arrived through mail
+	IgnoreMailMoney = true, -- Ignore money that arrived through mail
 	ShowTooltipHelp = true, -- Display helpful information in the tooltip (Left click to toggle, right click to reset)
 	DisplayMode = "TIME", -- TOTAL; Display total gathered, GPH; display gold per hour, GOLD; display gold collected, TIME; display timer
 
@@ -2781,7 +2781,7 @@ function Gathering:PLAYER_ENTERING_WORLD()
 end
 
 function Gathering:PLAYER_MONEY()
-	if (InboxFrame:IsVisible() and self.Settings.IgnoreMailMoney) then
+	if ((self.Settings.IgnoreMailMoney and InboxFrame:IsVisible()) or (GuildBankFrame and GuildBankFrame:IsVisible())) then -- Ignore useless info
 		return
 	end
 
