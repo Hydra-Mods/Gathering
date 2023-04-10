@@ -725,6 +725,8 @@ function Gathering:Comma(number)
 end
 
 -- Generic counting of basic numbers
+local SessionStat = {}
+
 function Gathering:AddStat(stat, value)
 	if (not GatheringStats) then
 		GatheringStats = {}
@@ -734,20 +736,12 @@ function Gathering:AddStat(stat, value)
 		GatheringStats[stat] = 0
 	end
 
+	if (not SessionStat[stat]) then
+		SessionStat[stat] = 0
+	end
+
 	GatheringStats[stat] = GatheringStats[stat] + value
-end
-
--- Generic counting of item types
-function Gathering:AddItemStat(id, value)
-	if (not GatheringItemStats) then
-		GatheringItemStats = {}
-	end
-
-	if (not GatheringItemStats[id]) then
-		GatheringItemStats[id] = 0
-	end
-
-	GatheringItemStats[id] = GatheringItemStats[id] + value
+	SessionStat[stat] = SessionStat[stat] + value
 end
 
 Gathering.TrackedItemTypes = {
@@ -2341,6 +2335,125 @@ function Gathering:SetupIgnorePage(page)
 	ScrollIgnoredItems(page)
 end
 
+Gathering.Donors = {
+	"Innie", "Brightsides", "Erthelmi", "Gene", "JDoubleU00", "Duds", "Shazlen", "Shawna W", "Dillan", "Bruce N","last", "Wrynn",
+	"Ryxân", "Andrei B", "Anthony M", "AtticaOnline", "Hawksworth", "WingZero", "Elizabeth T", "Quadra", "Brandon W", "Richard S",
+	"Andreas M", "Morgana N", "LeeMcMurtry",
+}
+
+--local Tiers = {"FF8000", "A335EE", "0070DD", "1EFF00", "FFFFFF"}
+
+Gathering.Patrons = {
+	"|cffFF8000Dragonhawk|r", "|cffFF8000Halven|r",
+	"|cff0070DDdeck|r",
+	"|cff1EFF00JDoubleU00|r", "|cff1EFF00sylvester|r", "|cff1EFF00thurin|r",
+}
+
+Gathering.ExPatrons = {
+	"|cffFF8000SwoopCrown|r", "|cffFF8000Cheeso_76|r", "|cffFF8000Erieeroot|r", "|cffFF8000last|r",
+	"|cffA335EESmelly|r", "|cffA335EETrix|r", "|cffA335EEwolimazo|r", "|cffA335EEAri|r", "|cffA335EEMrPoundsign|r",
+	"|cff0070DDEuphoria|r", "|cff0070DDMitooshin|r", "|cff0070DDMisseFar|r", "|cff0070DDFrankPatten|r", "|cff0070DDDillan|r", "|cff0070DDQuiet|r",
+	"|cff1EFF00Maski|r", "|cff1EFF00Raze|r", "|cff1EFF00Ingrimmosch|r", "|cff1EFF00Chris B.|r", "|cff1EFF00Suppabad|r", "|cff1EFF00Aaron B.|r", "|cff1EFF00Steve R.|r", "|cff1EFF00Angel|r", "|cff1EFF00Jeor|r", "|cff1EFF00Mcbooze|r", "|cff1EFF00stko|r", "|cff1EFF00Syn|r", "|cff1EFF00Rytok|r", "|cff1EFF00Ryex|r", "|cff1EFF00Blom|r", "|cff1EFF00Innie|r", "|cff1EFF00Cyber|r", "|cff1EFF00protocol7|r", "|cff1EFF00Dellamaik|r",
+	"Akab00m", "OzzFreak", "madmaddy", "Uzify", "Erthelmi", "silence", "momzzze", "Oxymorphone",
+}
+
+function Gathering:CreateNameButton(list, parent, name, size)
+	local Button = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	Button:EnableMouse(true)
+	Button:SetBackdrop(Outline)
+	Button:SetBackdropColor(0.184, 0.192, 0.211)
+	--Button:SetScript("OnEnter", function(self) self:SetBackdropColor(0.25, 0.266, 0.294) self.Text:SetTextColor(1, 1, 0) end)
+	--Button:SetScript("OnLeave", function(self) self:SetBackdropColor(0.184, 0.192, 0.211) self.Text:SetTextColor(1, 1, 1) end)
+
+	Button:SetScript("OnEnter", function(self) self.Text:SetTextColor(1, 1, 0) end)
+	Button:SetScript("OnLeave", function(self) self.Text:SetTextColor(1, 1, 1) end)
+
+	Button.Text = Button:CreateFontString(nil, "OVERLAY")
+	Button.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), size, "")
+	Button.Text:SetPoint("CENTER", Button, 0, -1)
+	Button.Text:SetJustifyH("LEFT")
+	Button.Text:SetShadowColor(0, 0, 0)
+	Button.Text:SetShadowOffset(1, -1)
+	Button.Text:SetText(name)
+
+	Button:SetSize(Button.Text:GetStringWidth() + 2, size + 2)
+
+	table.insert(list, Button)
+end
+
+function Gathering:SortNameButtons(list, parent)
+	local Length = 0
+	local LastAnchor = list[1]
+	local CurrentWidth = 0
+
+	for i = 1, #list do
+		CurrentWidth = list[i]:GetWidth() + 2
+
+		if (i == 1) then
+			list[i]:SetPoint("TOPLEFT", parent, 3, -33)
+			Length = Length + CurrentWidth
+		elseif ((Length + CurrentWidth) >= (parent:GetWidth() - 4)) then
+			list[i]:SetPoint("TOPLEFT", LastAnchor, "BOTTOMLEFT", 0, -2)
+			LastAnchor = list[i]
+			Length = CurrentWidth
+		else
+			list[i]:SetPoint("LEFT", list[i-1], "RIGHT", 2, 0)
+			Length = Length + CurrentWidth
+		end
+	end
+end
+
+function Gathering:SetupSupporterPage(page)
+	page.PatronWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.PatronWidgets:SetSize(199, 68)
+	page.PatronWidgets:SetPoint("TOPLEFT", page, 0, 0)
+	page.PatronWidgets:EnableMouse(true)
+	page.PatronWidgets:SetBackdrop(Outline)
+	page.PatronWidgets:SetBackdropColor(0.184, 0.192, 0.211)
+
+	page.ExPatronWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.ExPatronWidgets:SetSize(199, 172)
+	page.ExPatronWidgets:SetPoint("TOPLEFT", page.PatronWidgets, "BOTTOMLEFT", 0, -6)
+	page.ExPatronWidgets:EnableMouse(true)
+	page.ExPatronWidgets:SetBackdrop(Outline)
+	page.ExPatronWidgets:SetBackdropColor(0.184, 0.192, 0.211)
+
+	page.DonorWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
+	page.DonorWidgets:SetSize(198, 246)
+	page.DonorWidgets:SetPoint("TOPLEFT", page.PatronWidgets, "TOPRIGHT", 6, 0)
+	page.DonorWidgets:EnableMouse(true)
+	page.DonorWidgets:SetBackdrop(Outline)
+	page.DonorWidgets:SetBackdropColor(0.184, 0.192, 0.211)
+
+	Gathering.DonorButtons = {}
+	Gathering.PatronButtons = {}
+	Gathering.ExPatronButtons = {}
+
+	for i = 1, #self.Patrons do
+		Gathering:CreateNameButton(Gathering.PatronButtons, page.PatronWidgets, self.Patrons[i], 12)
+	end
+
+	for i = 1, #self.Donors do
+		Gathering:CreateNameButton(Gathering.DonorButtons, page.DonorWidgets, self.Donors[i], 12)
+	end
+
+	for i = 1, #self.ExPatrons do
+		Gathering:CreateNameButton(Gathering.ExPatronButtons, page.ExPatronWidgets, self.ExPatrons[i], 10)
+	end
+
+	Gathering:SortNameButtons(Gathering.PatronButtons, page.PatronWidgets)
+	Gathering:SortNameButtons(Gathering.DonorButtons, page.DonorWidgets)
+	Gathering:SortNameButtons(Gathering.ExPatronButtons, page.ExPatronWidgets)
+
+	self:CreateHeader(page.PatronWidgets, "Patrons")
+	self:CreateHeader(page.DonorWidgets, "Donors")
+	self:CreateHeader(page.ExPatronWidgets, "Former Patrons")
+
+	self:SortWidgets(page.PatronWidgets)
+	self:SortWidgets(page.DonorWidgets)
+	self:SortWidgets(page.ExPatronWidgets)
+end
+
 function Gathering:CreateStatLine(page, text)
 	local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	Line:SetSize(page:GetWidth() - 8, 22)
@@ -2521,11 +2634,11 @@ function Gathering:CreateGUI()
 	local StatsPage = self:AddPage("Stats")
 	self:SetupStatsPage(StatsPage)
 
-	local SettingsPage = self:AddPage("Settings")
-	self:SetupSettingsPage(SettingsPage)
-
 	local IgnorePage = self:AddPage("Ignore")
 	self:SetupIgnorePage(IgnorePage)
+
+	local SettingsPage = self:AddPage("Settings")
+	self:SetupSettingsPage(SettingsPage)
 
 	for i = 1, #self.Tabs do
 		if (i == 1) then
@@ -2535,36 +2648,13 @@ function Gathering:CreateGUI()
 		end
 	end
 
+	-- Separate tab at bottom of the list
+	local SupporterPage = self:AddPage("Supporters")
+	self:SetupSupporterPage(SupporterPage)
+
+	self.Tabs[#self.Tabs]:SetPoint("BOTTOMLEFT", self.GUI.TabParent, 4, 4)
+
 	self:ShowPage("Tracking")
-
-	--[[self.GUI.MaxScroll = math.max(#self.GUI.LeftWidgets, #self.GUI.RightWidgets)
-
-	-- Scroll bar
-	self.GUI.Window.ScrollBar = CreateFrame("Slider", nil, self.GUI.RightWidgets)
-	self.GUI.Window.ScrollBar:SetWidth(12)
-	self.GUI.Window.ScrollBar:SetPoint("TOPLEFT", self.GUI.RightWidgets, "TOPRIGHT", 4, 0)
-	self.GUI.Window.ScrollBar:SetPoint("BOTTOMLEFT", self.GUI.RightWidgets, "BOTTOMRIGHT", 4, 0)
-	self.GUI.Window.ScrollBar:SetThumbTexture(BlankTexture)
-	self.GUI.Window.ScrollBar:SetOrientation("VERTICAL")
-	self.GUI.Window.ScrollBar:SetValueStep(1)
-	self.GUI.Window.ScrollBar:SetMinMaxValues(1, (self.GUI.MaxScroll - (MaxWidgets - 1)))
-	self.GUI.Window.ScrollBar:SetValue(1)
-	self.GUI.Window.ScrollBar:EnableMouse(true)
-	self.GUI.Window.ScrollBar:SetScript("OnValueChanged", ScrollBarOnValueChanged)
-	self.GUI.Window.ScrollBar:SetScript("OnEnter", ScrollBarOnEnter)
-	self.GUI.Window.ScrollBar:SetScript("OnLeave", ScrollBarOnLeave)
-	self.GUI.Window.ScrollBar:SetScript("OnMouseDown", ScrollBarOnMouseDown)
-	self.GUI.Window.ScrollBar:SetScript("OnMouseUp", ScrollBarOnMouseUp)
-	self.GUI.Window.ScrollBar.Parent = self.GUI.Window
-
-	self.GUI.Window.ScrollBar:SetFrameStrata("HIGH")
-	self.GUI.Window.ScrollBar:SetFrameLevel(20)
-
-	local Thumb = self.GUI.Window.ScrollBar:GetThumbTexture()
-	Thumb:SetSize(12, 22)
-	Thumb:SetVertexColor(0.125, 0.133, 0.145)
-
-	--Scroll(self.GUI.Window)]]
 end
 
 function Gathering:ScanButtonOnClick()
@@ -2652,7 +2742,6 @@ function Gathering:CHAT_MSG_LOOT(msg)
 	end
 
 	self:AddStat("total", Quantity)
-	self:AddItemStat(ID, Quantity)
 
 	self:UpdateItemsStat()
 
@@ -2725,7 +2814,6 @@ end
 
 function Gathering:PLAYER_ENTERING_WORLD()
 	if (not self.Initial) then
-
 		self.Ignored = GatheringIgnore or {}
 
 		if IsAddOnLoaded("TradeSkillMaster") then
@@ -2769,6 +2857,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		self.XPStartTime = GetTime()
 
 		self.Initial = true
+	end
+
+	if GatheringItemStats then -- Temp from 2.00, remove later
+		GatheringItemStats = nil
 	end
 
 	if (GameVersion < 90000 and not IsInInstance()) then

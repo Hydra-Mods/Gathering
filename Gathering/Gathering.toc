@@ -1,9 +1,9 @@
 ## Interface: 100100
 ## Author: Hydra
-## Version: 1.99
+## Version: 2.00
 ## Title: Gathering
 ## Notes: Track gathered items.
-## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore, GatheringStats, GatheringItemStats
+## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore, GatheringStats
 
 Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua
