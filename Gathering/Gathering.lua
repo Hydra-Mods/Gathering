@@ -2240,40 +2240,13 @@ function Gathering:SetupIgnorePage(page)
 	self:SortWidgets(page.LeftWidgets)
 
 	-- Add ignored items
-	local Name, Link
+	if GatheringIgnore then
+		local Name, Link
 
-	for ID in next, GatheringIgnore do
-		Name, Link = GetItemInfo(ID)
+		for ID in next, GatheringIgnore do
+			Name, Link = GetItemInfo(ID)
 
-		if (Name and Link) then
-			local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
-			Line:SetSize(page.IgnoredList:GetWidth() - 24, 22)
-			Line.Item = ID
-
-			Line.Text = Line:CreateFontString(nil, "OVERLAY")
-			Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
-			Line.Text:SetPoint("LEFT", Line, 5, 0)
-			Line.Text:SetJustifyH("LEFT")
-			Line.Text:SetShadowColor(0, 0, 0)
-			Line.Text:SetShadowOffset(1, -1)
-			Line.Text:SetText(Link or Name)
-
-			Line.CloseButton = CreateFrame("Frame", nil, Line)
-			Line.CloseButton:SetPoint("RIGHT", Line, 0, 0)
-			Line.CloseButton:SetSize(24, 24)
-			Line.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
-			Line.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
-			Line.CloseButton:SetScript("OnMouseUp", function(self) Gathering:RemoveIgnoredItem(self:GetParent().Item) end)
-
-			Line.CloseButton.Texture = Line.CloseButton:CreateTexture(nil, "OVERLAY")
-			Line.CloseButton.Texture:SetPoint("CENTER", Line.CloseButton, 0, -0.5)
-			Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
-
-			tinsert(page.IgnoredItems, Line)
-		else
-			Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
-				Name, Link = GetItemInfo(ID)
-
+			if (Name and Link) then
 				local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
 				Line:SetSize(page.IgnoredList:GetWidth() - 24, 22)
 				Line.Item = ID
@@ -2298,9 +2271,38 @@ function Gathering:SetupIgnorePage(page)
 				Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
 
 				tinsert(page.IgnoredItems, Line)
+			else
+				Item:CreateFromItemID(ID):ContinueOnItemLoad(function()
+					Name, Link = GetItemInfo(ID)
 
-				ScrollIgnoredItems(page)
-			end)
+					local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
+					Line:SetSize(page.IgnoredList:GetWidth() - 24, 22)
+					Line.Item = ID
+
+					Line.Text = Line:CreateFontString(nil, "OVERLAY")
+					Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
+					Line.Text:SetPoint("LEFT", Line, 5, 0)
+					Line.Text:SetJustifyH("LEFT")
+					Line.Text:SetShadowColor(0, 0, 0)
+					Line.Text:SetShadowOffset(1, -1)
+					Line.Text:SetText(Link or Name)
+
+					Line.CloseButton = CreateFrame("Frame", nil, Line)
+					Line.CloseButton:SetPoint("RIGHT", Line, 0, 0)
+					Line.CloseButton:SetSize(24, 24)
+					Line.CloseButton:SetScript("OnEnter", function(self) self.Texture:SetVertexColor(1, 0, 0) end)
+					Line.CloseButton:SetScript("OnLeave", function(self) self.Texture:SetVertexColor(1, 1, 1) end)
+					Line.CloseButton:SetScript("OnMouseUp", function(self) Gathering:RemoveIgnoredItem(self:GetParent().Item) end)
+
+					Line.CloseButton.Texture = Line.CloseButton:CreateTexture(nil, "OVERLAY")
+					Line.CloseButton.Texture:SetPoint("CENTER", Line.CloseButton, 0, -0.5)
+					Line.CloseButton.Texture:SetTexture("Interface\\AddOns\\Gathering\\Assets\\HydraUIClose.tga")
+
+					tinsert(page.IgnoredItems, Line)
+
+					ScrollIgnoredItems(page)
+				end)
+			end
 		end
 	end
 
@@ -2500,8 +2502,8 @@ function Gathering:SetupStatsPage(page)
 	--page.XPStats.TTL = self:CreateStatLine(page.RightWidgets, "XP: 0")
 
 	self:CreateHeader(page.LeftWidgets, "Gold")
-	page.XPStats.totalgold = self:CreateStatLine(page.LeftWidgets, format("Gold: %s", self:CopperToGold(GatheringStats.gold) or 0))
-	page.XPStats.sessiongold = self:CreateStatLine(page.LeftWidgets, format("Session: %s", self:CopperToGold(Gathering.GoldGained) or 0))
+	page.XPStats.totalgold = self:CreateStatLine(page.LeftWidgets, format("Gold: %s", self:CopperToGold(GatheringStats.gold or 0)))
+	page.XPStats.sessiongold = self:CreateStatLine(page.LeftWidgets, format("Session: %s", self:CopperToGold(Gathering.GoldGained or 0)))
 
 	self:CreateHeader(page.LeftWidgets, "Items")
 	page.XPStats.items = self:CreateStatLine(page.LeftWidgets, format("Total: %s", self:Comma(GatheringStats.total) or 0))
