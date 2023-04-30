@@ -34,6 +34,7 @@ local ReplicateItems, GetNumReplicateItems, GetReplicateItemInfo
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemInfo = GetContainerItemInfo
+local GetContainerItemLink = GetContainerItemLink
 local ChannelCD = {}
 
 Gathering.DefaultSettings = {
@@ -78,6 +79,7 @@ if C_Container then
 	GetContainerNumSlots = C_Container.GetContainerNumSlots
 	GetContainerItemID = C_Container.GetContainerItemID
 	GetContainerItemInfo = C_Container.GetContainerItemInfo
+	GetContainerItemLink = C_Container.GetContainerItemLink
 end
 
 if (C_AuctionHouse and C_AuctionHouse.ReplicateItems) then
@@ -740,8 +742,8 @@ function Gathering:AddStat(stat, value)
 		SessionStat[stat] = 0
 	end
 
-	GatheringStats[stat] = GatheringStats[stat] + value
-	SessionStat[stat] = SessionStat[stat] + value
+	GatheringStats[stat] = GatheringStats[stat] + (value or 1)
+	SessionStat[stat] = SessionStat[stat] + (value or 1)
 end
 
 Gathering.TrackedItemTypes = {
@@ -1203,6 +1205,33 @@ function Gathering:ToggleResetPopup()
 	end
 end
 
+function Gathering:GetTrashValue()
+	local Profit = 0
+
+	for Bag = 0, 4 do
+		for Slot = 1, GetContainerNumSlots(Bag) do
+			local Link = GetContainerItemLink(Bag, Slot)
+
+			if Link then
+				local Quality = select(3, GetItemInfo(Link))
+				local VendorPrice = select(11, GetItemInfo(Link))
+				local Count = GetContainerItemInfo(Bag, Slot).stackCount or 1
+				local TotalPrice = VendorPrice
+
+				if ((VendorPrice and (VendorPrice > 0)) and Count) then
+					TotalPrice = VendorPrice * Count
+				end
+
+				if ((Quality and Quality < 1) and TotalPrice > 0) then
+					Profit = Profit + TotalPrice
+				end
+			end
+		end
+	end
+
+	return Profit
+end
+
 function Gathering:FormatTime(seconds)
 	if (seconds > 59) then
 		return format("%dm", ceil(seconds / 60))
@@ -1264,12 +1293,21 @@ function Gathering:CreateCheckbox(page, key, text, func)
 	Checkbox:SetSize(18, 18)
 	Checkbox:SetPoint("LEFT", Line, 4, 0)
 	Checkbox:SetScript("OnMouseUp", self.CheckBoxOnMouseUp)
+	Checkbox:SetScript("OnEnter", function(self) self.Overlay:Show() end)
+	Checkbox:SetScript("OnLeave", function(self) self.Overlay:Hide() end)
 	Checkbox.Setting = key
 
 	Checkbox.Tex = Checkbox:CreateTexture(nil, "OVERLAY")
 	Checkbox.Tex:SetTexture(BlankTexture)
 	Checkbox.Tex:SetPoint("TOPLEFT", Checkbox, 1, -1)
 	Checkbox.Tex:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
+
+	Checkbox.Overlay = Checkbox:CreateTexture(nil, "OVERLAY")
+	Checkbox.Overlay:SetTexture(BlankTexture)
+	Checkbox.Overlay:SetPoint("TOPLEFT", Checkbox, 1, -1)
+	Checkbox.Overlay:SetPoint("BOTTOMRIGHT", Checkbox, -1, 1)
+	Checkbox.Overlay:SetAlpha(0.2)
+	Checkbox.Overlay:Hide()
 
 	Checkbox.Text = Checkbox:CreateFontString(nil, "OVERLAY")
 	Checkbox.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
@@ -2459,6 +2497,12 @@ end
 function Gathering:CreateStatLine(page, text)
 	local Line = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	Line:SetSize(page:GetWidth() - 8, 22)
+	Line:SetBackdrop(Outline)
+	Line:SetBackdropColor(0.184, 0.192, 0.211)
+	Line:SetScript("OnEnter", self.PageTabOnEnter)
+	Line:SetScript("OnLeave", self.PageTabOnLeave)
+	--Line:HookScript("OnEnter", function(self) self. end)
+	--Line:HookScript("OnLeave", function(self) end)
 
 	Line.Text = Line:CreateFontString(nil, "OVERLAY")
 	Line.Text:SetFont(SharedMedia:Fetch("font", self.Settings["window-font"]), 12, "")
@@ -2473,7 +2517,35 @@ function Gathering:CreateStatLine(page, text)
 	return Line
 end
 
+function Gathering:StatsPageOnUpdate(elapsed)
+	self.Ela = self.Ela + elapsed
+
+	if (self.Ela > 10) then
+		Gathering:UpdateMoneyStat()
+		Gathering:UpdateXPStat()
+		Gathering:UpdateItemsStat()
+		self.Ela = 0
+	end
+end
+
+function Gathering:StatsPageOnShow()
+	self.Ela = 0
+
+	Gathering:UpdateMoneyStat()
+	Gathering:UpdateXPStat()
+	Gathering:UpdateItemsStat()
+
+	self:SetScript("OnUpdate", Gathering.StatsPageOnUpdate)
+end
+
+function Gathering:StatsPageOnHide()
+	self:SetScript("OnUpdate", nil)
+end
+
 function Gathering:SetupStatsPage(page)
+	page:SetScript("OnShow", self.StatsPageOnShow)
+	page:SetScript("OnHide", self.StatsPageOnHide)
+
 	page.LeftWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	page.LeftWidgets:SetSize(199, 246)
 	page.LeftWidgets:SetPoint("LEFT", page, 0, 0)
@@ -2481,7 +2553,7 @@ function Gathering:SetupStatsPage(page)
 	page.LeftWidgets:SetBackdrop(Outline)
 	page.LeftWidgets:SetBackdropColor(0.184, 0.192, 0.211)
 
-	page.XPStats = {}
+	page.Stats = {}
 
 	page.RightWidgets = CreateFrame("Frame", nil, page, "BackdropTemplate")
 	page.RightWidgets:SetSize(198, 246)
@@ -2494,22 +2566,36 @@ function Gathering:SetupStatsPage(page)
 		GatheringStats = {}
 	end
 
+	local PerSec = (self.XPGained / (GetTime() - self.XPStartTime)) or 0
+
 	self:CreateHeader(page.RightWidgets, "Experience")
-	page.XPStats.xp = self:CreateStatLine(page.RightWidgets, format("Total: %s", self:Comma(GatheringStats.xp) or 0))
-	page.XPStats.sessionxp = self:CreateStatLine(page.RightWidgets, format("Session: %s", Gathering.XPGained or 0))
-	page.XPStats.levels = self:CreateStatLine(page.RightWidgets, format("Levels: %s", GatheringStats.levels or 0))
-	--page.XPStats.PerHour = self:CreateStatLine(page.RightWidgets, "XP: 0")
-	--page.XPStats.TTL = self:CreateStatLine(page.RightWidgets, "XP: 0")
+	page.Stats.sessionxp = self:CreateStatLine(page.RightWidgets, format("Session: %s", SessionStat.xp or 0))
+	page.Stats.PerHour = self:CreateStatLine(page.RightWidgets, format("XP / Hr: %s", self:Comma((PerSec * 60) * 60)))
+
+	if (self.XPGained and self.XPGained > 0) then
+		page.Stats.TTL = self:CreateStatLine(page.RightWidgets, format("%s until level", self:FormatFullTime((UnitXPMax("player") - UnitXP("player")) / PerSec)))
+	else
+		page.Stats.TTL = self:CreateStatLine(page.RightWidgets, "0s until level")
+	end
+
+	self:CreateHeader(page.RightWidgets, "Overall stats")
+	page.Stats.xp = self:CreateStatLine(page.RightWidgets, format("XP Gained: %s", self:Comma(GatheringStats.xp) or 0))
+	page.Stats.levels = self:CreateStatLine(page.RightWidgets, format("Levels Gained: %s", GatheringStats.levels or 0))
+	page.Stats.totalgold = self:CreateStatLine(page.RightWidgets, format("Gold Looted: %s", self:CopperToGold(GatheringStats.gold or 0)))
+	page.Stats.totalitems = self:CreateStatLine(page.RightWidgets, format("Items Looted: %s", self:Comma(GatheringStats.total) or 0))
 
 	self:CreateHeader(page.LeftWidgets, "Gold")
-	page.XPStats.totalgold = self:CreateStatLine(page.LeftWidgets, format("Gold: %s", self:CopperToGold(GatheringStats.gold or 0)))
-	page.XPStats.sessiongold = self:CreateStatLine(page.LeftWidgets, format("Session: %s", self:CopperToGold(Gathering.GoldGained or 0)))
+	page.Stats.sessiongold = self:CreateStatLine(page.LeftWidgets, format("Profit: %s", self:CopperToGold(Gathering.GoldGained or 0)))
+	page.Stats.gph = self:CreateStatLine(page.LeftWidgets, format("Gold Per Hour: %s", self:CopperToGold(Gathering.GoldGained or 0)))
+	page.Stats.bagvalue = self:CreateStatLine(page.LeftWidgets, format("Inventory Trash Value: %s", self:CopperToGold(self:GetTrashValue())))
 
 	self:CreateHeader(page.LeftWidgets, "Items")
-	page.XPStats.items = self:CreateStatLine(page.LeftWidgets, format("Total: %s", self:Comma(GatheringStats.total) or 0))
+	page.Stats.items = self:CreateStatLine(page.LeftWidgets, format("Items Looted: %s", SessionStat.total or 0))
+	page.Stats.itemsphr = self:CreateStatLine(page.LeftWidgets, format("Items Per Hour: %s", 0))
 
-	--self:CreateHeader(page.LeftWidgets, "Misc")
-	--page.XPStats.clouds = self:CreateStatLine(page.LeftWidgets, format("Clouds: %s", self:Comma(GatheringStats.clouds) or 0))
+	if GatheringStats.clouds then
+		page.Stats.clouds = self:CreateStatLine(page.LeftWidgets, format("Gas Clouds: %s", self:Comma(GatheringStats.clouds) or 0))
+	end
 
 	self:SortWidgets(page.LeftWidgets)
 	self:SortWidgets(page.RightWidgets)
@@ -2526,8 +2612,16 @@ function Gathering:UpdateItemsStat()
 		return
 	end
 
-	if page.XPStats.items then
-		page.XPStats.items.Text:SetText(format("Total: %s", self:Comma(GatheringStats.items) or 0))
+	if page.Stats.totalitems then
+		page.Stats.totalitems.Text:SetText(format("Items Looted: %s", self:Comma(GatheringStats.total) or 0))
+	end
+
+	if page.Stats.items then
+		page.Stats.items.Text:SetText(format("Items Looted: %s", self:Comma(SessionStat.total) or 0))
+	end
+
+	if page.Stats.bagvalue then
+		page.Stats.bagvalue.Text:SetText(format("Inventory Trash Value: %s", self:CopperToGold(self:GetTrashValue())))
 	end
 end
 
@@ -2542,16 +2636,30 @@ function Gathering:UpdateXPStat()
 		return
 	end
 
-	if page.XPStats.xp then
-		page.XPStats.xp.Text:SetText(format("Total: %s", self:Comma(GatheringStats.xp) or 0))
+	if page.Stats.xp then
+		page.Stats.xp.Text:SetText(format("XP Gained: %s", self:Comma(GatheringStats.xp) or 0))
 	end
 
-	if page.XPStats.sessionxp then
-		page.XPStats.sessionxp.Text:SetText(format("Session: %s", self:Comma(Gathering.XPGained) or 0))
+	if page.Stats.sessionxp then
+		page.Stats.sessionxp.Text:SetText(format("Session: %s", self:Comma(Gathering.XPGained) or 0))
 	end
 
-	if page.XPStats.levels then
-		page.XPStats.levels.Text:SetText(format("Levels: %s", GatheringStats.levels or 0))
+	local PerSec = (self.XPGained / (GetTime() - self.XPStartTime)) or 0
+
+	if page.Stats.PerHour then
+		page.Stats.PerHour.Text:SetText(format("XP / Hr: %s", self:Comma((PerSec * 60) * 60)))
+	end
+
+	if page.Stats.TTL then
+		if (self.XPGained > 0) then
+			page.Stats.TTL.Text:SetText(format("%s until level", self:FormatFullTime((UnitXPMax("player") - UnitXP("player")) / PerSec)))
+		else
+			page.Stats.TTL.Text:SetText("0s until level")
+		end
+	end
+
+	if page.Stats.levels then
+		page.Stats.levels.Text:SetText(format("Levels Gained: %s", GatheringStats.levels or 0))
 	end
 end
 
@@ -2566,12 +2674,16 @@ function Gathering:UpdateMoneyStat()
 		return
 	end
 
-	if page.XPStats.totalgold then
-		page.XPStats.totalgold.Text:SetText(format("Total: %s", self:CopperToGold(GatheringStats.gold) or 0))
+	if page.Stats.totalgold then
+		page.Stats.totalgold.Text:SetText(format("Gold Looted: %s", self:CopperToGold(GatheringStats.gold) or 0))
 	end
 
-	if page.XPStats.sessiongold then
-		page.XPStats.sessiongold.Text:SetText(format("Session: %s", self:CopperToGold(Gathering.GoldGained) or 0))
+	if page.Stats.sessiongold then
+		page.Stats.sessiongold.Text:SetText(format("Profit: %s", self:CopperToGold(Gathering.GoldGained) or 0))
+	end
+
+	if page.Stats.gph then
+		page.Stats.gph.Text:SetText(format("GPH: %s", self:CopperToGold(floor((self.GoldGained / max(GetTime() - self.GoldTimer, 1)) * 60 * 60))))
 	end
 end
 
@@ -3179,6 +3291,8 @@ end
 
 function Gathering:BAG_UPDATE_DELAYED()
 	if (not self.BagResults) then
+		self:UpdateItemsStat()
+
 		return
 	end
 
@@ -3294,7 +3408,6 @@ end
 
 if (GameVersion > 20000 and GameVersion < 90000) then
 	Gathering:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-	Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 elseif (GameVersion > 90000) then
 	Gathering:RegisterEvent("AUCTION_HOUSE_SHOW")
 end
@@ -3311,6 +3424,7 @@ Gathering:RegisterEvent("CHAT_MSG_LOOT")
 Gathering:RegisterEvent("PLAYER_ENTERING_WORLD")
 Gathering:RegisterEvent("PLAYER_MONEY")
 Gathering:RegisterEvent("PLAYER_XP_UPDATE")
+Gathering:RegisterEvent("BAG_UPDATE_DELAYED")
 Gathering:SetScript("OnEvent", Gathering.OnEvent)
 Gathering:SetScript("OnEnter", Gathering.OnEnter)
 Gathering:SetScript("OnLeave", Gathering.OnLeave)
