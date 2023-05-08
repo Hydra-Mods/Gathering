@@ -1,9 +1,10 @@
 ## Interface: 100100
 ## Author: Hydra
-## Version: 2.03
+## Version: 2.04
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringMarketPrices, GatheringLastScan, GatheringSettings, GatheringIgnore, GatheringStats
+## IconTexture: Interface\Icons\Inv_misc_coin_02
 
 Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua
