@@ -1,6 +1,6 @@
 ## Interface: 11403
 ## Author: Hydra
-## Version: 2.04
+## Version: 2.05
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringSettings, GatheringIgnore, GatheringStats
@@ -9,4 +9,25 @@ Libraries\LibStub.lua
 Libraries\CallbackHandler-1.0.lua
 Libraries\LibSharedMedia-3.0.lua
 Libraries\ChatThrottleLib.lua
-Gathering.lua
+Elements\Initialize.lua
+Languages\deDE.lua
+Languages\enUS.lua
+Languages\esES.lua
+Languages\esMX.lua
+Languages\frFR.lua
+Languages\itIT.lua
+Languages\koKR.lua
+Languages\ptBR.lua
+Languages\ruRU.lua
+Languages\zhCN.lua
+Languages\zhTW.lua
+Elements\Tools.lua
+Elements\Settings.lua
+Elements\Stats.lua
+Elements\Interface.lua
+Elements\Commands.lua
+Elements\Loot.lua
+Elements\Gold.lua
+Elements\Experience.lua
+Elements\GasClouds.lua
+Elements\Version.lua
