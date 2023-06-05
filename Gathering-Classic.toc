@@ -29,5 +29,7 @@ Elements\Commands.lua
 Elements\Loot.lua
 Elements\Gold.lua
 Elements\Experience.lua
+Elements\Reputation.lua
+Elements\Quests.lua
 Elements\GasClouds.lua
 Elements\Version.lua
