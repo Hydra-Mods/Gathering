@@ -22,7 +22,7 @@ function Gathering:PLAYER_MONEY()
 			self:StartTimer()
 		elseif (self.Settings.DisplayMode == "GPH") then
 			if (self.GoldGained > 0) then
-				self.Text:SetFormattedText(["GPH: %s"], self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)))
+				self.Text:SetFormattedText(L["GPH: %s"], self:CopperToGold(floor((self.GoldGained / max(Now - self.GoldTimer, 1)) * 60 * 60)))
 			end
 
 			if (not self:GetScript("OnUpdate")) then
