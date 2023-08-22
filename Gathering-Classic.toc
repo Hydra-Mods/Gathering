@@ -1,6 +1,6 @@
-## Interface: 11403
+## Interface: 11404
 ## Author: Hydra
-## Version: 2.05
+## Version: 2.08
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringSettings, GatheringIgnore, GatheringStats
@@ -29,7 +29,5 @@ Elements\Commands.lua
 Elements\Loot.lua
 Elements\Gold.lua
 Elements\Experience.lua
-Elements\Reputation.lua
-Elements\Quests.lua
 Elements\GasClouds.lua
 Elements\Version.lua

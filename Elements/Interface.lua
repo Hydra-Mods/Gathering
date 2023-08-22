@@ -1753,7 +1753,6 @@ function Gathering:SetupStatsPage(page)
 	self:CreateHeader(page.LeftWidgets, "Items")
 	page.Stats.items = self:CreateStatLine(page.LeftWidgets, format("Items Looted: %s", self.SessionStats.total or 0))
 	--page.Stats.itemsphr = self:CreateStatLine(page.LeftWidgets, format("Items Per Hour: %s", 0))
-	page.Stats.itemsphr = self:CreateStatLine(page.LeftWidgets, format("Items Per Hour: %s", 0))]]
 
 	if GatheringStats.clouds then
 		page.Stats.clouds = self:CreateStatLine(page.LeftWidgets, format("Gas Clouds: %s", self:Comma(GatheringStats.clouds) or 0))

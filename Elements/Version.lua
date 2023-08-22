@@ -3,6 +3,7 @@ local Gathering = AddOn.Gathering
 local CT = ChatThrottleLib
 local AddOnVersion = GetAddOnMetadata("Gathering", "Version")
 local AddOnNum = tonumber(AddOnVersion)
+
 local ChannelCD = {}
 
 function Gathering:GUILD_ROSTER_UPDATE()
