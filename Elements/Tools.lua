@@ -79,6 +79,8 @@ end
 function Gathering:GetPrice(link)
 	if self.HasTSM then
 		return TSM_API.GetCustomPriceValue("dbMarket", TSM_API.ToItemString(link))
+	elseif self.HasAuctionator then
+		return Auctionator.API.v1.GetAuctionPriceByItemLink("Gathering", link)
 	end
 end
 
