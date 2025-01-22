@@ -1964,6 +1964,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		if IsAddOnLoaded("TradeSkillMaster") then
 			self.HasTSM = true
 		end
+		
+		if IsAddOnLoaded("Auctionator") then
+			self.HasAuctionator = true
+		end
 
 		if (not IsAddOnLoaded("HydraUI")) then
 			print("|cffFFC44DGathering|r: Join the community for support and feedback! - discord.gg/XefDFa6nJR")
