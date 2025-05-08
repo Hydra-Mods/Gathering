@@ -1,5 +1,6 @@
 local Name, AddOn = ...
 local Gathering = AddOn.Gathering
+local L = AddOn.L
 
 function Gathering:BAG_UPDATE_DELAYED()
 	if (not self.BagResults) then

@@ -6,6 +6,12 @@ end
 
 local L = AddOn.L
 
+L["Settings"] = "Settings"
+L["Tracking"] = "Tracking"
+L["Ignore"] = "Ignore"
+L["Stats"] = "Stats"
+L["Supporters"] = "Supporters"
+
 L["Total Gathered:"] = "Total Gathered:"
 L["Total Average Per Hour:"] = "Total Average Per Hour:"
 L["Total Value:"] = "Total Value:"
@@ -49,7 +55,6 @@ L["%s is now being unignored."] = "%s is now being unignored."
 L["Set Font"] = "Set Font"
 L["Set Width"] = "Set Width"
 L["Set Height"] = "Set Height"
-L["Discord"] = "Discord"
 L["Recently Gathered: "] = "Recently Gathered: "
 L["Gathering Scan"] = "Gathering Scan"
 L["Are you sure you would like to reset current data?"] = "Are you sure you would like to reset current data?"
@@ -57,3 +62,39 @@ L["Are you sure you would like to reset current data?"] = "Are you sure you woul
 L["|cffFFC44DGathering|r is scanning market prices. This should take less than 10 seconds."] = "|cffFFC44DGathering|r is scanning market prices. This should take less than 10 seconds."
 L["You must wait %s until you can scan again."] = "You must wait %s until you can scan again."
 L["|cffFFC44DGathering|r updated market prices."] = "|cffFFC44DGathering|r updated market prices."
+
+L["XP Gained"] = "XP Gained"
+L["XP / hr"] = "XP / hr"
+L["Time to level"] = "Time to level"
+
+L["Window Size"] = "Window Size"
+L["Frame Width"] = "Frame Width"
+L["Frame Height"] = "Frame Height"
+L["Miscellaneous"] = "Miscellaneous"
+
+L["Bag Space"] = "Bag Space"
+L["Bag Slots"] = "Bag Slots"
+L["Show free bag slots"] = "Show free bag slots"
+L["Enable Tooltip"] = "Enable Tooltip"
+
+L["Donors"] = "Donors"
+L["Patrons"] = "Patrons" -- Patreon "Patrons"
+L["Former Patrons"] = "Former Patrons"
+
+L["Experience"] = "Experience"
+L["Session: %s"] = "Session: %s"
+L["XP / Hr: %s"] = "XP / Hr: %s"
+L["%s until level"] = "%s until level"
+L["0s until level"] = "0s until level"
+L["Overall stats"] = "Overall stats"
+L["XP Gained: %s"] = "XP Gained: %s"
+L["Levels Gained: %s"] = "Levels Gained: %s"
+L["Gold Looted: %s"] = "Gold Looted: %s"
+L["Items Looted: %s"] = "Items Looted: %s"
+L["Profit: %s"] = "Profit: %s"
+L["Gold Per Hour: %s"] = "Gold Per Hour: %s"
+L["Inventory Trash Value: %s"] = "Inventory Trash Value: %s"
+L["Items"] = "Items"
+L["Gas Clouds: %s"] = "Gas Clouds: %s"
+
+L["Update |cffFFC44DGathering|r to version %s! www.curseforge.com/wow/addons/gathering"] = "Update |cffFFC44DGathering|r to version %s! www.curseforge.com/wow/addons/gathering"

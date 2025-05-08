@@ -17,17 +17,8 @@ Gathering.DefaultSettings = {
 	["track-xp"] = true,
 
 	-- Functionality
-	["ignore-bop"] = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
-	["hide-idle"] = false, -- Hide the tracker frame while not running
-	["show-tooltip"] = false, -- Show tooltip data about item prices
-
-	-- Styling
-	["window-font"] = Gathering.SharedMedia.DefaultMedia.font, -- Set the font
-
-	-- Functionality
 	IgnoreBOP = false, -- Ignore bind on pickup gear. IE: ignore BoP loot on a raid run, but show BoE's for the auction house
 	HideIdle = false, -- Hide the tracker frame while not running
-	ShowTooltip = false, -- Show tooltip data about item prices
 	IgnoreMailItems = true, -- Ignore items that arrived through mail
 	IgnoreMailMoney = true, -- Ignore money that arrived through mail
 	ShowTooltipHelp = true, -- Display helpful information in the tooltip (Left click to toggle, right click to reset)
@@ -37,6 +28,12 @@ Gathering.DefaultSettings = {
 	WindowFont = Gathering.SharedMedia.DefaultMedia.font, -- Set the font
 	WindowHeight = 24,
 	WindowWidth = 130,
+
+	-- Bag Slots
+	EnableSlotBar = true,
+	SlotBarTooltip = true,
+	SlotBarHeight = 6,
+	-- Threshold options
 }
 
 Gathering.TrackedItemTypes = {

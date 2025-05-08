@@ -1,6 +1,6 @@
-## Interface: 11404
+## Interface: 40402
 ## Author: Hydra
-## Version: 2.09
+## Version: 2.45
 ## Title: Gathering
 ## Notes: Track gathered items.
 ## SavedVariables: GatheringSettings, GatheringIgnore, GatheringStats
@@ -30,4 +30,5 @@ Elements\Loot.lua
 Elements\Gold.lua
 Elements\Experience.lua
 Elements\GasClouds.lua
+Elements\BagSlots.lua
 Elements\Version.lua

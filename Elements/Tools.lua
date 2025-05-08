@@ -60,7 +60,7 @@ function Gathering:CopperToGold(copper)
 	local String = ""
 
 	if (Gold > 0) then
-		String = Gold .. "|cffffe02eg|r"
+		String = self:Comma(Gold) .. "|cffffe02eg|r"
 		Separator = " "
 	end
 

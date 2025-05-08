@@ -6,12 +6,16 @@ function Gathering:PLAYER_XP_UPDATE()
 	local MaxXP = UnitXPMax("player")
 
 	if (MaxXP ~= self.LastMax) then
-		self.XPGained = self.LastMax - self.LastXP + XP + self.XPGained
-		self:AddStat("xp", (self.LastMax - self.LastXP + XP))
+		local LevelXP = self.LastMax - self.LastXP + XP
+
+		self.XPGained = self.XPGained + LevelXP
+		self:AddStat("xp", LevelXP)
 		self:AddStat("levels", 1)
 	else
-		self.XPGained = (XP - self.LastXP) + self.XPGained
-		self:AddStat("xp", (XP - self.LastXP))
+		local GainedXP = XP - self.LastXP
+
+		self.XPGained = self.XPGained + GainedXP
+		self:AddStat("xp", GainedXP)
 	end
 
 	if (not self.XPStartTime) then

@@ -22,10 +22,6 @@ AddOn.L = {}
 AddOn.Locale = GetLocale()
 AddOn.Gathering = Gathering
 
-if (AddOn.Locale == "enGB") then
-	AddOn.Locale = "enUS"
-end
-
 function Gathering:OnEvent(event, ...)
 	if self[event] then
 		self[event](self, ...)
