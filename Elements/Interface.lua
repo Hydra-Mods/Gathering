@@ -2040,6 +2040,10 @@ function Gathering:PLAYER_ENTERING_WORLD()
 		if IsAddOnLoaded("TradeSkillMaster") then
 			self.HasTSM = true
 		end
+		
+		if IsAddOnLoaded("Auctionator") then
+			self.HasAuctionator = true
+		end
 
 		--[[if TooltipDataProcessor then
 			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.OnTooltipSetItem)
